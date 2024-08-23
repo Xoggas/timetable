@@ -1,3 +1,7 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export class CreateLessonDto {
-  name: string;
+  @IsNotEmpty()
+  @IsString()
+  readonly name: string;
 }

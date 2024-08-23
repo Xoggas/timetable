@@ -1,6 +1,11 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { CreateLessonDto } from "./create-lesson.dto";
+import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateLessonDto extends PartialType(CreateLessonDto) {
-  id: string;
+export class UpdateLessonDto {
+  @IsNotEmpty()
+  @IsMongoId()
+  readonly id: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly name: string;
 }

@@ -6,8 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/timetable'),
-    LessonsScheduleModule, 
-    BellsScheduleModule
-  ]
+    LessonsScheduleModule,
+    BellsScheduleModule,
+  ],
 })
-export class AppModule { }
+export class AppModule {}

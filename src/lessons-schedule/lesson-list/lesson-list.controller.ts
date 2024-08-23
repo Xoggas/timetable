@@ -7,7 +7,7 @@ import { DeleteLessonDto } from './dto/delete-lesson.dto';
 
 @Controller('lesson-list')
 export class LessonListController {
-  constructor(private readonly lessonListService: LessonListService) { }
+  constructor(private readonly lessonListService: LessonListService) {}
 
   @Get()
   findAll(): Promise<Lesson[]> {

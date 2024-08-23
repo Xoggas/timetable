@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TimetableModule } from './timetable/timetable.module';
 import { LessonListModule } from './lesson-list/lesson-list.module';
+import { LessonTableModule } from './lesson-table/lesson-table.module';
 
 @Module({
-  imports: [TimetableModule, LessonListModule]
+  imports: [LessonListModule, LessonTableModule],
 })
-export class LessonsScheduleModule { }
+export class LessonsScheduleModule {}
