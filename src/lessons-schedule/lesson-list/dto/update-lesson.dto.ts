@@ -1,8 +1,8 @@
 import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateLessonDto {
-  @IsNotEmpty()
   @IsMongoId()
+  @IsNotEmpty()
   readonly id: string;
 
   @IsNotEmpty()

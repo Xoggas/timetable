@@ -1,7 +1,7 @@
 import { IsMongoId, IsNotEmpty } from 'class-validator';
 
 export class DeleteLessonDto {
-  @IsNotEmpty()
   @IsMongoId()
+  @IsNotEmpty()
   readonly id: string;
 }
