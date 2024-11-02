@@ -9,7 +9,7 @@ import { LessonTableService } from './lesson-table.service';
 import { LessonTable } from './schemas/lesson-table.schema';
 import { UseFilters } from '@nestjs/common';
 import { BadRequestTransformationFilter } from 'src/shared/filters/bad-request-transformation.filter';
-import { ValidatedMessageBody } from 'src/shared/decorators/validated-message-body.decorator';
+import { ValidateMessageBody } from 'src/shared/decorators/validate-message-body.decorator';
 
 @WebSocketGateway({ namespace: 'lessons-timetable' })
 @UseFilters(new BadRequestTransformationFilter())
@@ -18,7 +18,7 @@ export class LessonTableGateway {
 
   @SubscribeMessage('update')
   handleLessonTableUpdate(
-    @ValidatedMessageBody() updateLessonTableDto: UpdateLessonTableDto,
+    @ValidateMessageBody() updateLessonTableDto: UpdateLessonTableDto,
     @ConnectedSocket() socket: Socket,
   ): Promise<LessonTable> {
     const updatedTable = this.lessonTableService.update(updateLessonTableDto);
