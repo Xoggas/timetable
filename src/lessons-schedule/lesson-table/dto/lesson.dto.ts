@@ -1,7 +1,8 @@
-import { IsMongoId, IsNotEmpty } from 'class-validator';
+import { IsMongoId, IsNotEmpty } from "class-validator";
 
-export class LessonDto {
-  @IsNotEmpty()
-  @IsMongoId()
-  readonly _id: string;
+export class LessonDto
+{
+    @IsNotEmpty()
+    @IsMongoId()
+    readonly _id: string;
 }
