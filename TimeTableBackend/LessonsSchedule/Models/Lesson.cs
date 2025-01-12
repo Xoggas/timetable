@@ -1,14 +1,12 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TimeTableBackend.LessonsSchedule.Models;
 
 public sealed class Lesson
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    [Key]
+    public int Id { get; set; }
 
-    [BsonElement("name")]
-    public string Name { get; set; } = null!;
+    [Required]
+    public string Name { get; set; } = string.Empty;
 }

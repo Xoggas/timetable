@@ -1,14 +1,14 @@
-using TimeTableBackend.LessonsSchedule.Models;
 using TimeTableBackend.LessonsSchedule.Services;
-using TimeTableBackend.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddMvc();
 
-builder.Services.Configure<LessonListDatabaseSettings>(
-    builder.Configuration.GetSection(Constants.LessonsDatabaseConfigSectionName));
+builder.Services.AddControllers();
 
 builder.Services.AddSingleton<LessonListService>();
 
@@ -21,4 +21,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
+
 app.Run();
