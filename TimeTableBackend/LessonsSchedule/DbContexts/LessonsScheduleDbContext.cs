@@ -10,5 +10,5 @@ public class LessonsScheduleDbContext : DbContext
     {
     }
 
-    public DbSet<Lesson> Lessons { get; set; }
+    public DbSet<Lesson> Lessons { get; init; }
 }

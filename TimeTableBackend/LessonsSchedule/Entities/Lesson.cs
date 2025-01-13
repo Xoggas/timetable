@@ -5,8 +5,8 @@ namespace TimeTableBackend.LessonsSchedule.Entities;
 public sealed class Lesson
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; init; }
     
     [MaxLength(50)]
-    public required string Name { get; set; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
 }

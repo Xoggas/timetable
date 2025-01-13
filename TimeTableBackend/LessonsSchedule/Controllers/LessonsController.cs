@@ -42,12 +42,7 @@ public class LessonsController : ControllerBase
 
         await _eventService.NotifyAboutUpdate();
 
-        return CreatedAtRoute
-        (
-            nameof(Get),
-            new { id = createdLesson.Id },
-            createdLesson
-        );
+        return Ok(createdLesson);
     }
 
     [HttpPut("{id}")]
@@ -69,7 +64,7 @@ public class LessonsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {
         var lessonEntity = await _lessonsService.GetByIdAsync(id);
