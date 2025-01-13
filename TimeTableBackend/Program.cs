@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TimeTableBackend.LessonsSchedule.DbContexts;
+using TimeTableBackend.LessonsSchedule.Data;
 using TimeTableBackend.LessonsSchedule.Hubs;
+using TimeTableBackend.LessonsSchedule.Repositories;
 using TimeTableBackend.LessonsSchedule.Services;
 
 var builder = WebApplication.CreateBuilder(args);

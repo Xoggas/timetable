@@ -1,4 +1,5 @@
 ﻿using TimeTableBackend.LessonsSchedule.Entities;
+using TimeTableBackend.LessonsSchedule.Repositories;
 
 namespace TimeTableBackend.LessonsSchedule.Services;
 

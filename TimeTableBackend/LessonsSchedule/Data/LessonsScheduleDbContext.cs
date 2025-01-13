@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TimeTableBackend.LessonsSchedule.Entities;
 
-namespace TimeTableBackend.LessonsSchedule.DbContexts;
+namespace TimeTableBackend.LessonsSchedule.Data;
 
 public class LessonsScheduleDbContext : DbContext
 {

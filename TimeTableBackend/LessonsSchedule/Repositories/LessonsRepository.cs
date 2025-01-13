@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TimeTableBackend.LessonsSchedule.DbContexts;
+using TimeTableBackend.LessonsSchedule.Data;
 using TimeTableBackend.LessonsSchedule.Entities;
 
-namespace TimeTableBackend.LessonsSchedule.Services;
+namespace TimeTableBackend.LessonsSchedule.Repositories;
 
 public sealed class LessonsRepository
 {
