@@ -26,19 +26,19 @@ public sealed class LessonsRepository
     public async Task CreateAsync(Lesson lesson)
     {
         await _dbContext.Lessons.AddAsync(lesson);
-        
-        await _dbContext.SaveChangesAsync();
-    }
 
-    public async Task UpdateAsync()
-    {
-        await _dbContext.SaveChangesAsync();
+        await SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Lesson lesson)
     {
         _dbContext.Lessons.Remove(lesson);
-        
+
+        await SaveChangesAsync();
+    }
+
+    public async Task SaveChangesAsync()
+    {
         await _dbContext.SaveChangesAsync();
     }
 }

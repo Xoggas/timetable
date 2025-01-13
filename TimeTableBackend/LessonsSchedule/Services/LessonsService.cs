@@ -29,15 +29,15 @@ public sealed class LessonsService
         await _eventService.NotifyAllClientsAboutUpdate();
     }
 
-    public async Task UpdateAsync()
-    {
-        await _repository.UpdateAsync();
-        await _eventService.NotifyAllClientsAboutUpdate();
-    }
-
     public async Task DeleteAsync(Lesson lesson)
     {
         await _repository.DeleteAsync(lesson);
+        await _eventService.NotifyAllClientsAboutUpdate();
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _repository.SaveChangesAsync();
         await _eventService.NotifyAllClientsAboutUpdate();
     }
 }

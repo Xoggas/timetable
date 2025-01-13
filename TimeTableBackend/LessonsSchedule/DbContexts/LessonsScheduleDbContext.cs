@@ -5,8 +5,7 @@ namespace TimeTableBackend.LessonsSchedule.DbContexts;
 
 public class LessonsScheduleDbContext : DbContext
 {
-    public LessonsScheduleDbContext(
-        DbContextOptions<LessonsScheduleDbContext> options) : base(options)
+    public LessonsScheduleDbContext(DbContextOptions<LessonsScheduleDbContext> options) : base(options)
     {
     }
 

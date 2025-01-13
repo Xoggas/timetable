@@ -51,7 +51,7 @@ public class LessonsController : ControllerBase
 
         _mapper.Map(lesson, lessonEntity);
 
-        await _lessonsService.UpdateAsync();
+        await _lessonsService.SaveChangesAsync();
 
         return NoContent();
     }
