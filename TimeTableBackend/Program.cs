@@ -1,26 +1,28 @@
+using Microsoft.EntityFrameworkCore;
+using TimeTableBackend.LessonsSchedule.DbContexts;
+using TimeTableBackend.LessonsSchedule.Hubs;
 using TimeTableBackend.LessonsSchedule.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddMvc();
+builder.Services.AddDbContext<LessonsScheduleDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration
+        .GetConnectionString("DbConnectionString"));
+});
 
 builder.Services.AddControllers();
-
-builder.Services.AddSingleton<LessonListService>();
+builder.Services.AddSignalR();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddTransient<EventService>();
+builder.Services.AddTransient<LessonsService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+app.MapHub<EventHub>("lessons-schedule");
 
 app.MapControllers();
 

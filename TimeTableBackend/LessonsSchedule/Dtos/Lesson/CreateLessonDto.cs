@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TimeTableBackend.LessonsSchedule.Models;
+namespace TimeTableBackend.LessonsSchedule.Dtos;
 
-public sealed class Lesson
+public sealed class CreateLessonDto
 {
-    [Key]
-    public int Id { get; set; }
-
     [Required]
+    [MaxLength(50)]
     public string Name { get; set; } = string.Empty;
 }
