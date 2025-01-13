@@ -1,42 +1,43 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TimeTableBackend.LessonsSchedule.DbContexts;
-using TimeTableBackend.LessonsSchedule.Entities;
+﻿using TimeTableBackend.LessonsSchedule.Entities;
 
 namespace TimeTableBackend.LessonsSchedule.Services;
 
 public sealed class LessonsService
 {
-    private readonly LessonsScheduleDbContext _dbContext;
+    private readonly LessonsRepository _repository;
+    private readonly EventService _eventService;
 
-    public LessonsService(LessonsScheduleDbContext dbContext)
+    public LessonsService(LessonsRepository repository, EventService eventService)
     {
-        _dbContext = dbContext;
+        _repository = repository;
+        _eventService = eventService;
     }
 
     public async Task<IEnumerable<Lesson>> GetAllAsync()
     {
-        return await _dbContext.Lessons.ToListAsync();
+        return await _repository.GetAllAsync();
     }
 
     public async Task<Lesson?> GetByIdAsync(int id)
     {
-        return await _dbContext.Lessons.FirstOrDefaultAsync(x => x.Id == id);
+        return await _repository.GetByIdAsync(id);
     }
 
     public async Task CreateAsync(Lesson lesson)
     {
-        await _dbContext.Lessons.AddAsync(lesson);
+        await _repository.CreateAsync(lesson);
+        await _eventService.NotifyAllClientsAboutUpdate();
     }
 
-    public void Delete(Lesson lesson)
+    public async Task UpdateAsync()
     {
-        _dbContext.Lessons.Remove(lesson);
+        await _repository.UpdateAsync();
+        await _eventService.NotifyAllClientsAboutUpdate();
     }
 
-    public async Task SaveChangesAsync()
+    public async Task DeleteAsync(Lesson lesson)
     {
-        await _dbContext.SaveChangesAsync();
+        await _repository.DeleteAsync(lesson);
+        await _eventService.NotifyAllClientsAboutUpdate();
     }
-
-  
 }

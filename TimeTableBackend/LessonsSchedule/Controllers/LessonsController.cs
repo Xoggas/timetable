@@ -12,13 +12,11 @@ public class LessonsController : ControllerBase
 {
     private readonly LessonsService _lessonsService;
     private readonly IMapper _mapper;
-    private readonly EventService _eventService;
 
-    public LessonsController(LessonsService lessonsService, IMapper mapper, EventService eventService)
+    public LessonsController(LessonsService lessonsService, IMapper mapper)
     {
         _lessonsService = lessonsService;
         _mapper = mapper;
-        _eventService = eventService;
     }
 
     [HttpGet]
@@ -36,11 +34,7 @@ public class LessonsController : ControllerBase
 
         await _lessonsService.CreateAsync(lessonEntity);
 
-        await _lessonsService.SaveChangesAsync();
-
         var createdLesson = _mapper.Map<LessonDto>(lessonEntity);
-
-        await _eventService.NotifyAboutUpdate();
 
         return Ok(createdLesson);
     }
@@ -57,9 +51,7 @@ public class LessonsController : ControllerBase
 
         _mapper.Map(lesson, lessonEntity);
 
-        await _lessonsService.SaveChangesAsync();
-
-        await _eventService.NotifyAboutUpdate();
+        await _lessonsService.UpdateAsync();
 
         return NoContent();
     }
@@ -74,11 +66,7 @@ public class LessonsController : ControllerBase
             return NotFound();
         }
 
-        _lessonsService.Delete(lessonEntity);
-
-        await _lessonsService.SaveChangesAsync();
-
-        await _eventService.NotifyAboutUpdate();
+        await _lessonsService.DeleteAsync(lessonEntity);
 
         return NoContent();
     }

@@ -12,7 +12,7 @@ public sealed class EventService
         _eventHub = eventHub;
     }
 
-    public async Task NotifyAboutUpdate()
+    public async Task NotifyAllClientsAboutUpdate()
     {
         await _eventHub.Clients.All.Update();
     }
