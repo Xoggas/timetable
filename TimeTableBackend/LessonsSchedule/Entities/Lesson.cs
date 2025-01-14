@@ -11,5 +11,6 @@ public sealed class Lesson
     public string Id { get; init; } = string.Empty;
 
     [MaxLength(50)]
+    [BsonElement("name")]
     public string Name { get; set; } = string.Empty;
 }
