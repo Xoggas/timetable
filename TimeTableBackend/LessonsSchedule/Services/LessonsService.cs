@@ -14,10 +14,10 @@ public interface ILessonsService
 
 public sealed class LessonsService : ILessonsService
 {
-    private readonly LessonsRepository _repository;
-    private readonly EventService _eventService;
+    private readonly ILessonsRepository _repository;
+    private readonly IEventService _eventService;
 
-    public LessonsService(LessonsRepository repository, EventService eventService)
+    public LessonsService(ILessonsRepository repository, IEventService eventService)
     {
         _repository = repository;
         _eventService = eventService;

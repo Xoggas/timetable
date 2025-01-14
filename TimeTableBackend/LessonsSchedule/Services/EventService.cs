@@ -3,7 +3,12 @@ using TimeTableBackend.LessonsSchedule.Hubs;
 
 namespace TimeTableBackend.LessonsSchedule.Services;
 
-public sealed class EventService
+public interface IEventService
+{
+    Task NotifyAllClientsAboutUpdate();
+}
+
+public sealed class EventService : IEventService
 {
     private readonly IHubContext<EventHub, IEventHub> _eventHub;
 

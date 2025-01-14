@@ -10,23 +10,23 @@ builder.Logging.ClearProviders();
 
 builder.Logging.AddConsole();
 
-builder.Services.AddDbContext<LessonsScheduleDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration
-        .GetConnectionString("DbConnectionString"));
-});
-
 builder.Services.AddControllers();
 
 builder.Services.AddSignalR();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddTransient<EventService>();
+builder.Services.AddTransient<IEventService, EventService>();
 
-builder.Services.AddTransient<LessonsRepository>();
+builder.Services.AddTransient<ILessonsRepository, LessonsRepository>();
 
 builder.Services.AddTransient<ILessonsService, LessonsService>();
+
+builder.Services.AddDbContext<LessonsScheduleDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration
+        .GetConnectionString("DbConnectionString"));
+});
 
 var app = builder.Build();
 

@@ -4,7 +4,16 @@ using TimeTableBackend.LessonsSchedule.Entities;
 
 namespace TimeTableBackend.LessonsSchedule.Repositories;
 
-public sealed class LessonsRepository
+public interface ILessonsRepository
+{
+    Task<IEnumerable<Lesson>> GetAllAsync();
+    Task<Lesson?> GetByIdAsync(int id);
+    Task CreateAsync(Lesson lesson);
+    Task DeleteAsync(Lesson lesson);
+    Task SaveChangesAsync();
+}
+
+public sealed class LessonsRepository : ILessonsRepository
 {
     private readonly LessonsScheduleDbContext _dbContext;
 
