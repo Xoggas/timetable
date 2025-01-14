@@ -3,7 +3,16 @@ using TimeTableBackend.LessonsSchedule.Repositories;
 
 namespace TimeTableBackend.LessonsSchedule.Services;
 
-public sealed class LessonsService
+public interface ILessonsService
+{
+    Task<IEnumerable<Lesson>> GetAllAsync();
+    Task<Lesson?> GetByIdAsync(int id);
+    Task CreateAsync(Lesson lesson);
+    Task DeleteAsync(Lesson lesson);
+    Task SaveChangesAsync();
+}
+
+public sealed class LessonsService : ILessonsService
 {
     private readonly LessonsRepository _repository;
     private readonly EventService _eventService;

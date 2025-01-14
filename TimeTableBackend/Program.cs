@@ -26,7 +26,7 @@ builder.Services.AddTransient<EventService>();
 
 builder.Services.AddTransient<LessonsRepository>();
 
-builder.Services.AddTransient<LessonsService>();
+builder.Services.AddTransient<ILessonsService, LessonsService>();
 
 var app = builder.Build();
 

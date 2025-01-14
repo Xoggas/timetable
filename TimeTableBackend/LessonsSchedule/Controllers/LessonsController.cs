@@ -10,10 +10,10 @@ namespace TimeTableBackend.LessonsSchedule.Controllers;
 [Route("api/lessons")]
 public class LessonsController : ControllerBase
 {
-    private readonly LessonsService _lessonsService;
+    private readonly ILessonsService _lessonsService;
     private readonly IMapper _mapper;
 
-    public LessonsController(LessonsService lessonsService, IMapper mapper)
+    public LessonsController(ILessonsService lessonsService, IMapper mapper)
     {
         _lessonsService = lessonsService;
         _mapper = mapper;
@@ -28,9 +28,9 @@ public class LessonsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<LessonDto>> Post(CreateLessonDto lesson)
+    public async Task<ActionResult<LessonDto>> Post(CreateLessonDto dto)
     {
-        var lessonEntity = _mapper.Map<Lesson>(lesson);
+        var lessonEntity = _mapper.Map<Lesson>(dto);
 
         await _lessonsService.CreateAsync(lessonEntity);
 
@@ -40,7 +40,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Put(int id, UpdateLessonDto lesson)
+    public async Task<ActionResult> Put(int id, UpdateLessonDto dto)
     {
         var lessonEntity = await _lessonsService.GetByIdAsync(id);
 
@@ -49,7 +49,7 @@ public class LessonsController : ControllerBase
             return NotFound();
         }
 
-        _mapper.Map(lesson, lessonEntity);
+        _mapper.Map(dto, lessonEntity);
 
         await _lessonsService.SaveChangesAsync();
 
