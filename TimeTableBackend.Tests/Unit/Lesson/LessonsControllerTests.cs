@@ -88,11 +88,11 @@ public sealed class LessonsControllerTests
     [Fact]
     public async Task Put_WhenIdIsIncorrect_ShouldReturnNotFound()
     {
-        var id = _fixture.Create<int>();
+        var id = _fixture.Create<string>();
         var updateLessonDto = _fixture.Create<UpdateLessonDto>();
 
         _lessonsServiceMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+            .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(default(Lesson));
 
         var response = await _controller.Put(id, updateLessonDto);
@@ -103,7 +103,7 @@ public sealed class LessonsControllerTests
     [Fact]
     public async Task Put_WhenIdIsCorrect_ShouldReturnUpdatedLesson()
     {
-        var id = _fixture.Create<int>();
+        var id = _fixture.Create<string>();
         var updateLessonDto = _fixture.Create<UpdateLessonDto>();
 
         var lessonEntity = _fixture
@@ -112,7 +112,7 @@ public sealed class LessonsControllerTests
             .Create();
 
         _lessonsServiceMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+            .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(lessonEntity);
 
         _mapperMock
@@ -131,10 +131,10 @@ public sealed class LessonsControllerTests
     [Fact]
     public async Task Delete_WhenIdIsIncorrect_ShouldReturnNotFound()
     {
-        var id = _fixture.Create<int>();
+        var id = _fixture.Create<string>();
 
         _lessonsServiceMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+            .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(default(Lesson));
 
         var result = await _controller.Delete(id);
@@ -145,11 +145,11 @@ public sealed class LessonsControllerTests
     [Fact]
     public async Task Delete_WhenIdIsCorrect_ShouldReturnNoContent()
     {
-        var id = _fixture.Create<int>();
+        var id = _fixture.Create<string>();
         var lessonEntity = _fixture.Create<Lesson>();
 
         _lessonsServiceMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+            .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(lessonEntity);
 
         var result = await _controller.Delete(id);

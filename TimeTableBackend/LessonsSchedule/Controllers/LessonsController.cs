@@ -7,7 +7,7 @@ using TimeTableBackend.LessonsSchedule.Services;
 namespace TimeTableBackend.LessonsSchedule.Controllers;
 
 [ApiController]
-[Route("api/lessons")]
+[Route("api/lesson")]
 public class LessonsController : ControllerBase
 {
     private readonly ILessonsService _lessonsService;
@@ -40,7 +40,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Put(int id, UpdateLessonDto dto)
+    public async Task<ActionResult> Put(string id, UpdateLessonDto dto)
     {
         var lessonEntity = await _lessonsService.GetByIdAsync(id);
 
@@ -51,13 +51,13 @@ public class LessonsController : ControllerBase
 
         _mapper.Map(dto, lessonEntity);
 
-        await _lessonsService.SaveChangesAsync();
+        await _lessonsService.UpdateAsync(lessonEntity);
 
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<ActionResult> Delete(string id)
     {
         var lessonEntity = await _lessonsService.GetByIdAsync(id);
 

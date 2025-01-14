@@ -1,8 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-using TimeTableBackend.LessonsSchedule.Data;
 using TimeTableBackend.LessonsSchedule.Hubs;
 using TimeTableBackend.LessonsSchedule.Repositories;
 using TimeTableBackend.LessonsSchedule.Services;
+using TimeTableBackend.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,11 +21,11 @@ builder.Services.AddTransient<ILessonsRepository, LessonsRepository>();
 
 builder.Services.AddTransient<ILessonsService, LessonsService>();
 
-builder.Services.AddDbContext<LessonsScheduleDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration
-        .GetConnectionString("DbConnectionString"));
-});
+builder.Services.AddTransient<ILessonTablesService, LessonTablesService>();
+
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
+
+builder.Services.AddTransient<MongoDbService>();
 
 var app = builder.Build();
 

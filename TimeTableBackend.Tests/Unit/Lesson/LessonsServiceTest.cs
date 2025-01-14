@@ -38,14 +38,14 @@ public sealed class LessonsServiceTest
     [Fact]
     public async Task GetByIdAsync_WhenLessonExists_ShouldNotReturnNull()
     {
-        var id = _fixture.Create<int>();
+        var id = _fixture.Create<string>();
         var lesson = _fixture
             .Build<Lesson>()
             .With(x => x.Id, id)
             .Create();
 
         _lessonsRepositoryMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+            .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(lesson);
 
         var result = await _lessonsService.GetByIdAsync(id);
@@ -56,10 +56,10 @@ public sealed class LessonsServiceTest
     [Fact]
     public async Task GetByIdAsync_WhenLessonDoesntExist_ShouldReturnNull()
     {
-        var id = _fixture.Create<int>();
+        var id = _fixture.Create<string>();
 
         _lessonsRepositoryMock
-            .Setup(x => x.GetByIdAsync(It.IsAny<int>()))
+            .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(default(Lesson));
 
         var result = await _lessonsService.GetByIdAsync(id);
@@ -87,16 +87,6 @@ public sealed class LessonsServiceTest
         await _lessonsService.DeleteAsync(lesson);
 
         _lessonsRepositoryMock.Verify(x => x.DeleteAsync(lesson));
-
-        _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate());
-    }
-    
-    [Fact]
-    public async Task SaveChangesAsync_ShouldCallRepositoryAndEventService()
-    {
-        await _lessonsService.SaveChangesAsync();
-
-        _lessonsRepositoryMock.Verify(x => x.SaveChangesAsync());
 
         _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate());
     }

@@ -6,10 +6,10 @@ namespace TimeTableBackend.LessonsSchedule.Services;
 public interface ILessonsService
 {
     Task<IEnumerable<Lesson>> GetAllAsync();
-    Task<Lesson?> GetByIdAsync(int id);
+    Task<Lesson?> GetByIdAsync(string id);
     Task CreateAsync(Lesson lesson);
+    Task UpdateAsync(Lesson lesson);
     Task DeleteAsync(Lesson lesson);
-    Task SaveChangesAsync();
 }
 
 public sealed class LessonsService : ILessonsService
@@ -28,7 +28,7 @@ public sealed class LessonsService : ILessonsService
         return await _repository.GetAllAsync();
     }
 
-    public async Task<Lesson?> GetByIdAsync(int id)
+    public async Task<Lesson?> GetByIdAsync(string id)
     {
         return await _repository.GetByIdAsync(id);
     }
@@ -39,15 +39,15 @@ public sealed class LessonsService : ILessonsService
         await _eventService.NotifyAllClientsAboutUpdate();
     }
 
-    public async Task DeleteAsync(Lesson lesson)
+    public async Task UpdateAsync(Lesson lesson)
     {
-        await _repository.DeleteAsync(lesson);
+        await _repository.UpdateAsync(lesson);
         await _eventService.NotifyAllClientsAboutUpdate();
     }
 
-    public async Task SaveChangesAsync()
+    public async Task DeleteAsync(Lesson lesson)
     {
-        await _repository.SaveChangesAsync();
+        await _repository.DeleteAsync(lesson);
         await _eventService.NotifyAllClientsAboutUpdate();
     }
 }
