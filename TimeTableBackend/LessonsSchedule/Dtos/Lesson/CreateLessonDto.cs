@@ -5,6 +5,6 @@ namespace TimeTableBackend.LessonsSchedule.Dtos;
 public sealed class CreateLessonDto
 {
     [Required]
-    [MaxLength(50)]
+    [MaxLength(40)]
     public string Name { get; set; } = string.Empty;
 }
