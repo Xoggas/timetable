@@ -23,10 +23,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddTransient<IEventService, EventService>();
 builder.Services.AddTransient<ILessonsRepository, LessonsRepository>();
-builder.Services.AddTransient<ILessonsService, LessonsService>();
+builder.Services.AddTransient<ILessonsService, LessonService>();
 builder.Services.AddTransient<ILessonTablesRepository, LessonTablesRepository>();
 builder.Services.AddTransient<ILessonTablesBackupRepository, LessonTablesBackupRepository>();
-builder.Services.AddTransient<ILessonTablesService, LessonTablesService>();
+builder.Services.AddTransient<ILessonTableService, LessonTableService>();
 builder.Services.AddTransient<MongoDbService>();
 
 var app = builder.Build();

@@ -7,21 +7,21 @@ using DayOfWeek = TimeTableBackend.LessonsSchedule.Common.DayOfWeek;
 
 namespace TimeTableBackend.Tests.Unit;
 
-public sealed class LessonTablesServiceTests
+public sealed class LessonTableServiceTests
 {
     private readonly Mock<ILessonTablesRepository> _lessonTablesRepositoryMock;
     private readonly Mock<ILessonTablesBackupRepository> _lessonTablesBackupRepositoryMock;
     private readonly Mock<IEventService> _eventServiceMock;
     private readonly Fixture _fixture;
-    private readonly LessonTablesService _lessonTablesService;
+    private readonly LessonTableService _lessonTableService;
 
-    public LessonTablesServiceTests()
+    public LessonTableServiceTests()
     {
         _lessonTablesRepositoryMock = new Mock<ILessonTablesRepository>();
         _lessonTablesBackupRepositoryMock = new Mock<ILessonTablesBackupRepository>();
         _eventServiceMock = new Mock<IEventService>();
         _fixture = new Fixture();
-        _lessonTablesService = new LessonTablesService(_lessonTablesRepositoryMock.Object,
+        _lessonTableService = new LessonTableService(_lessonTablesRepositoryMock.Object,
             _lessonTablesBackupRepositoryMock.Object, _eventServiceMock.Object);
     }
 
@@ -35,7 +35,7 @@ public sealed class LessonTablesServiceTests
             .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(lessonTable);
 
-        var result = await _lessonTablesService.GetLessonTableByDayOfWeekAsync(dayOfWeek);
+        var result = await _lessonTableService.GetLessonTableByDayOfWeekAsync(dayOfWeek);
 
         Assert.Equal(lessonTable, result);
     }
@@ -45,7 +45,7 @@ public sealed class LessonTablesServiceTests
     {
         var lessonTableEntity = _fixture.Create<LessonTable>();
 
-        await _lessonTablesService.UpdateLessonTableAsync(lessonTableEntity);
+        await _lessonTableService.UpdateLessonTableAsync(lessonTableEntity);
 
         _lessonTablesRepositoryMock.Verify(x => x.UpdateAsync(It.Is<LessonTable>(y => y == lessonTableEntity)));
 
@@ -62,7 +62,7 @@ public sealed class LessonTablesServiceTests
             .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(lessonTableEntityToBackup);
 
-        await _lessonTablesService.MakeLessonTableBackupAsync(dayOfWeek);
+        await _lessonTableService.MakeLessonTableBackupAsync(dayOfWeek);
 
         _lessonTablesBackupRepositoryMock.Verify(x =>
             x.CreateAsync(It.Is<LessonTable>(y => y.Equals(lessonTableEntityToBackup))));
@@ -77,7 +77,7 @@ public sealed class LessonTablesServiceTests
             .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(default(LessonTable));
 
-        var result = await _lessonTablesService.RestoreLessonTableFromBackupAsync(dayOfWeek);
+        var result = await _lessonTableService.RestoreLessonTableFromBackupAsync(dayOfWeek);
 
         Assert.Null(result);
     }
@@ -92,7 +92,7 @@ public sealed class LessonTablesServiceTests
             .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(lessonTableEntityBackup);
 
-        var result = await _lessonTablesService.RestoreLessonTableFromBackupAsync(dayOfWeek);
+        var result = await _lessonTableService.RestoreLessonTableFromBackupAsync(dayOfWeek);
 
         _lessonTablesRepositoryMock.Verify(x => x.UpdateAsync(It.Is<LessonTable>(y => y == lessonTableEntityBackup)));
 

@@ -9,18 +9,18 @@ using TimeTableBackend.LessonsSchedule.Services;
 
 namespace TimeTableBackend.Tests.Unit;
 
-public sealed class LessonsControllerTests
+public sealed class LessonControllerTests
 {
     private readonly Mock<ILessonsService> _lessonsServiceMock;
     private readonly Mock<IMapper> _mapperMock;
-    private readonly LessonsController _controller;
+    private readonly LessonController _controller;
     private readonly Fixture _fixture;
 
-    public LessonsControllerTests()
+    public LessonControllerTests()
     {
         _lessonsServiceMock = new Mock<ILessonsService>();
         _mapperMock = new Mock<IMapper>();
-        _controller = new LessonsController(_lessonsServiceMock.Object, _mapperMock.Object);
+        _controller = new LessonController(_lessonsServiceMock.Object, _mapperMock.Object);
         _fixture = new Fixture();
     }
 

@@ -4,7 +4,7 @@ using DayOfWeek = TimeTableBackend.LessonsSchedule.Common.DayOfWeek;
 
 namespace TimeTableBackend.LessonsSchedule.Services;
 
-public interface ILessonTablesService
+public interface ILessonTableService
 {
     Task<LessonTable> GetLessonTableByDayOfWeekAsync(DayOfWeek dayOfWeek);
     Task UpdateLessonTableAsync(LessonTable lessonTable);
@@ -12,13 +12,13 @@ public interface ILessonTablesService
     Task<LessonTable?> RestoreLessonTableFromBackupAsync(DayOfWeek dayOfWeek);
 }
 
-public sealed class LessonTablesService : ILessonTablesService
+public sealed class LessonTableService : ILessonTableService
 {
     private readonly ILessonTablesRepository _lessonTablesRepository;
     private readonly ILessonTablesBackupRepository _lessonTablesBackupRepository;
     private readonly IEventService _eventService;
 
-    public LessonTablesService(ILessonTablesRepository lessonTablesRepository,
+    public LessonTableService(ILessonTablesRepository lessonTablesRepository,
         ILessonTablesBackupRepository lessonTablesBackupRepository, IEventService eventService)
     {
         _lessonTablesRepository = lessonTablesRepository;

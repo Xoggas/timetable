@@ -10,19 +10,19 @@ using DayOfWeek = TimeTableBackend.LessonsSchedule.Common.DayOfWeek;
 
 namespace TimeTableBackend.Tests.Unit;
 
-public sealed class LessonTablesControllerTests
+public sealed class LessonTableControllerTests
 {
-    private readonly Mock<ILessonTablesService> _lessonTablesServiceMock;
+    private readonly Mock<ILessonTableService> _lessonTablesServiceMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly Fixture _fixture;
-    private readonly LessonTablesController _controller;
+    private readonly LessonTableController _controller;
 
-    public LessonTablesControllerTests()
+    public LessonTableControllerTests()
     {
-        _lessonTablesServiceMock = new Mock<ILessonTablesService>();
+        _lessonTablesServiceMock = new Mock<ILessonTableService>();
         _mapperMock = new Mock<IMapper>();
         _fixture = new Fixture();
-        _controller = new LessonTablesController(_lessonTablesServiceMock.Object, _mapperMock.Object);
+        _controller = new LessonTableController(_lessonTablesServiceMock.Object, _mapperMock.Object);
     }
 
     [Fact]

@@ -6,19 +6,19 @@ using TimeTableBackend.LessonsSchedule.Services;
 
 namespace TimeTableBackend.Tests.Unit;
 
-public sealed class LessonsServiceTest
+public sealed class LessonServiceTest
 {
     private readonly Mock<ILessonsRepository> _lessonsRepositoryMock;
     private readonly Mock<IEventService> _eventServiceMock;
     private readonly Fixture _fixture;
-    private readonly LessonsService _lessonsService;
+    private readonly LessonService _lessonService;
 
-    public LessonsServiceTest()
+    public LessonServiceTest()
     {
         _lessonsRepositoryMock = new Mock<ILessonsRepository>();
         _eventServiceMock = new Mock<IEventService>();
         _fixture = new Fixture();
-        _lessonsService = new LessonsService(_lessonsRepositoryMock.Object, _eventServiceMock.Object);
+        _lessonService = new LessonService(_lessonsRepositoryMock.Object, _eventServiceMock.Object);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public sealed class LessonsServiceTest
             .Setup(x => x.GetAllAsync())
             .ReturnsAsync(lessons);
 
-        var result = await _lessonsService.GetAllAsync();
+        var result = await _lessonService.GetAllAsync();
 
         Assert.Equal(lessons, result);
     }
@@ -48,7 +48,7 @@ public sealed class LessonsServiceTest
             .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(lesson);
 
-        var result = await _lessonsService.GetByIdAsync(id);
+        var result = await _lessonService.GetByIdAsync(id);
 
         Assert.Equal(lesson, result);
     }
@@ -62,7 +62,7 @@ public sealed class LessonsServiceTest
             .Setup(x => x.GetByIdAsync(It.IsAny<string>()))
             .ReturnsAsync(default(Lesson));
 
-        var result = await _lessonsService.GetByIdAsync(id);
+        var result = await _lessonService.GetByIdAsync(id);
 
         Assert.Null(result);
     }
@@ -72,7 +72,7 @@ public sealed class LessonsServiceTest
     {
         var lesson = _fixture.Create<Lesson>();
 
-        await _lessonsService.CreateAsync(lesson);
+        await _lessonService.CreateAsync(lesson);
 
         _lessonsRepositoryMock.Verify(x => x.CreateAsync(lesson));
 
@@ -84,7 +84,7 @@ public sealed class LessonsServiceTest
     {
         var lesson = _fixture.Create<Lesson>();
 
-        await _lessonsService.DeleteAsync(lesson);
+        await _lessonService.DeleteAsync(lesson);
 
         _lessonsRepositoryMock.Verify(x => x.DeleteAsync(lesson));
 

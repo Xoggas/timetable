@@ -12,12 +12,12 @@ public interface ILessonsService
     Task DeleteAsync(Lesson lesson);
 }
 
-public sealed class LessonsService : ILessonsService
+public sealed class LessonService : ILessonsService
 {
     private readonly ILessonsRepository _repository;
     private readonly IEventService _eventService;
 
-    public LessonsService(ILessonsRepository repository, IEventService eventService)
+    public LessonService(ILessonsRepository repository, IEventService eventService)
     {
         _repository = repository;
         _eventService = eventService;

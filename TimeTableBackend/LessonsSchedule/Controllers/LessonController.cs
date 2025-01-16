@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TimeTableBackend.LessonsSchedule.Dtos;
 using TimeTableBackend.LessonsSchedule.Entities;
@@ -8,21 +9,23 @@ namespace TimeTableBackend.LessonsSchedule.Controllers;
 
 [ApiController]
 [Route("api/lesson")]
-public class LessonsController : ControllerBase
+[DisplayName("Lesson Controller")]
+public class LessonController : ControllerBase
 {
     private readonly ILessonsService _lessonsService;
     private readonly IMapper _mapper;
 
-    public LessonsController(ILessonsService lessonsService, IMapper mapper)
+    public LessonController(ILessonsService lessonsService, IMapper mapper)
     {
         _lessonsService = lessonsService;
         _mapper = mapper;
     }
 
     /// <summary>
-    /// Gets all lessons.
+    /// Retrieves all lessons.
     /// </summary>
-    /// <returns>A collection of lessons.</returns>
+    /// <returns>A list of lessons.</returns>
+    /// <response code="200">Returns the list of lessons.</response>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LessonDto>>> Get()
     {
@@ -34,8 +37,9 @@ public class LessonsController : ControllerBase
     /// <summary>
     /// Creates a new lesson.
     /// </summary>
-    /// <param name="dto">A DTO for creation of a new lesson.</param>
-    /// <returns>A newly created lesson.</returns>
+    /// <param name="dto">The data for the lesson to create.</param>
+    /// <returns>The created lesson.</returns>
+    /// <response code="200">Returns the created lesson.</response>
     [HttpPost]
     public async Task<ActionResult<LessonDto>> Post(CreateLessonDto dto)
     {
@@ -49,13 +53,12 @@ public class LessonsController : ControllerBase
     }
 
     /// <summary>
-    /// Updates an existing lesson.
+    /// Updates an existing lesson by ID.
     /// </summary>
-    /// <param name="id">The id of an existing lesson.</param>
-    /// <param name="dto">The DTO that contains updated data.</param>
-    /// <returns></returns>
-    /// <response code="204">If the lesson was updated.</response>
-    /// <response code="404">If the lesson ID was incorrect or validation errors were present.</response>
+    /// <param name="id">The ID of the lesson to update.</param>
+    /// <param name="dto">The updated lesson data.</param>
+    /// <response code="204">The lesson was successfully updated.</response>
+    /// <response code="404">Lesson not found.</response>
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(string id, UpdateLessonDto dto)
     {
@@ -74,12 +77,11 @@ public class LessonsController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes a lesson.
+    /// Deletes a lesson by ID.
     /// </summary>
     /// <param name="id">The ID of the lesson to delete.</param>
-    /// <returns></returns>
-    /// <response code="204">If the lesson was deleted.</response>
-    /// <response code="404">If the ID was incorrect.</response>
+    /// <response code="204">The lesson was successfully deleted.</response>
+    /// <response code="404">Lesson not found.</response>
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
