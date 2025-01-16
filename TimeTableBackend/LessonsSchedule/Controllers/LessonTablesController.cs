@@ -23,7 +23,7 @@ public class LessonTablesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<LessonTableDto>> Get(DayOfWeek dayOfWeek)
     {
-        var lessonTableEntity = await _lessonTablesService.GetLessonTableByDayOfWeek(dayOfWeek);
+        var lessonTableEntity = await _lessonTablesService.GetLessonTableByDayOfWeekAsync(dayOfWeek);
 
         return Ok(_mapper.Map<LessonTableDto>(lessonTableEntity));
     }
@@ -35,7 +35,7 @@ public class LessonTablesController : ControllerBase
         
         lessonTableEntity.DayOfWeek = dayOfWeek;
         
-        await _lessonTablesService.UpdateLessonTable(lessonTableEntity);
+        await _lessonTablesService.UpdateLessonTableAsync(lessonTableEntity);
 
         return NoContent();
     }
@@ -43,7 +43,7 @@ public class LessonTablesController : ControllerBase
     [HttpPost("backup")]
     public async Task<ActionResult> Post_MakeBackup(DayOfWeek dayOfWeek)
     {
-        await _lessonTablesService.MakeLessonTableBackup(dayOfWeek);
+        await _lessonTablesService.MakeLessonTableBackupAsync(dayOfWeek);
 
         return NoContent();
     }
@@ -51,7 +51,7 @@ public class LessonTablesController : ControllerBase
     [HttpPost("restore")]
     public async Task<ActionResult<LessonTableDto>> Post_RestoreBackup(DayOfWeek dayOfWeek)
     {
-        var backup = await _lessonTablesService.RestoreLessonTableFromBackup(dayOfWeek);
+        var backup = await _lessonTablesService.RestoreLessonTableFromBackupAsync(dayOfWeek);
 
         if (backup is null)
         {

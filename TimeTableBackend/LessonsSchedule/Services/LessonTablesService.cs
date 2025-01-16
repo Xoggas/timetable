@@ -6,10 +6,10 @@ namespace TimeTableBackend.LessonsSchedule.Services;
 
 public interface ILessonTablesService
 {
-    Task<LessonTable> GetLessonTableByDayOfWeek(DayOfWeek dayOfWeek);
-    Task UpdateLessonTable(LessonTable lessonTable);
-    Task MakeLessonTableBackup(DayOfWeek dayOfWeek);
-    Task<LessonTable?> RestoreLessonTableFromBackup(DayOfWeek dayOfWeek);
+    Task<LessonTable> GetLessonTableByDayOfWeekAsync(DayOfWeek dayOfWeek);
+    Task UpdateLessonTableAsync(LessonTable lessonTable);
+    Task MakeLessonTableBackupAsync(DayOfWeek dayOfWeek);
+    Task<LessonTable?> RestoreLessonTableFromBackupAsync(DayOfWeek dayOfWeek);
 }
 
 public sealed class LessonTablesService : ILessonTablesService
@@ -26,25 +26,25 @@ public sealed class LessonTablesService : ILessonTablesService
         _lessonTablesBackupRepository = lessonTablesBackupRepository;
     }
 
-    public async Task<LessonTable> GetLessonTableByDayOfWeek(DayOfWeek dayOfWeek)
+    public async Task<LessonTable> GetLessonTableByDayOfWeekAsync(DayOfWeek dayOfWeek)
     {
         return await _lessonTablesRepository.GetByDayOfWeekAsync(dayOfWeek);
     }
 
-    public async Task UpdateLessonTable(LessonTable lessonTable)
+    public async Task UpdateLessonTableAsync(LessonTable lessonTable)
     {
         await _lessonTablesRepository.UpdateAsync(lessonTable);
         await _eventService.NotifyAllClientsAboutUpdate();
     }
 
-    public async Task MakeLessonTableBackup(DayOfWeek dayOfWeek)
+    public async Task MakeLessonTableBackupAsync(DayOfWeek dayOfWeek)
     {
         var lessonTableToBackup = await _lessonTablesRepository.GetByDayOfWeekAsync(dayOfWeek);
         
         await _lessonTablesBackupRepository.CreateAsync(lessonTableToBackup);
     }
 
-    public async Task<LessonTable?> RestoreLessonTableFromBackup(DayOfWeek dayOfWeek)
+    public async Task<LessonTable?> RestoreLessonTableFromBackupAsync(DayOfWeek dayOfWeek)
     {
         var backup = await _lessonTablesBackupRepository.GetByDayOfWeekAsync(dayOfWeek);
 
@@ -53,7 +53,7 @@ public sealed class LessonTablesService : ILessonTablesService
             return null;
         }
         
-        await UpdateLessonTable(backup);
+        await UpdateLessonTableAsync(backup);
         
         return backup;
     }

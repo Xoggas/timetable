@@ -37,7 +37,7 @@ public sealed class LessonTablesControllerTests
             .Create();
 
         _lessonTablesServiceMock
-            .Setup(x => x.GetLessonTableByDayOfWeek(It.IsAny<DayOfWeek>()))
+            .Setup(x => x.GetLessonTableByDayOfWeekAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(lessonTableEntity);
 
         _mapperMock
@@ -79,7 +79,7 @@ public sealed class LessonTablesControllerTests
 
         Assert.Equal(updateLessonTableDto.Lessons, lessonTableEntity.Lessons);
 
-        _lessonTablesServiceMock.Verify(x => x.UpdateLessonTable(It.Is<LessonTable>(y => y.Equals(lessonTableEntity))));
+        _lessonTablesServiceMock.Verify(x => x.UpdateLessonTableAsync(It.Is<LessonTable>(y => y.Equals(lessonTableEntity))));
 
         Assert.IsType<NoContentResult>(response);
     }
@@ -91,7 +91,7 @@ public sealed class LessonTablesControllerTests
 
         var response = await _controller.Post_MakeBackup(dayOfWeek);
 
-        _lessonTablesServiceMock.Verify(x => x.MakeLessonTableBackup(It.Is<DayOfWeek>(y => y == dayOfWeek)));
+        _lessonTablesServiceMock.Verify(x => x.MakeLessonTableBackupAsync(It.Is<DayOfWeek>(y => y == dayOfWeek)));
 
         Assert.IsType<NoContentResult>(response);
     }
@@ -102,7 +102,7 @@ public sealed class LessonTablesControllerTests
         var dayOfWeek = _fixture.Create<DayOfWeek>();
 
         _lessonTablesServiceMock
-            .Setup(x => x.RestoreLessonTableFromBackup(It.IsAny<DayOfWeek>()))
+            .Setup(x => x.RestoreLessonTableFromBackupAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(default(LessonTable));
 
         var response = await _controller.Post_RestoreBackup(dayOfWeek);
@@ -121,7 +121,7 @@ public sealed class LessonTablesControllerTests
             .Create();
 
         _lessonTablesServiceMock
-            .Setup(x => x.RestoreLessonTableFromBackup(It.IsAny<DayOfWeek>()))
+            .Setup(x => x.RestoreLessonTableFromBackupAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(lessonTableEntity);
 
         _mapperMock
