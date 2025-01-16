@@ -30,7 +30,14 @@ public sealed class LessonsService : ILessonsService
 
     public async Task<Lesson?> GetByIdAsync(string id)
     {
-        return await _repository.GetByIdAsync(id);
+        try
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public async Task CreateAsync(Lesson lesson)
