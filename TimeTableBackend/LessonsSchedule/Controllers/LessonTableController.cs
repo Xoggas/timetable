@@ -11,6 +11,7 @@ namespace TimeTableBackend.LessonsSchedule.Controllers;
 [ApiController]
 [Route("api/lesson-table/{dayOfWeek}")]
 [DisplayName("Lesson Table Controller")]
+[Produces("application/json")]
 public class LessonTableController : ControllerBase
 {
     private readonly ILessonTableService _lessonTableService;
@@ -29,6 +30,7 @@ public class LessonTableController : ControllerBase
     /// <returns>The lesson table for the specified day.</returns>
     /// <response code="200">Returns the lesson table for the given day.</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<LessonTableDto>> Get(DayOfWeek dayOfWeek)
     {
         var lessonTableEntity = await _lessonTableService.GetLessonTableByDayOfWeekAsync(dayOfWeek);
@@ -43,6 +45,7 @@ public class LessonTableController : ControllerBase
     /// <param name="dto">The updated lesson table data.</param>
     /// <response code="204">The lesson table was successfully updated.</response>
     [HttpPut]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Put(DayOfWeek dayOfWeek, UpdateLessonTableDto dto)
     {
         var lessonTableEntity = _mapper.Map<LessonTable>(dto);
@@ -60,6 +63,7 @@ public class LessonTableController : ControllerBase
     /// <param name="dayOfWeek">The day of the week to create a backup for.</param>
     /// <response code="204">Backup was successfully created.</response>
     [HttpPost("backup")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Post_MakeBackup(DayOfWeek dayOfWeek)
     {
         await _lessonTableService.MakeLessonTableBackupAsync(dayOfWeek);
@@ -75,6 +79,8 @@ public class LessonTableController : ControllerBase
     /// <response code="200">Returns the restored lesson table.</response>
     /// <response code="404">No backup found for the specified day.</response>
     [HttpPost("restore")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LessonTableDto>> Post_RestoreBackup(DayOfWeek dayOfWeek)
     {
         var backup = await _lessonTableService.RestoreLessonTableFromBackupAsync(dayOfWeek);

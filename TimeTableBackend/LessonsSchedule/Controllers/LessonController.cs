@@ -10,6 +10,7 @@ namespace TimeTableBackend.LessonsSchedule.Controllers;
 [ApiController]
 [Route("api/lesson")]
 [DisplayName("Lesson Controller")]
+[Produces("application/json")]
 public class LessonController : ControllerBase
 {
     private readonly ILessonsService _lessonsService;
@@ -27,6 +28,7 @@ public class LessonController : ControllerBase
     /// <returns>A list of lessons.</returns>
     /// <response code="200">Returns the list of lessons.</response>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<LessonDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<LessonDto>>> Get()
     {
         var lessons = await _lessonsService.GetAllAsync();
@@ -41,6 +43,7 @@ public class LessonController : ControllerBase
     /// <returns>The created lesson.</returns>
     /// <response code="200">Returns the created lesson.</response>
     [HttpPost]
+    [ProducesResponseType(typeof(LessonDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<LessonDto>> Post(CreateLessonDto dto)
     {
         var lessonEntity = _mapper.Map<Lesson>(dto);
@@ -60,6 +63,8 @@ public class LessonController : ControllerBase
     /// <response code="204">The lesson was successfully updated.</response>
     /// <response code="404">Lesson not found.</response>
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Put(string id, UpdateLessonDto dto)
     {
         var lessonEntity = await _lessonsService.GetByIdAsync(id);
@@ -83,6 +88,8 @@ public class LessonController : ControllerBase
     /// <response code="204">The lesson was successfully deleted.</response>
     /// <response code="404">Lesson not found.</response>
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(string id)
     {
         var lessonEntity = await _lessonsService.GetByIdAsync(id);
