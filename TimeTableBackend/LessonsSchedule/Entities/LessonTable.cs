@@ -8,7 +8,7 @@ public sealed class LessonTable
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    public string Id { get; init; } = string.Empty;
 
     [BsonElement("dayOfWeek")]
     public DayOfWeek DayOfWeek { get; set; }
