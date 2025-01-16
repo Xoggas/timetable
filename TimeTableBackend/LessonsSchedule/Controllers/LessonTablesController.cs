@@ -31,14 +31,33 @@ public class LessonTablesController : ControllerBase
     [HttpPut]
     public async Task<ActionResult> Put(DayOfWeek dayOfWeek, UpdateLessonTableDto dto)
     {
-        var lessonTableEntity = new LessonTable
-        {
-            DayOfWeek = dayOfWeek,
-            Lessons = dto.Lessons
-        };
+        var lessonTableEntity = _mapper.Map<LessonTable>(dto);
+        
+        lessonTableEntity.DayOfWeek = dayOfWeek;
         
         await _lessonTablesService.UpdateLessonTable(lessonTableEntity);
 
         return NoContent();
+    }
+
+    [HttpPost("backup")]
+    public async Task<ActionResult> Post_MakeBackup(DayOfWeek dayOfWeek)
+    {
+        await _lessonTablesService.MakeLessonTableBackup(dayOfWeek);
+
+        return NoContent();
+    }
+    
+    [HttpPost("restore")]
+    public async Task<ActionResult<LessonTableDto>> Post_RestoreBackup(DayOfWeek dayOfWeek)
+    {
+        var backup = await _lessonTablesService.RestoreLessonTableFromBackup(dayOfWeek);
+
+        if (backup is null)
+        {
+            return NotFound($"No backup for {dayOfWeek:G}");
+        }
+
+        return Ok(_mapper.Map<LessonTableDto>(backup));
     }
 }

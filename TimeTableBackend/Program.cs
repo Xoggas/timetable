@@ -21,6 +21,10 @@ builder.Services.AddTransient<ILessonsRepository, LessonsRepository>();
 
 builder.Services.AddTransient<ILessonsService, LessonsService>();
 
+builder.Services.AddTransient<ILessonTablesRepository, LessonTablesRepository>();
+
+builder.Services.AddTransient<ILessonTablesBackupRepository, LessonTablesBackupRepository>();
+
 builder.Services.AddTransient<ILessonTablesService, LessonTablesService>();
 
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));

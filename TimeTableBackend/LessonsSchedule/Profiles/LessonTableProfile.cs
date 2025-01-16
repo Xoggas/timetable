@@ -9,5 +9,6 @@ public class LessonTableProfile : Profile
     public LessonTableProfile()
     {
         CreateMap<LessonTable, LessonTableDto>();
+        CreateMap<UpdateLessonTableDto, LessonTable>();
     }
 }
