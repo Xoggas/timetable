@@ -6,19 +6,19 @@ Welcome to the **Time-Table Management System**! This project is designed to hel
 
 ## 🔧 Features
 
-### 🌐 Schedule Management Module
+### Schedule Management Module
 - 🔎 **Quick Access to Lessons**: View a list of all lessons for fast navigation.
 - 📅 **Weekly Schedule Table**: Organized table showing lessons for each day of the week.
 - 🔒 **Backup and Restore**: Create backups of the schedule table and restore it when needed.
 - 🕛 **Bell Timings Table**: Define the bell schedule to determine the current lesson based on time.
 - 🕺 **Lesson Highlighting**: Automatically highlight the current or next lesson for better visibility.
 
-### 🕘 Bell Management Module
+### Bell Management Module
 *(Details coming soon!)*
 
 ---
 
-## 🛍️ Technology Stack
+## Technology Stack
 
 This project is built with:
 - **ASP.NET Core Web API**: A powerful framework for building web APIs.
@@ -27,7 +27,7 @@ This project is built with:
 
 ---
 
-## 🛍️ License
+## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
