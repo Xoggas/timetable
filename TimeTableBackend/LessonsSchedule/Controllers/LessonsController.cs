@@ -19,6 +19,10 @@ public class LessonsController : ControllerBase
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Gets all lessons.
+    /// </summary>
+    /// <returns>A collection of lessons.</returns>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LessonDto>>> Get()
     {
@@ -27,6 +31,11 @@ public class LessonsController : ControllerBase
         return Ok(_mapper.Map<IEnumerable<LessonDto>>(lessons));
     }
 
+    /// <summary>
+    /// Creates a new lesson.
+    /// </summary>
+    /// <param name="dto">A DTO for creation of a new lesson.</param>
+    /// <returns>A newly created lesson.</returns>
     [HttpPost]
     public async Task<ActionResult<LessonDto>> Post(CreateLessonDto dto)
     {
@@ -39,6 +48,14 @@ public class LessonsController : ControllerBase
         return Ok(createdLesson);
     }
 
+    /// <summary>
+    /// Updates an existing lesson.
+    /// </summary>
+    /// <param name="id">The id of an existing lesson.</param>
+    /// <param name="dto">The DTO that contains updated data.</param>
+    /// <returns></returns>
+    /// <response code="204">If the lesson was updated.</response>
+    /// <response code="404">If the lesson ID was incorrect or validation errors were present.</response>
     [HttpPut("{id}")]
     public async Task<ActionResult> Put(string id, UpdateLessonDto dto)
     {
@@ -56,6 +73,13 @@ public class LessonsController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a lesson.
+    /// </summary>
+    /// <param name="id">The ID of the lesson to delete.</param>
+    /// <returns></returns>
+    /// <response code="204">If the lesson was deleted.</response>
+    /// <response code="404">If the ID was incorrect.</response>
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(string id)
     {
