@@ -1,7 +1,9 @@
-﻿namespace TimeTableBackend.LessonsSchedule.Dtos;
+﻿using TimeTableBackend.LessonsSchedule.Validation;
 
-// TODO: Add validation
+namespace TimeTableBackend.LessonsSchedule.Dtos;
+
 public sealed class UpdateLessonTableDto
 {
-    public string[][] Lessons { get; set; } = [];
+    [ValidateStringArray(50)]
+    public string[][] Lessons { get; init; } = [];
 }

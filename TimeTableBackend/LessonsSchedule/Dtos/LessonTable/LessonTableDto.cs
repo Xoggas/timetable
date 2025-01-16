@@ -3,5 +3,6 @@
 public class LessonTableDto
 {
     public DayOfWeek DayOfWeek { get; init; }
-    public string[][] Lessons { get; set; } = [];
+    
+    public string[][] Lessons { get; init; } = [];
 }
