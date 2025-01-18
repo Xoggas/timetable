@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using TimeTable.Api.LessonsSchedule.Dtos;
 using TimeTable.Api.LessonsSchedule.Entities;
 using TimeTable.Api.LessonsSchedule.Services;
-using Common_DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
 using DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
 
 namespace TimeTable.Api.LessonsSchedule.Controllers;
@@ -32,7 +31,7 @@ public class LessonTableController : ControllerBase
     /// <response code="200">Returns the lesson table for the given day.</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<LessonTableDto>> Get(Common_DayOfWeek dayOfWeek)
+    public async Task<ActionResult<LessonTableDto>> Get(DayOfWeek dayOfWeek)
     {
         var lessonTableEntity = await _lessonTableService.GetLessonTableByDayOfWeekAsync(dayOfWeek);
 
@@ -47,7 +46,7 @@ public class LessonTableController : ControllerBase
     /// <response code="204">The lesson table was successfully updated.</response>
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Put(Common_DayOfWeek dayOfWeek, UpdateLessonTableDto dto)
+    public async Task<ActionResult> Put(DayOfWeek dayOfWeek, UpdateLessonTableDto dto)
     {
         var lessonTableEntity = _mapper.Map<LessonTable>(dto);
 
@@ -65,7 +64,7 @@ public class LessonTableController : ControllerBase
     /// <response code="204">Backup was successfully created.</response>
     [HttpPost("backup")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult> Post_MakeBackup(Common_DayOfWeek dayOfWeek)
+    public async Task<ActionResult> Post_MakeBackup(DayOfWeek dayOfWeek)
     {
         await _lessonTableService.MakeLessonTableBackupAsync(dayOfWeek);
 
@@ -82,7 +81,7 @@ public class LessonTableController : ControllerBase
     [HttpPost("restore")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<LessonTableDto>> Post_RestoreBackup(Common_DayOfWeek dayOfWeek)
+    public async Task<ActionResult<LessonTableDto>> Post_RestoreBackup(DayOfWeek dayOfWeek)
     {
         var backup = await _lessonTableService.RestoreLessonTableFromBackupAsync(dayOfWeek);
 
