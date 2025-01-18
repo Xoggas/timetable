@@ -10,14 +10,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="AutoMapper" Version="13.0.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
-        <PackageReference Include="MongoDB.Driver" Version="3.1.0" />
+        <PackageReference Include="MongoDB.Driver" Version="3.1.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="BellsSchedule\" />
+        <Folder Include="BellsSchedule\"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="TimeTable.Api.Tests.Integration" />
     </ItemGroup>
 
 </Project>

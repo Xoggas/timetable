@@ -42,8 +42,10 @@ public class LessonController : ControllerBase
     /// <param name="dto">The data for the lesson to create.</param>
     /// <returns>The created lesson.</returns>
     /// <response code="200">Returns the created lesson.</response>
+    /// <response code="400">Validation error.</response>
     [HttpPost]
     [ProducesResponseType(typeof(LessonDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<LessonDto>> Post(CreateLessonDto dto)
     {
         var lessonEntity = _mapper.Map<Lesson>(dto);
@@ -61,9 +63,11 @@ public class LessonController : ControllerBase
     /// <param name="id">The ID of the lesson to update.</param>
     /// <param name="dto">The updated lesson data.</param>
     /// <response code="204">The lesson was successfully updated.</response>
+    /// <response code="400">Validation error.</response>
     /// <response code="404">Lesson not found.</response>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Put(string id, UpdateLessonDto dto)
     {

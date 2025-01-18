@@ -1,4 +1,5 @@
 using System.Reflection;
+using MongoDB.Driver;
 using TimeTable.Api.LessonsSchedule.Hubs;
 using TimeTable.Api.LessonsSchedule.Repositories;
 using TimeTable.Api.LessonsSchedule.Services;
@@ -20,17 +21,24 @@ builder.Services.AddControllers();
 builder.Services.AddSignalR();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddTransient<IEventService, EventService>();
+
 builder.Services.AddTransient<ILessonsRepository, LessonsRepository>();
 builder.Services.AddTransient<ILessonsService, LessonService>();
+
 builder.Services.AddTransient<ILessonTablesRepository, LessonTablesRepository>();
 builder.Services.AddTransient<ILessonTablesBackupRepository, LessonTablesBackupRepository>();
 builder.Services.AddTransient<ILessonTableService, LessonTableService>();
+
 builder.Services.AddTransient<MongoDbService>();
+builder.Services.AddTransient<IMongoDatabase>(_ =>
+{
+    var settings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
+    var client = new MongoClient(settings?.ConnectionString);
+    return client.GetDatabase(settings?.DatabaseName);
+});
 
 var app = builder.Build();
-app.UseHttpsRedirection();
 
 if (app.Environment.IsDevelopment())
 {
@@ -38,6 +46,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
 app.MapHub<EventHub>("lessons-schedule");
 app.MapControllers();
+
 app.Run();

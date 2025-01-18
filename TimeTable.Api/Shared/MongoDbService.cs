@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 
 namespace TimeTable.Api.Shared;
 
@@ -7,10 +6,9 @@ public sealed class MongoDbService
 {
     private readonly IMongoDatabase _database;
 
-    public MongoDbService(IOptions<MongoDbSettings> settings)
+    public MongoDbService(IMongoDatabase database)
     {
-        _database = new MongoClient(settings.Value.ConnectionString)
-            .GetDatabase(settings.Value.DatabaseName);
+        _database = database;
     }
 
     public IMongoCollection<T> GetCollection<T>(string name)
