@@ -18,15 +18,21 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
     [Fact]
     public async Task Get_ShouldReturnCollectionOfOneLesson()
     {
+        await CreateTempLesson();
+
         var response = await _client.GetAsync("api/lesson");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var content = await response.Content.ReadFromJsonAsync<IEnumerable<LessonDto>>();
 
-        const string expectedName = "test_lesson";
+        Assert.NotNull(content);
 
-        Assert.Equal(expectedName, content?.First().Name);
+        var lesson = content.First();
+
+        const string expectedName = "created_lesson";
+
+        Assert.Equal(expectedName, lesson.Name);
     }
 
     [Fact]
