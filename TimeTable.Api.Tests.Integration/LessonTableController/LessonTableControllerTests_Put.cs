@@ -10,6 +10,8 @@ namespace TimeTable.Api.Tests.Integration;
 
 public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixture>
 {
+    private const string VeryLongString = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
     private readonly HttpClient _client;
     private readonly ILessonTablesRepository _lessonTablesRepository;
 
@@ -17,8 +19,8 @@ public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixtur
     {
         var factory = new TimeTableWebApplicationFactory(dbFixture.Database);
 
-        _lessonTablesRepository = factory.Services.GetService<ILessonTablesRepository>()!;
-        
+        _lessonTablesRepository = factory.Services.GetRequiredService<ILessonTablesRepository>();
+
         _client = factory.CreateClient();
     }
 
@@ -42,8 +44,11 @@ public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixtur
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact]
-    public async Task Put_WhenDtoIsInvalid_ShouldReturnBadRequest()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(VeryLongString)]
+    public async Task Put_WhenDtoIsInvalid_ShouldReturnBadRequest(string lesson)
     {
         const DayOfWeek dayOfWeek = DayOfWeek.Tuesday;
 
@@ -52,8 +57,7 @@ public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixtur
             Lessons =
             [
                 [
-                    new string('a', 20),
-                    new string('a', 50)
+                    lesson
                 ]
             ]
         };
@@ -121,7 +125,7 @@ public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixtur
         Assert.Equal(dayOfWeek, lessonTable.DayOfWeek);
         Assert.Equal(expectedLessonsCollection, lessonTable.Lessons);
     }
-    
+
     private async Task<bool> TableExists(DayOfWeek dayOfWeek)
     {
         return await _lessonTablesRepository.GetAsync(dayOfWeek) is not null;

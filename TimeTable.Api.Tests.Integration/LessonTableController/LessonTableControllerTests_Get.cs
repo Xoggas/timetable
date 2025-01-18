@@ -17,7 +17,7 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
     {
         var factory = new TimeTableWebApplicationFactory(dbFixture.Database);
 
-        _lessonTablesRepository = factory.Services.GetService<ILessonTablesRepository>()!;
+        _lessonTablesRepository = factory.Services.GetRequiredService<ILessonTablesRepository>();
 
         _client = factory.CreateClient();
     }
@@ -45,16 +45,13 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
 
         Assert.False(await TableExists(dayOfWeek));
 
-        await GetAndCompareTables(dayOfWeek, expectedResult.Lessons);
-    }
-
-    private async Task GetAndCompareTables(DayOfWeek dayOfWeek, string[][] expectedLessonsCollection)
-    {
         var lessonTable = await _client.GetFromJsonAsync<LessonTableDto>($"api/lesson-table/{dayOfWeek}");
 
         Assert.NotNull(lessonTable);
-        Assert.Equal(dayOfWeek, lessonTable.DayOfWeek);
-        Assert.Equal(expectedLessonsCollection, lessonTable.Lessons);
+
+        Assert.Equal(expectedResult, lessonTable, (a, b) =>
+            a.DayOfWeek == b.DayOfWeek &&
+            a.Lessons.SequenceEqual(b.Lessons));
     }
 
     private async Task<bool> TableExists(DayOfWeek dayOfWeek)

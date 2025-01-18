@@ -19,9 +19,9 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
     {
         var factory = new TimeTableWebApplicationFactory(dbFixture.Database);
 
-        _lessonTablesRepository = factory.Services.GetService<ILessonTablesRepository>()!;
+        _lessonTablesRepository = factory.Services.GetRequiredService<ILessonTablesRepository>();
 
-        _lessonTablesBackupRepository = factory.Services.GetService<ILessonTablesBackupRepository>()!;
+        _lessonTablesBackupRepository = factory.Services.GetRequiredService<ILessonTablesBackupRepository>();
 
         _client = factory.CreateClient();
     }
@@ -93,7 +93,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
 
         Assert.Equal(dayOfWeek, createdBackup.DayOfWeek);
 
-        Assert.Equal(updateLessonTableDto.Lessons, createdBackup.Lessons);
+        Assert.True(updateLessonTableDto.Lessons.SequenceEqual(createdBackup.Lessons));
     }
 
     [Fact]
@@ -116,6 +116,8 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
         var response = await _client.PostAsync($"api/lesson-table/{dayOfWeek}/restore", null);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        
+        Assert.Null(await _lessonTablesBackupRepository.GetByDayOfWeekAsync(dayOfWeek));
     }
 
     [Fact]
@@ -156,19 +158,19 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
         await GetAndCompareTables(dayOfWeek, updateLessonTableDtoAfterBackup.Lessons);
-        
+
         response = await _client.PostAsync($"api/lesson-table/{dayOfWeek}/restore", null);
-        
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
+
         var restoredLessonTable = await response.Content.ReadFromJsonAsync<LessonTableDto>();
-        
+
         Assert.NotNull(restoredLessonTable);
-        
+
         Assert.Equal(dayOfWeek, restoredLessonTable.DayOfWeek);
-        
-        Assert.Equal(updateLessonTableDtoBeforeBackup.Lessons, restoredLessonTable.Lessons);
-        
+
+        Assert.True(updateLessonTableDtoBeforeBackup.Lessons.SequenceEqual(restoredLessonTable.Lessons));
+
         await GetAndCompareTables(dayOfWeek, updateLessonTableDtoBeforeBackup.Lessons);
     }
 
@@ -180,7 +182,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
 
         Assert.Equal(dayOfWeek, lessonTable.DayOfWeek);
 
-        Assert.Equal(expectedLessonsCollection, lessonTable.Lessons);
+        Assert.True(expectedLessonsCollection.SequenceEqual(lessonTable.Lessons));
     }
 
     private async Task<bool> TableExists(DayOfWeek dayOfWeek)
