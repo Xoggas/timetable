@@ -45,22 +45,9 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
     [Fact]
     public async Task Post_WhenNameIsValid_ShouldCreateLesson()
     {
-        var createLessonDto = new CreateLessonDto
-        {
-            Name = "created_lesson"
-        };
+        var createdLesson = await CreateTempLesson();
 
-        var response = await _client.PostAsJsonAsync("api/lesson", createLessonDto);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var createdLesson = await response.Content.ReadFromJsonAsync<LessonDto>();
-
-        Assert.NotNull(createdLesson);
-
-        Assert.Equal(createLessonDto.Name, createdLesson.Name);
-
-        response = await _client.GetAsync("api/lesson");
+        var response = await _client.GetAsync("api/lesson");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -105,20 +92,7 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
     [Fact]
     public async Task Put_WhenEverythingIsValid_ShouldUpdateLesson()
     {
-        var createLessonDto = new CreateLessonDto
-        {
-            Name = "created_lesson"
-        };
-
-        var response = await _client.PostAsJsonAsync("api/lesson", createLessonDto);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var createdLesson = await response.Content.ReadFromJsonAsync<LessonDto>();
-
-        Assert.NotNull(createdLesson);
-
-        Assert.Equal(createLessonDto.Name, createdLesson.Name);
+        var createdLesson = await CreateTempLesson();
 
         var lessonId = createdLesson.Id;
 
@@ -127,7 +101,7 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
             Name = "updated_lesson"
         };
 
-        response = await _client.PutAsJsonAsync($"api/lesson/{lessonId}", updateLessonDto);
+        var response = await _client.PutAsJsonAsync($"api/lesson/{lessonId}", updateLessonDto);
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
@@ -152,6 +126,22 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
     [Fact]
     public async Task Delete_WhenIdIsValid_ShouldDeleteLesson()
     {
+        var createdLesson = await CreateTempLesson();
+
+        var response = await _client.DeleteAsync($"api/lesson/{createdLesson.Id}");
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+
+        var updatedLessonsCollection = await _client.GetFromJsonAsync<IEnumerable<LessonDto>>("api/lesson");
+
+        Assert.NotNull(updatedLessonsCollection);
+
+        Assert.DoesNotContain(updatedLessonsCollection, x =>
+            x.Id == createdLesson.Id);
+    }
+
+    private async Task<LessonDto> CreateTempLesson()
+    {
         var createLessonDto = new CreateLessonDto
         {
             Name = "created_lesson"
@@ -165,15 +155,8 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
 
         Assert.NotNull(createdLesson);
 
-        response = await _client.DeleteAsync($"api/lesson/{createdLesson.Id}");
+        Assert.Equal(createLessonDto.Name, createdLesson.Name);
 
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
-
-        var updatedLessonsCollection = await _client.GetFromJsonAsync<IEnumerable<LessonDto>>("api/lesson");
-
-        Assert.NotNull(updatedLessonsCollection);
-
-        Assert.DoesNotContain(updatedLessonsCollection, x =>
-            x.Id == createdLesson.Id);
+        return createdLesson;
     }
 }

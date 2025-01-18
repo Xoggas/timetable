@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using TimeTable.Api.LessonsSchedule.Entities;
 
 namespace TimeTable.Api.Tests.Integration.Shared;
 
@@ -21,9 +22,9 @@ public sealed class MongoDbFixture : IDisposable
 
     private void SeedDatabase()
     {
-        var lessonsCollection = Database.GetCollection<LessonsSchedule.Entities.Lesson>("lessons");
+        var lessonsCollection = Database.GetCollection<Lesson>("lessons");
 
-        lessonsCollection.InsertOne(new LessonsSchedule.Entities.Lesson
+        lessonsCollection.InsertOne(new Lesson
         {
             Name = "test_lesson"
         });
