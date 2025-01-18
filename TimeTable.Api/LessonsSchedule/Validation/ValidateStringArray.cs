@@ -13,9 +13,7 @@ public sealed class ValidateStringArrayAttribute : ValidationAttribute
 
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
-        var stringArray = value as string[][];
-
-        if (stringArray is null)
+        if (value is not string[][] stringArray)
         {
             return new ValidationResult("Value is not a string array");
         }
