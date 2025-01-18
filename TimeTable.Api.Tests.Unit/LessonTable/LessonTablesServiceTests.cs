@@ -33,7 +33,7 @@ public sealed class LessonTableServiceTests
         var dayOfWeek = lessonTable.DayOfWeek;
 
         _lessonTablesRepositoryMock
-            .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<Common_DayOfWeek>()))
+            .Setup(x => x.GetAsync(It.IsAny<Common_DayOfWeek>()))
             .ReturnsAsync(lessonTable);
 
         var result = await _lessonTableService.GetLessonTableByDayOfWeekAsync(dayOfWeek);
@@ -60,7 +60,7 @@ public sealed class LessonTableServiceTests
         var dayOfWeek = lessonTableEntityToBackup.DayOfWeek;
 
         _lessonTablesRepositoryMock
-            .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<Common_DayOfWeek>()))
+            .Setup(x => x.GetAsync(It.IsAny<Common_DayOfWeek>()))
             .ReturnsAsync(lessonTableEntityToBackup);
 
         await _lessonTableService.MakeLessonTableBackupAsync(dayOfWeek);

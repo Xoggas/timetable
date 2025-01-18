@@ -7,7 +7,6 @@ using TimeTable.Api.LessonsSchedule.Dtos;
 using TimeTable.Api.LessonsSchedule.Entities;
 using TimeTable.Api.LessonsSchedule.Services;
 using Common_DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
-using DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
 
 namespace TimeTable.Api.Tests.Unit;
 

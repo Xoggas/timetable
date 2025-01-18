@@ -28,7 +28,14 @@ public sealed class LessonTableService : ILessonTableService
 
     public async Task<LessonTable> GetLessonTableByDayOfWeekAsync(DayOfWeek dayOfWeek)
     {
-        return await _lessonTablesRepository.GetByDayOfWeekAsync(dayOfWeek);
+        var lessonTable = await _lessonTablesRepository.GetAsync(dayOfWeek);
+
+        if (lessonTable is null)
+        {
+            return await _lessonTablesRepository.CreateAsync(dayOfWeek);
+        }
+        
+        return lessonTable;
     }
 
     public async Task UpdateLessonTableAsync(LessonTable lessonTable)
@@ -39,7 +46,7 @@ public sealed class LessonTableService : ILessonTableService
 
     public async Task MakeLessonTableBackupAsync(DayOfWeek dayOfWeek)
     {
-        var lessonTableToBackup = await _lessonTablesRepository.GetByDayOfWeekAsync(dayOfWeek);
+        var lessonTableToBackup = await GetLessonTableByDayOfWeekAsync(dayOfWeek);
         
         await _lessonTablesBackupRepository.CreateAsync(lessonTableToBackup);
     }

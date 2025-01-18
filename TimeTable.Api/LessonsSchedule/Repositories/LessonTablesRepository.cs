@@ -7,7 +7,8 @@ namespace TimeTable.Api.LessonsSchedule.Repositories;
 
 public interface ILessonTablesRepository
 {
-    Task<LessonTable> GetByDayOfWeekAsync(DayOfWeek dayOfWeek);
+    Task<LessonTable?> GetAsync(DayOfWeek dayOfWeek);
+    Task <LessonTable> CreateAsync(DayOfWeek dayOfWeek);
     Task UpdateAsync(LessonTable lessonTable);
 }
 
@@ -20,38 +21,34 @@ public sealed class LessonTablesRepository : ILessonTablesRepository
         _lessonTablesCollection = mongoDbService.GetCollection<LessonTable>("lesson-tables");
     }
 
-    public async Task<LessonTable> GetByDayOfWeekAsync(DayOfWeek dayOfWeek)
+    public async Task<LessonTable?> GetAsync(DayOfWeek dayOfWeek)
     {
-        await CreateIfDoesntExistAsync(dayOfWeek);
-
         return await _lessonTablesCollection
             .Find(x => x.DayOfWeek == dayOfWeek)
-            .FirstAsync();
+            .FirstOrDefaultAsync();
     }
 
     public async Task UpdateAsync(LessonTable lessonTable)
     {
-        await CreateIfDoesntExistAsync(lessonTable.DayOfWeek);
-        
         var update = Builders<LessonTable>.Update
             .Set(x => x.Lessons, lessonTable.Lessons);
-        
+
         await _lessonTablesCollection.UpdateOneAsync(x =>
-            x.DayOfWeek == lessonTable.DayOfWeek, update);
+            x.DayOfWeek == lessonTable.DayOfWeek, update, new UpdateOptions
+        {
+            IsUpsert = true
+        });
     }
 
-    private async Task CreateIfDoesntExistAsync(DayOfWeek dayOfWeek)
+    public async Task<LessonTable> CreateAsync(DayOfWeek dayOfWeek)
     {
-        var table = await _lessonTablesCollection
-            .Find(x => x.DayOfWeek == dayOfWeek)
-            .FirstOrDefaultAsync();
-
-        if (table is null)
+        await _lessonTablesCollection.InsertOneAsync(new LessonTable
         {
-            await _lessonTablesCollection.InsertOneAsync(new LessonTable
-            {
-                DayOfWeek = dayOfWeek
-            });
-        }
+            DayOfWeek = dayOfWeek
+        });
+        
+        return await _lessonTablesCollection
+            .Find(x => x.DayOfWeek == dayOfWeek)
+            .FirstAsync();
     }
 }
