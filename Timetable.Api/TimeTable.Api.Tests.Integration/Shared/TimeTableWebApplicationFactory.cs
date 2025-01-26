@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MongoDB.Driver;
 
-namespace TimeTable.Api.Tests.Integration.Shared;
+namespace Timetable.Api.Tests.Integration.Shared;
 
 internal sealed class TimeTableWebApplicationFactory : WebApplicationFactory<Program>
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TimeTable.Api.LessonsSchedule.Dtos;
+namespace Timetable.Api.LessonsSchedule.Dtos;
 
 public sealed class CreateLessonDto
 {

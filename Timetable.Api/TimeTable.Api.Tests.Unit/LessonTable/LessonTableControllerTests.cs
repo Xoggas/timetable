@@ -2,13 +2,14 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using TimeTable.Api.LessonsSchedule.Controllers;
-using TimeTable.Api.LessonsSchedule.Dtos;
-using TimeTable.Api.LessonsSchedule.Entities;
-using TimeTable.Api.LessonsSchedule.Services;
-using Common_DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
+using Timetable.Api.LessonsSchedule.Controllers;
+using Timetable.Api.LessonsSchedule.Dtos;
+using Timetable.Api.LessonsSchedule.Entities;
+using Timetable.Api.LessonsSchedule.Services;
+using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
+using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
-namespace TimeTable.Api.Tests.Unit;
+namespace Timetable.Api.Tests.Unit;
 
 public sealed class LessonTableControllerTests
 {
@@ -28,7 +29,7 @@ public sealed class LessonTableControllerTests
     [Fact]
     public async Task Get_ShouldReturnTable()
     {
-        var dayOfWeek = _fixture.Create<Common_DayOfWeek>();
+        var dayOfWeek = _fixture.Create<DayOfWeek>();
         var lessonTableEntity = _fixture.Create<LessonTable>();
         var lessonTableDto = _fixture
             .Build<LessonTableDto>()
@@ -37,7 +38,7 @@ public sealed class LessonTableControllerTests
             .Create();
 
         _lessonTablesServiceMock
-            .Setup(x => x.GetLessonTableByDayOfWeekAsync(It.IsAny<Common_DayOfWeek>()))
+            .Setup(x => x.GetLessonTableByDayOfWeekAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(lessonTableEntity);
 
         _mapperMock
@@ -56,7 +57,7 @@ public sealed class LessonTableControllerTests
     [Fact]
     public async Task Put_ShouldCallService()
     {
-        var dayOfWeek = _fixture.Create<Common_DayOfWeek>();
+        var dayOfWeek = _fixture.Create<DayOfWeek>();
         var updateLessonTableDto = _fixture.Create<UpdateLessonTableDto>();
         var lessonTableEntity = _fixture.Create<LessonTable>();
 
@@ -87,11 +88,11 @@ public sealed class LessonTableControllerTests
     [Fact]
     public async Task Post_MakeBackup_ShouldCallService()
     {
-        var dayOfWeek = _fixture.Create<Common_DayOfWeek>();
+        var dayOfWeek = _fixture.Create<DayOfWeek>();
 
         var response = await _controller.Post_MakeBackup(dayOfWeek);
 
-        _lessonTablesServiceMock.Verify(x => x.MakeLessonTableBackupAsync(It.Is<Common_DayOfWeek>(y => y == dayOfWeek)));
+        _lessonTablesServiceMock.Verify(x => x.MakeLessonTableBackupAsync(It.Is<DayOfWeek>(y => y == dayOfWeek)));
 
         Assert.IsType<NoContentResult>(response);
     }
@@ -99,10 +100,10 @@ public sealed class LessonTableControllerTests
     [Fact]
     public async Task Post_RestoreBackup_WhenBackupDoesntExist_ShouldReturnNotFound()
     {
-        var dayOfWeek = _fixture.Create<Common_DayOfWeek>();
+        var dayOfWeek = _fixture.Create<DayOfWeek>();
 
         _lessonTablesServiceMock
-            .Setup(x => x.RestoreLessonTableFromBackupAsync(It.IsAny<Common_DayOfWeek>()))
+            .Setup(x => x.RestoreLessonTableFromBackupAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(default(LessonTable));
 
         var response = await _controller.Post_RestoreBackup(dayOfWeek);
@@ -113,7 +114,7 @@ public sealed class LessonTableControllerTests
     [Fact]
     public async Task Post_RestoreBackup_WhenBackupExists_ShouldReturnBackup()
     {
-        var dayOfWeek = _fixture.Create<Common_DayOfWeek>();
+        var dayOfWeek = _fixture.Create<DayOfWeek>();
         var lessonTableEntity = _fixture.Create<LessonTable>();
         var lessonTableDto = _fixture.Build<LessonTableDto>()
             .With(x => x.DayOfWeek, dayOfWeek)
@@ -121,7 +122,7 @@ public sealed class LessonTableControllerTests
             .Create();
 
         _lessonTablesServiceMock
-            .Setup(x => x.RestoreLessonTableFromBackupAsync(It.IsAny<Common_DayOfWeek>()))
+            .Setup(x => x.RestoreLessonTableFromBackupAsync(It.IsAny<DayOfWeek>()))
             .ReturnsAsync(lessonTableEntity);
 
         _mapperMock

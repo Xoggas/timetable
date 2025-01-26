@@ -1,7 +1,7 @@
-﻿using TimeTable.Api.LessonsSchedule.Entities;
-using TimeTable.Api.LessonsSchedule.Repositories;
+﻿using Timetable.Api.LessonsSchedule.Entities;
+using Timetable.Api.LessonsSchedule.Repositories;
 
-namespace TimeTable.Api.LessonsSchedule.Services;
+namespace Timetable.Api.LessonsSchedule.Services;
 
 public interface ILessonsService
 {

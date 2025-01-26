@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TimeTable.Api.LessonsSchedule.Dtos;
-using TimeTable.Api.LessonsSchedule.Entities;
-using TimeTable.Api.LessonsSchedule.Services;
+using Timetable.Api.LessonsSchedule.Dtos;
+using Timetable.Api.LessonsSchedule.Entities;
+using Timetable.Api.LessonsSchedule.Services;
 
-namespace TimeTable.Api.LessonsSchedule.Controllers;
+namespace Timetable.Api.LessonsSchedule.Controllers;
 
 [ApiController]
 [Route("api/lesson")]

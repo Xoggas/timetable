@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
-using TimeTable.Api.LessonsSchedule.Dtos;
-using TimeTable.Api.LessonsSchedule.Repositories;
-using TimeTable.Api.Tests.Integration.Shared;
-using DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
+using Timetable.Api.LessonsSchedule.Dtos;
+using Timetable.Api.LessonsSchedule.Repositories;
+using Timetable.Api.Tests.Integration.Shared;
+using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
+using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
-namespace TimeTable.Api.Tests.Integration;
+namespace Timetable.Api.Tests.Integration;
 
 public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixture>
 {
@@ -25,7 +26,7 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
     [Fact]
     public async Task Get_WhenDayOfWeekIsInvalid_ShouldReturnBadRequest()
     {
-        const DayOfWeek dayOfWeek = (DayOfWeek)999;
+        const Common_DayOfWeek dayOfWeek = (Common_DayOfWeek)999;
 
         var response = await _client.GetAsync($"api/lesson-table/{dayOfWeek}");
 
@@ -35,7 +36,7 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
     [Fact]
     public async Task Get_WhenTableDoesntExist_ShouldReturnEmptyTable()
     {
-        const DayOfWeek dayOfWeek = DayOfWeek.Monday;
+        const Common_DayOfWeek dayOfWeek = Common_DayOfWeek.Monday;
 
         var expectedResult = new LessonTableDto
         {
@@ -54,7 +55,7 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
             a.Lessons.SequenceEqual(b.Lessons));
     }
 
-    private async Task<bool> TableExists(DayOfWeek dayOfWeek)
+    private async Task<bool> TableExists(Common_DayOfWeek dayOfWeek)
     {
         return await _lessonTablesRepository.GetAsync(dayOfWeek) is not null;
     }

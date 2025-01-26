@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using TimeTable.Api.LessonsSchedule.Hubs;
+using Timetable.Api.LessonsSchedule.Hubs;
 
-namespace TimeTable.Api.LessonsSchedule.Services;
+namespace Timetable.Api.LessonsSchedule.Services;
 
 public interface IEventService
 {

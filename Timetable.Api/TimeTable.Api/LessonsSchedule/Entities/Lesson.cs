@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace TimeTable.Api.LessonsSchedule.Entities;
+namespace Timetable.Api.LessonsSchedule.Entities;
 
 public sealed class Lesson
 {

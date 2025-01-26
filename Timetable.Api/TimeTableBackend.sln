@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTable.Api", "TimeTable.Api\TimeTable.Api.csproj", "{B65F018A-3933-4062-BB7B-EB26B7DFDF66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable.Api", "Timetable.Api\Timetable.Api.csproj", "{B65F018A-3933-4062-BB7B-EB26B7DFDF66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTable.Api.Tests.Unit", "TimeTable.Api.Tests.Unit\TimeTable.Api.Tests.Unit.csproj", "{7794A97B-200B-4558-8449-60423E718FE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable.Api.Tests.Unit", "Timetable.Api.Tests.Unit\Timetable.Api.Tests.Unit.csproj", "{7794A97B-200B-4558-8449-60423E718FE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTable.Api.Tests.Integration", "TimeTable.Api.Tests.Integration\TimeTable.Api.Tests.Integration.csproj", "{B5D0BE69-2CF5-4C5A-A9FA-2D75CDBB1BAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Timetable.Api.Tests.Integration", "Timetable.Api.Tests.Integration\Timetable.Api.Tests.Integration.csproj", "{B5D0BE69-2CF5-4C5A-A9FA-2D75CDBB1BAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

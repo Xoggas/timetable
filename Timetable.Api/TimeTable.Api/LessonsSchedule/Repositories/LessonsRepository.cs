@@ -1,8 +1,8 @@
 ﻿using MongoDB.Driver;
-using TimeTable.Api.LessonsSchedule.Entities;
-using TimeTable.Api.Shared;
+using Timetable.Api.LessonsSchedule.Entities;
+using Timetable.Api.Shared;
 
-namespace TimeTable.Api.LessonsSchedule.Repositories;
+namespace Timetable.Api.LessonsSchedule.Repositories;
 
 public interface ILessonsRepository
 {

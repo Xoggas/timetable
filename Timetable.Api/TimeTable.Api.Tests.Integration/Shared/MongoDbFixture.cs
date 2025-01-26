@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace TimeTable.Api.Tests.Integration.Shared;
+namespace Timetable.Api.Tests.Integration.Shared;
 
 public sealed class MongoDbFixture : IDisposable
 {

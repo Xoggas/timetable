@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using TimeTable.Api.LessonsSchedule.Dtos;
-using TimeTable.Api.LessonsSchedule.Entities;
+using Timetable.Api.LessonsSchedule.Dtos;
+using Timetable.Api.LessonsSchedule.Entities;
 
-namespace TimeTable.Api.LessonsSchedule.Profiles;
+namespace Timetable.Api.LessonsSchedule.Profiles;
 
 public sealed class LessonProfile : Profile
 {

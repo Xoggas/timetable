@@ -1,15 +1,16 @@
-﻿using TimeTable.Api.LessonsSchedule.Entities;
-using TimeTable.Api.LessonsSchedule.Repositories;
-using DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
+﻿using Timetable.Api.LessonsSchedule.Entities;
+using Timetable.Api.LessonsSchedule.Repositories;
+using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
+using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
-namespace TimeTable.Api.LessonsSchedule.Services;
+namespace Timetable.Api.LessonsSchedule.Services;
 
 public interface ILessonTableService
 {
-    Task<LessonTable> GetLessonTableByDayOfWeekAsync(DayOfWeek dayOfWeek);
+    Task<LessonTable> GetLessonTableByDayOfWeekAsync(Common_DayOfWeek dayOfWeek);
     Task UpdateLessonTableAsync(LessonTable lessonTable);
-    Task MakeLessonTableBackupAsync(DayOfWeek dayOfWeek);
-    Task<LessonTable?> RestoreLessonTableFromBackupAsync(DayOfWeek dayOfWeek);
+    Task MakeLessonTableBackupAsync(Common_DayOfWeek dayOfWeek);
+    Task<LessonTable?> RestoreLessonTableFromBackupAsync(Common_DayOfWeek dayOfWeek);
 }
 
 public sealed class LessonTableService : ILessonTableService
@@ -26,7 +27,7 @@ public sealed class LessonTableService : ILessonTableService
         _lessonTablesBackupRepository = lessonTablesBackupRepository;
     }
 
-    public async Task<LessonTable> GetLessonTableByDayOfWeekAsync(DayOfWeek dayOfWeek)
+    public async Task<LessonTable> GetLessonTableByDayOfWeekAsync(Common_DayOfWeek dayOfWeek)
     {
         var lessonTable = await _lessonTablesRepository.GetAsync(dayOfWeek);
 
@@ -44,14 +45,14 @@ public sealed class LessonTableService : ILessonTableService
         await _eventService.NotifyAllClientsAboutUpdate();
     }
 
-    public async Task MakeLessonTableBackupAsync(DayOfWeek dayOfWeek)
+    public async Task MakeLessonTableBackupAsync(Common_DayOfWeek dayOfWeek)
     {
         var lessonTableToBackup = await GetLessonTableByDayOfWeekAsync(dayOfWeek);
         
         await _lessonTablesBackupRepository.CreateAsync(lessonTableToBackup);
     }
 
-    public async Task<LessonTable?> RestoreLessonTableFromBackupAsync(DayOfWeek dayOfWeek)
+    public async Task<LessonTable?> RestoreLessonTableFromBackupAsync(Common_DayOfWeek dayOfWeek)
     {
         var backup = await _lessonTablesBackupRepository.GetByDayOfWeekAsync(dayOfWeek);
 

@@ -1,9 +1,9 @@
 using System.Reflection;
 using MongoDB.Driver;
-using TimeTable.Api.LessonsSchedule.Hubs;
-using TimeTable.Api.LessonsSchedule.Repositories;
-using TimeTable.Api.LessonsSchedule.Services;
-using TimeTable.Api.Shared;
+using Timetable.Api.LessonsSchedule.Hubs;
+using Timetable.Api.LessonsSchedule.Repositories;
+using Timetable.Api.LessonsSchedule.Services;
+using Timetable.Api.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 

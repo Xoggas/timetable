@@ -1,6 +1,6 @@
-﻿using TimeTable.Api.LessonsSchedule.Validation;
+﻿using Timetable.Api.LessonsSchedule.Validation;
 
-namespace TimeTable.Api.LessonsSchedule.Dtos;
+namespace Timetable.Api.LessonsSchedule.Dtos;
 
 public sealed class UpdateLessonTableDto
 {

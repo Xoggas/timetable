@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using TimeTable.Api.LessonsSchedule.Dtos;
-using TimeTable.Api.Tests.Integration.Shared;
+using Timetable.Api.LessonsSchedule.Dtos;
+using Timetable.Api.Tests.Integration.Shared;
 
-namespace TimeTable.Api.Tests.Integration;
+namespace Timetable.Api.Tests.Integration;
 
 public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
 {

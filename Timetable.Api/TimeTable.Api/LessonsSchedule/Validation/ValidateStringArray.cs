@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TimeTable.Api.LessonsSchedule.Validation;
+namespace Timetable.Api.LessonsSchedule.Validation;
 
 public sealed class MinMaxLengthAttribute : ValidationAttribute
 {

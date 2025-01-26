@@ -1,10 +1,10 @@
 ﻿using AutoFixture;
 using Moq;
-using TimeTable.Api.LessonsSchedule.Entities;
-using TimeTable.Api.LessonsSchedule.Repositories;
-using TimeTable.Api.LessonsSchedule.Services;
+using Timetable.Api.LessonsSchedule.Entities;
+using Timetable.Api.LessonsSchedule.Repositories;
+using Timetable.Api.LessonsSchedule.Services;
 
-namespace TimeTable.Api.Tests.Unit;
+namespace Timetable.Api.Tests.Unit;
 
 public sealed class LessonServiceTest
 {

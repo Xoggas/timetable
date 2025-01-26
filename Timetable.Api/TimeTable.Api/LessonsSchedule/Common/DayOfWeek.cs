@@ -1,4 +1,4 @@
-﻿namespace TimeTable.Api.LessonsSchedule.Common;
+﻿namespace Timetable.Api.LessonsSchedule.Common;
 
 public enum DayOfWeek
 {

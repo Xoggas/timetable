@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace TimeTable.Api.Shared;
+namespace Timetable.Api.Shared;
 
 public sealed class MongoDbService
 {

@@ -1,9 +1,10 @@
-﻿using DayOfWeek = TimeTable.Api.LessonsSchedule.Common.DayOfWeek;
+﻿using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
+using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
-namespace TimeTable.Api.LessonsSchedule.Dtos;
+namespace Timetable.Api.LessonsSchedule.Dtos;
 
 public class LessonTableDto
 {
-    public DayOfWeek DayOfWeek { get; init; }
+    public Common_DayOfWeek DayOfWeek { get; init; }
     public string[][] Lessons { get; init; } = [];
 }
