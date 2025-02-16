@@ -1,0 +1,66 @@
+﻿@using DayOfWeek = Timetable.Frontend.LessonsSchedule.Models.DayOfWeek
+
+<table class="table">
+    @foreach (var (row, rowIndex) in _table.Select((x, i) => (x, i)))
+    {
+        <tr class="row">
+            <td class="cell" index>@(rowIndex + 1)</td>
+    
+            @foreach (var lesson in row)
+            {
+                <td class="cell">@lesson</td>
+            }
+    
+            @if (rowIndex == 0)
+            {
+                <td rowspan="@RowCount" class="add-button" @onclick="AddColumn">
+                    <span class="material-symbols-rounded">
+                        add
+                    </span>
+                </td>
+            }
+        </tr>
+    }
+
+    <tr>
+        <td></td>
+        <td colspan="@ColumnCount" class="add-button" @onclick="AddRow">
+            <span class="material-symbols-rounded">
+                add
+            </span>
+        </td>
+    </tr>
+</table>
+
+@code
+{
+    [Parameter]
+    public DayOfWeek DayOfWeek { get; set; }
+    
+    private int ColumnCount => _table.FirstOrDefault()?.Count ?? 0;
+    private int RowCount => _table.Count;
+    private List<List<string>> _table= [];
+
+    protected override void OnParametersSet()
+    {
+        _table.Clear();
+
+        for (var i = 0; i < 5; i++)
+        {
+            _table.Add(Enumerable.Repeat(DayOfWeek.ToString(), 6).ToList());
+        }
+    }
+
+    private void AddRow()
+    {
+        _table.Add(Enumerable.Repeat(DayOfWeek.ToString(), ColumnCount).ToList());
+    }
+
+    private void AddColumn()
+    {
+        foreach (var row in _table)
+        {
+            row.Add(DayOfWeek.ToString());
+        }
+    }
+}

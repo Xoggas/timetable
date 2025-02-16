@@ -1,0 +1,44 @@
+.table {
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    border-radius: 0.5em;
+    backdrop-filter: blur(16px);
+    justify-items: center;
+    align-content: center;
+    padding: 0.25em;
+    border-collapse: separate;
+    border-spacing: 0.25em;
+}
+
+.row {
+    margin: 1em;
+}
+
+.cell {
+    background-color: var(--color-white);
+    padding: 0.5em;
+    border-radius: 0.25em;
+    text-align: center;
+    font-weight: 300;
+}
+
+.cell[index] {
+    font-weight: 400;
+    padding: 0.5em 0.75em;
+}
+
+.add-button {
+    cursor: pointer;
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    padding: 0.1em;
+    border-radius: 0.25em;
+    text-align: center;
+    vertical-align: middle;
+    color: var(--color-white);
+}
+
+.add-button span {
+    width: 1em;
+    height: 1em;
+}

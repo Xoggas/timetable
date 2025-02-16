@@ -1,0 +1,17 @@
+﻿@page "/lesson-table/editor"
+@rendermode InteractiveServer
+@using Timetable.Frontend.Shared.Components
+@using Timetable.Frontend.LessonsSchedule.Components
+@using Timetable.Frontend.Shared.Extensions
+@using DayOfWeek = Timetable.Frontend.LessonsSchedule.Models.DayOfWeek
+
+<div class="container">
+    <Header></Header>
+    <EditableLessonTable DayOfWeek="_dayOfWeek"/>
+    <DayOfWeekSelector @bind-DayOfWeek="_dayOfWeek" />
+</div>
+
+@code
+{
+    private DayOfWeek _dayOfWeek = DateTime.Today.GetNativeDayOfWeek();
+}
