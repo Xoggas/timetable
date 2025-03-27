@@ -1,0 +1,30 @@
+﻿@page "/lesson-table/viewer"
+@rendermode InteractiveServer
+
+<div></div>
+
+<EditableLessonTable DayOfWeek="_customDayOfWeek"/>
+
+<div></div>
+
+@code
+{
+    private CustomDayOfWeek _customDayOfWeek = DateTime.Today.GetNativeDayOfWeek();
+
+    protected override void OnInitialized()
+    {
+        var thread = new Thread(UpdateDayOfWeek);
+        thread.Start();
+    }
+
+    // ReSharper disable once FunctionNeverReturns
+    private void UpdateDayOfWeek()
+    {
+        while (true)
+        {
+            _customDayOfWeek = DateTime.Today.GetNativeDayOfWeek();
+
+            Thread.Sleep(1000);
+        }
+    }
+}
