@@ -1,0 +1,33 @@
+﻿<input class="lesson-selector"
+       type="text"
+       list="lessons"
+       @bind="SelectedLessonName"/>
+
+<datalist id="lessons">
+    @foreach (var lesson in Lessons.OrderBy(x => x.Name))
+    {
+        <option value="@lesson.Name"/>
+    }
+</datalist>
+
+@code
+{
+    [Parameter] public required IEnumerable<Lesson> Lessons { get; set; }
+    [Parameter] public string? LessonName { get; set; }
+    [Parameter] public EventCallback<string?> LessonNameChanged { get; set; }
+
+    private string? SelectedLessonName
+    {
+        get => LessonName;
+        set
+        {
+            if (LessonName == value)
+            {
+                return;
+            }
+
+            LessonName = value;
+            LessonNameChanged.InvokeAsync(value);
+        }
+    }
+}

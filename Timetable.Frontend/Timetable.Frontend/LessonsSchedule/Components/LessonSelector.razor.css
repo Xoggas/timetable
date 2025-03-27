@@ -1,0 +1,6 @@
+﻿.lesson-selector {
+    background-color: var(--color-white);
+    text-align: center;
+    display: block;
+    width: 100%;
+}
