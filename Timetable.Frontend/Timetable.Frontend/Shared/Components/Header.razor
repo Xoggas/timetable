@@ -1,6 +1,17 @@
-﻿<div>
+﻿<div class="container">
     <nav>
-        @NavItems
+        <NavLink class="nav-item" href="/lesson-table/editor" Match="NavLinkMatch.All">
+            <LessonTableIcon />
+        </NavLink>
+        <NavLink class="nav-item" href="/lesson-table/viewer" Match="NavLinkMatch.All">
+            <EyeIcon />
+        </NavLink>
+        <NavLink class="nav-item" href="/lesson-list" Match="NavLinkMatch.All">
+            <LessonListIcon />
+        </NavLink>
+        <NavLink class="nav-item" href="/bell-table/editor" Match="NavLinkMatch.All">
+            <BellIcon />
+        </NavLink>
     </nav>
     <div>
         @ActionItems
@@ -9,9 +20,5 @@
 
 @code
 {
-    [Parameter]
-    public RenderFragment? NavItems { get; set; }
-
-    [Parameter]
-    public RenderFragment? ActionItems { get; set; }
+    [Parameter] public RenderFragment? ActionItems { get; set; }
 }
