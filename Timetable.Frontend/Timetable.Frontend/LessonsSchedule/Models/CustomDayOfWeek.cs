@@ -1,6 +1,6 @@
 ﻿namespace Timetable.Frontend.LessonsSchedule.Models;
 
-public enum DayOfWeek
+public enum CustomDayOfWeek
 {
     Monday = 1,
     Tuesday,
