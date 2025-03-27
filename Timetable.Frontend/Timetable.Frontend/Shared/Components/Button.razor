@@ -1,0 +1,15 @@
+﻿<div class="button" is-active="@IsActive" @onclick="HandleClick">
+    @InnerHtml
+</div>
+
+@code
+{
+    [Parameter] public RenderFragment? InnerHtml { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private async Task HandleClick()
+    {
+        await OnClick.InvokeAsync();
+    }
+}
