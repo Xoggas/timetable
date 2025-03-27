@@ -1,82 +1,61 @@
-﻿@using DayOfWeek = Timetable.Frontend.LessonsSchedule.Models.DayOfWeek
-@using Timetable.Frontend.LessonsSchedule.Components.Icons
+﻿@inject LessonListService LessonListService
 
 <table class="table">
-    <tr>
-        <td></td>
-        <td></td>
-
-        @for (var i = 0; i < ColumnCount; i++)
-        {
-        <td class="add-button">
-            <DeleteIcon/>
-        </td>
-        }
-    </tr>
-    
     @foreach (var (row, rowIndex) in _table.Select((x, i) => (x, i)))
     {
         <tr class="row">
-            <td class="add-button">
-                <DeleteIcon/>
-            </td>
-
-            <td class="cell" index>@(rowIndex + 1)</td>
-
-            @foreach (var lesson in row)
-            {
-                <td class="cell">@lesson</td>
-            }
-
             @if (rowIndex == 0)
             {
-                <td rowspan="@RowCount" class="add-button" @onclick="AddColumn">
-                    <AddIcon/>
+                <!-- filling cell -->
+                <td></td>
+
+                @for (var i = 0; i < row.Count; i++)
+                {
+                    var index = i;
+
+                    <td class="header-cell">
+                        <input @bind="row[index]"/>
+                    </td>
+                }
+            }
+            else
+            {
+                <td class="cell" index>
+                    @rowIndex
                 </td>
+
+                @for (var i = 0; i < row.Count; i++)
+                {
+                    var index = i;
+
+                    <td class="cell">
+                        <LessonSelector Lessons="_lessons" @bind-LessonName="row[index]"/>
+                    </td>
+                }
             }
         </tr>
     }
-
-
-
-    <tr>
-        <td></td>
-        <td></td>
-        <td colspan="@ColumnCount" class="add-button" @onclick="AddRow">
-            <AddIcon/>
-        </td>
-    </tr>
 </table>
 
 @code
 {
-    [Parameter]
-    public DayOfWeek DayOfWeek { get; set; }
+    [Parameter] public CustomDayOfWeek DayOfWeek { get; set; }
 
-    private int ColumnCount => _table.FirstOrDefault()?.Count ?? 0;
-    private int RowCount => _table.Count;
+    private List<Lesson> _lessons = [];
     private List<List<string>> _table = [];
+
+    protected override void OnInitialized()
+    {
+        _lessons = LessonListService.GetAllLessons().ToList();
+    }
 
     protected override void OnParametersSet()
     {
         _table.Clear();
 
-        for (var i = 0; i < 5; i++)
+        for (var i = 0; i < 6; i++)
         {
-            _table.Add(Enumerable.Repeat(DayOfWeek.ToString(), 6).ToList());
-        }
-    }
-
-    private void AddRow()
-    {
-        _table.Add(Enumerable.Repeat(DayOfWeek.ToString(), ColumnCount).ToList());
-    }
-
-    private void AddColumn()
-    {
-        foreach (var row in _table)
-        {
-            row.Add(DayOfWeek.ToString());
+            _table.Add(Enumerable.Repeat(string.Empty, 10).ToList());
         }
     }
 }
