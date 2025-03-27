@@ -1,26 +1,20 @@
-﻿@using Timetable.Frontend.LessonsSchedule.Extensions
-@using DayOfWeek = Timetable.Frontend.LessonsSchedule.Models.DayOfWeek
-
-<div class="container">
-    @foreach (var dayOfWeek in Enum.GetValues<DayOfWeek>())
+﻿<div class="container">
+    @foreach (var dayOfWeek in Enum.GetValues<CustomDayOfWeek>())
     {
-        <div class="selector"
-             is-selected="@(CurrentDayOfWeek == dayOfWeek)"
-             @onclick="() => CurrentDayOfWeek = dayOfWeek">
-            @dayOfWeek.ToShortString()
-        </div>
+        <Button IsActive="IsActive(dayOfWeek)" OnClick="() => SetDayOfWeek(dayOfWeek)">
+            <InnerHtml>
+                @dayOfWeek.ToShortString()
+            </InnerHtml>
+        </Button>
     }
 </div>
 
 @code
 {
-    [Parameter]
-    public DayOfWeek DayOfWeek { get; set; }
+    [Parameter] public CustomDayOfWeek DayOfWeek { get; set; }
+    [Parameter] public EventCallback<CustomDayOfWeek> DayOfWeekChanged { get; set; }
 
-    [Parameter]
-    public EventCallback<DayOfWeek> DayOfWeekChanged { get; set; }
-
-    private DayOfWeek CurrentDayOfWeek
+    private CustomDayOfWeek CurrentDayOfWeek
     {
         get => DayOfWeek;
         set
@@ -33,5 +27,15 @@
             DayOfWeek = value;
             DayOfWeekChanged.InvokeAsync(value);
         }
+    }
+
+    private bool IsActive(CustomDayOfWeek dayOfWeek)
+    {
+        return CurrentDayOfWeek == dayOfWeek;
+    }
+
+    private void SetDayOfWeek(CustomDayOfWeek dayOfWeek)
+    {
+        CurrentDayOfWeek = dayOfWeek;
     }
 }
