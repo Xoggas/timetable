@@ -4,12 +4,25 @@ namespace Timetable.Frontend.LessonsSchedule.Services;
 
 public sealed class LessonListService
 {
-    public IEnumerable<Lesson> GetAllLessons()
+    private static readonly List<Lesson> s_lessons = [];
+
+    public async Task<List<Lesson>> GetAllLessons()
     {
-        return Enumerable.Range(0, 30).Select(x => x + 1).Select(i => new Lesson
+        return await Task.FromResult(s_lessons);
+    }
+
+    public async Task<Lesson> CreateLesson()
+    {
+        var lesson = new Lesson
         {
-            Id = $"{i}",
-            Name = $"Урок {i:D2}"
-        });
+            Id = Guid.NewGuid().ToString()
+        };
+        
+        return await Task.FromResult(lesson);
+    }
+
+    public async Task DeleteLesson(Lesson lesson)
+    {
+        await Task.CompletedTask;
     }
 }
