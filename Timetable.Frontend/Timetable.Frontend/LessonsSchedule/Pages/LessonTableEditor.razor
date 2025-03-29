@@ -1,7 +1,25 @@
 ﻿@page "/lesson-table/editor"
 @rendermode InteractiveServer
 
-<Header></Header>
+<Header>
+    <ActionItems>
+        <Button>
+            <InnerHtml>
+                <RestoreIcon/>
+            </InnerHtml>
+        </Button>
+        <Button>
+            <InnerHtml>
+                <BackupIcon/>
+            </InnerHtml>
+        </Button>
+        <Button>
+            <InnerHtml>
+                <SaveIcon/>
+            </InnerHtml>
+        </Button>
+    </ActionItems>
+</Header>
 
 <EditableLessonTable DayOfWeek="_customDayOfWeek"/>
 
