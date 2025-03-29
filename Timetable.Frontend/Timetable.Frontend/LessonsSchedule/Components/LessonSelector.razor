@@ -13,21 +13,21 @@
 @code
 {
     [Parameter] public required IEnumerable<Lesson> Lessons { get; set; }
-    [Parameter] public string? LessonName { get; set; }
-    [Parameter] public EventCallback<string?> LessonNameChanged { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
 
     private string? SelectedLessonName
     {
-        get => LessonName;
+        get => Value;
         set
         {
-            if (LessonName == value)
+            if (Value == value)
             {
                 return;
             }
 
-            LessonName = value;
-            LessonNameChanged.InvokeAsync(value);
+            Value = value;
+            ValueChanged.InvokeAsync(value);
         }
     }
 }
