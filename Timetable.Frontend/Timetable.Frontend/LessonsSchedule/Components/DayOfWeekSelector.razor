@@ -1,7 +1,7 @@
 ﻿<div class="container">
     @foreach (var dayOfWeek in Enum.GetValues<CustomDayOfWeek>())
     {
-        <Button IsActive="IsActive(dayOfWeek)" OnClick="() => SetDayOfWeek(dayOfWeek)">
+        <Button IsTransparent="IsActive(dayOfWeek)" @onclick="() => SetDayOfWeek(dayOfWeek)">
             <InnerHtml>
                 @dayOfWeek.ToShortString()
             </InnerHtml>
