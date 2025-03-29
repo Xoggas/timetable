@@ -1,15 +1,12 @@
-﻿<div class="button" is-active="@IsActive" @onclick="HandleClick">
+﻿<div @attributes="AdditionalAttributes" is-transparent="@IsTransparent">
     @InnerHtml
 </div>
 
 @code
 {
-    [Parameter] public RenderFragment? InnerHtml { get; set; }
-    [Parameter] public bool IsActive { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-    private async Task HandleClick()
-    {
-        await OnClick.InvokeAsync();
-    }
+    [Parameter] public RenderFragment? InnerHtml { get; set; }
+    [Parameter] public bool IsTransparent { get; set; }
 }

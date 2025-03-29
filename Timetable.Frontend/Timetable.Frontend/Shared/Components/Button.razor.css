@@ -1,4 +1,4 @@
-﻿.button {
+﻿div {
     background-color: var(--color-white);
     color: var(--color-gray);
     border-radius: 0.5em;
@@ -10,15 +10,17 @@
     justify-content: center;
     align-items: center;
     border: 1px solid rgba(0, 0, 0, 0);
-    height: 100%;
-    aspect-ratio: 1 / 1;
 }
 
-.button:hover {
+div:hover {
     background-color: var(--color-white-hover);
 }
 
-.button[is-active] {
+div:active {
+    background-color: var(--color-white-press);
+}
+
+div[is-transparent] {
     background-color: var(--color-white-transparent);
     color: var(--color-white);
     border: 1px solid var(--color-white);
