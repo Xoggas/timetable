@@ -3,6 +3,7 @@
 :root {
     --color-white: rgb(255, 253, 239);
     --color-white-hover: rgb(204, 202, 191);
+    --color-white-press: rgb(179, 177, 168);
     --color-white-transparent: rgb(255, 253, 239, 0.15);
     --color-gray: rgb(47, 47, 51);
 }
