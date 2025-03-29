@@ -1,0 +1,21 @@
+﻿@page "/lesson-list"
+@rendermode InteractiveServer
+
+<Header>
+    <ActionItems>
+        <Button @onclick="() => _lessonListRef?.Save()">
+            <InnerHtml>
+                <SaveIcon/>
+            </InnerHtml>
+        </Button>
+    </ActionItems>
+</Header>
+
+<LessonList @ref="_lessonListRef" />
+
+<div></div>
+
+@code 
+{
+    private LessonList? _lessonListRef;
+}

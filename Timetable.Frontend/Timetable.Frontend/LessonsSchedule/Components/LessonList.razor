@@ -1,0 +1,63 @@
+﻿@inject LessonListService LessonListService
+
+<div class="container">
+    <div class="lesson-list-container" has-scrollbar="@(_lessons.Count > 0)">
+        <div class="lesson-list">
+            @if (_lessons.Count == 0)
+            {
+                <div class="lesson-list__empty-list-text">
+                    Список уроков пуст
+                </div>
+            }
+
+            @foreach (var (lesson, index) in _lessons.Select((x, i) => (x, i + 1)))
+            {
+                <div class="lesson">
+                    <div class="lesson__index">
+                        @index
+                    </div>
+                    <input maxlength="20" class="lesson__text-input" type="text" @bind="@lesson.Name"/>
+                    <Button class="lesson__button" @onclick="() => DeleteLesson(lesson)">
+                        <InnerHtml>
+                            <DeleteIcon/>
+                        </InnerHtml>
+                    </Button>
+                </div>
+            }
+        </div>
+    </div>
+    <Button class="lesson__button" @onclick="AddLesson">
+        <InnerHtml>
+            <AddIcon/>
+        </InnerHtml>
+    </Button>
+</div>
+
+@code
+{
+    private List<Lesson> _lessons = [];
+
+    public void Save()
+    {
+        
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _lessons = await LessonListService.GetAllLessons();
+    }
+
+    private async Task AddLesson()
+    {
+        var lesson = await LessonListService.CreateLesson();
+
+        _lessons.Add(lesson);
+    }
+
+    private async Task DeleteLesson(Lesson lesson)
+    {
+        await LessonListService.DeleteLesson(lesson);
+
+        _lessons.Remove(lesson);
+    }
+}

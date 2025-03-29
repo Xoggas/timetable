@@ -1,0 +1,90 @@
+﻿.container {
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    border-radius: 0.5em;
+    backdrop-filter: blur(16px);
+    padding: 0.25em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0.25em;
+    max-height: 75vh;
+}
+
+.lesson-list-container {
+    max-height: 75vh;
+}
+
+.lesson-list-container[has-scrollbar] {
+    overflow-y: scroll;
+    padding-right: 0.25em;
+}
+
+.lesson-list-container::-webkit-scrollbar {
+    width: 0.5em;
+    background-color: var(--color-white-transparent);
+    border-radius: 0.5em;
+    backdrop-filter: blur(16px);
+}
+
+.lesson-list-container::-webkit-scrollbar-thumb {
+    background-color: var(--color-white);
+    border-radius: 0.5em;
+    cursor: pointer;
+}
+
+.lesson-list-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-white-hover);
+}
+
+.lesson-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+.lesson-list__empty-list-text {
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    color: var(--color-white);
+    padding: 0.5em 0.75em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5em;
+    width: 100%;
+    cursor: default;
+}
+
+.lesson {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0.25em;
+}
+
+.lesson__index {
+    background-color: var(--color-white);
+    color: var(--color-gray);
+    padding: 0.5em 0.75em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5em;
+    width: 100%;
+    cursor: default;
+}
+
+.lesson__text-input {
+    background-color: var(--color-white);
+    border-radius: 0.5em;
+    padding: 0 0.75em;
+    text-align: center;
+    min-width: calc(1em * 15);
+}
+
+::deep .lesson__button svg {
+    fill: var(--color-gray);
+}
