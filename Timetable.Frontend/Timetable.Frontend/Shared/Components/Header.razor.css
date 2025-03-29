@@ -1,5 +1,7 @@
 .container {
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 nav {
@@ -7,7 +9,6 @@ nav {
     flex-direction: row;
     gap: 0.5em;
     align-items: flex-start;
-    width: 50%;
 }
 
 ::deep .nav-item {
@@ -47,4 +48,12 @@ nav {
 
 ::deep .active:hover {
     background-color: var(--color-white-transparent);
+}
+
+.action-items {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    align-items: flex-end;
+    justify-self: flex-end;
 }
