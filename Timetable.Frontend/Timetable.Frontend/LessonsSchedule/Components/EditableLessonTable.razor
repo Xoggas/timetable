@@ -29,7 +29,7 @@
                     var index = i;
 
                     <td class="cell">
-                        <LessonSelector Lessons="_lessons" @bind-LessonName="row[index]"/>
+                        <LessonSelector Lessons="_lessons" @bind-Value="row[index]"/>
                     </td>
                 }
             }
@@ -44,9 +44,9 @@
     private List<Lesson> _lessons = [];
     private List<List<string>> _table = [];
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        _lessons = LessonListService.GetAllLessons().ToList();
+        _lessons = await LessonListService.GetAllLessons();
     }
 
     protected override void OnParametersSet()

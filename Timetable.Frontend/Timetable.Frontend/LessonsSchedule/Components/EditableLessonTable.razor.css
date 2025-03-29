@@ -20,12 +20,12 @@
     border-radius: 0.25em;
     text-align: center;
     font-weight: 300;
-    width: fit-content;
 }
 
 .cell[index] {
     font-weight: 400;
     padding: 0.5em 0.75em;
+    cursor: default;
 }
 
 .header-cell {
