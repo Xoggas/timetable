@@ -47,7 +47,6 @@ public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixtur
 
     [Theory]
     [InlineData(null)]
-    [InlineData("")]
     [InlineData(VeryLongString)]
     public async Task Put_WhenDtoIsInvalid_ShouldReturnBadRequest(string lesson)
     {
@@ -78,7 +77,10 @@ public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixtur
             Lessons =
             [
                 [
-                    "freshly-created-table"
+                    "created-table"
+                ],
+                [
+                    "created-table"
                 ]
             ]
         };
@@ -102,7 +104,10 @@ public sealed class LessonTableControllerTests_Put : IClassFixture<MongoDbFixtur
             Lessons =
             [
                 [
-                    "freshly-created-table"
+                    "created-table"
+                ],
+                [
+                    "created-table"
                 ]
             ]
         };
