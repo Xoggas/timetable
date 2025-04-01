@@ -18,4 +18,19 @@ public static class DateTimeExtensions
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+    
+    public static string GetDayOfWeekString(this DateTime dateTime)
+    {
+        return dateTime.DayOfWeek switch
+        {
+            DayOfWeek.Monday => "Понедельник",
+            DayOfWeek.Tuesday => "Вторник",
+            DayOfWeek.Wednesday => "Среда",
+            DayOfWeek.Thursday => "Четверг",
+            DayOfWeek.Friday => "Пятница",
+            DayOfWeek.Saturday => "Суббота",
+            DayOfWeek.Sunday => "Воскресенье",
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
 }

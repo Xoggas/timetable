@@ -1,4 +1,8 @@
-﻿@inject LessonTableService LessonTableService
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Timetable.Frontend.Shared.Services
+@inject ApiUrlService ApiUrlService
+@inject LessonTableService LessonTableService
+@implements IAsyncDisposable
 
 <table class="table">
     @foreach (var (row, rowIndex) in _table.Select((x, i) => (x, i)))
@@ -36,11 +40,40 @@
 @code
 {
     [Parameter] public CustomDayOfWeek DayOfWeek { get; set; }
-    
+
+    private HubConnection? _hubConnection;
+
     private List<List<string>> _table = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(ApiUrlService.Retrieve("lessons-schedule"))
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hubConnection.On("Update", async () => await UpdateTable());
+
+        await _hubConnection.StartAsync();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+        await UpdateTable();
+    }
+
+    private async Task UpdateTable()
+    {
         _table = (await LessonTableService.GetByDayOfWeek(DayOfWeek)).Lessons;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection != null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
     }
 }

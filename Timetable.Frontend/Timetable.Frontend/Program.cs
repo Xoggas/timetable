@@ -1,9 +1,11 @@
 using Timetable.Frontend.Components;
 using Timetable.Frontend.LessonsSchedule.Services;
+using Timetable.Frontend.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddTransient<ApiUrlService>();
 builder.Services.AddTransient<LessonListService>();
 builder.Services.AddTransient<LessonTableService>();
 builder.Services.AddTransient<HttpClient>(_ =>

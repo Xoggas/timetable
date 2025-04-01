@@ -1,7 +1,8 @@
 ﻿@page "/lesson-table/viewer"
+@implements IDisposable
 @rendermode InteractiveServer
 
-<div></div>
+<DateTimePanel />
 
 <ViewableLessonTable DayOfWeek="_customDayOfWeek"/>
 
@@ -11,21 +12,22 @@
 {
     private CustomDayOfWeek _customDayOfWeek = DateTime.Today.GetNativeDayOfWeek();
 
+    private CustomTimer? _dayOfWeekUpdateTimer;
+
     protected override void OnInitialized()
     {
-        var thread = new Thread(UpdateDayOfWeek);
-        
-        thread.Start();
+        _dayOfWeekUpdateTimer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateDayOfWeek);
     }
 
-    // ReSharper disable once FunctionNeverReturns
     private void UpdateDayOfWeek()
     {
-        while (true)
-        {
-            _customDayOfWeek = DateTime.Today.GetNativeDayOfWeek();
+        _customDayOfWeek = DateTime.Today.GetNativeDayOfWeek();
 
-            Thread.Sleep(TimeSpan.FromMinutes(1));
-        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _dayOfWeekUpdateTimer?.Dispose();
     }
 }

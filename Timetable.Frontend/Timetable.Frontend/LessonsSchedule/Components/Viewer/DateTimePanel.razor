@@ -1,0 +1,31 @@
+﻿@rendermode InteractiveServer
+@implements IDisposable
+
+<div class="container">
+    @_dateTime.GetDayOfWeekString()
+    @_dateTime
+</div>
+
+@code
+{
+    private DateTime _dateTime = DateTime.Now;
+
+    private CustomTimer? _dateTimeUpdateTimer;
+
+    protected override void OnInitialized()
+    {
+        _dateTimeUpdateTimer = new CustomTimer(TimeSpan.FromSeconds(1), Update);
+    }
+
+    private void Update()
+    {
+        _dateTime = DateTime.Now;
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _dateTimeUpdateTimer?.Dispose();
+    }
+}
