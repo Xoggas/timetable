@@ -84,24 +84,31 @@
     }
 </table>
 
-<ModalWindow @ref="_tableModificationModal">
+<ConfirmationModal @ref="_tableModificationModal">
     <Content>
         Вы хотите удалить колонку/строку?
     </Content>
-</ModalWindow>
+</ConfirmationModal>
 
-<ModalWindow @ref="_backupModal">
+<ConfirmationModal @ref="_backupModal">
     <Content>
         Вы хотите перезаписать резервную копию?
     </Content>
-</ModalWindow>
+</ConfirmationModal>
 
-<ModalWindow @ref="_restoreModal">
+<ConfirmationModal @ref="_restoreModal">
     <Content>
         <p>Вы хотите восстановить данные из резервной копии?</p>
         <p>Данные будут перезаписаны сразу!</p>
     </Content>
-</ModalWindow>
+</ConfirmationModal>
+
+<AlertModal @ref="_backupDoesntExistModal">
+    <Content>
+        <p>Резервной копии не существует!</p>
+        <p>Для начала создайте её.</p>
+    </Content>
+</AlertModal>
 
 @code
 {
@@ -111,9 +118,10 @@
     private int RowsCount => _table.Count;
     private int ColumnsCount => _table.Count > 0 ? _table[0].Count : 0;
 
-    private ModalWindow _tableModificationModal = null!;
-    private ModalWindow _backupModal = null!;
-    private ModalWindow _restoreModal = null!;
+    private ConfirmationModal _tableModificationModal = null!;
+    private ConfirmationModal _backupModal = null!;
+    private ConfirmationModal _restoreModal = null!;
+    private AlertModal _backupDoesntExistModal = null!;
 
     private CustomDayOfWeek _oldDayOfWeek;
     private List<Lesson> _lessons = [];
@@ -130,12 +138,29 @@
 
     public void Backup()
     {
-        _backupModal.Show(() => { });
+        _backupModal.Show(async () =>
+        {
+            await LessonTableService.MakeBackup(DayOfWeek);
+        });
     }
 
     public void Restore()
     {
-        _restoreModal.Show(() => { });
+        _restoreModal.Show(async () =>
+        {
+            var restoredTable = await LessonTableService.RestoreBackup(DayOfWeek);
+            
+            if (restoredTable is null)
+            {
+                _backupDoesntExistModal.Show();
+            }
+            else
+            {
+                _table = restoredTable.Lessons;
+                
+                StateHasChanged();
+            }
+        });
     }
 
     protected override async Task OnInitializedAsync()

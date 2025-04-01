@@ -1,0 +1,35 @@
+﻿@if (_isVisible)
+{
+    <div class="overlay">
+        <div class="container">
+            <div class="content">
+                @Content
+            </div>
+            <div class="buttons">
+                <Button class="button" @onclick="Close">
+                    <Label>
+                        ОК
+                    </Label>
+                </Button>
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public RenderFragment? Content { get; set; }
+
+    private bool _isVisible;
+
+    public void Show()
+    {
+        _isVisible = true;
+        StateHasChanged();
+    }
+
+    private void Close()
+    {
+        _isVisible = false;
+    }
+}

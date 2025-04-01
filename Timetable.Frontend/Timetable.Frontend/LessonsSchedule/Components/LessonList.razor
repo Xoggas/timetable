@@ -37,15 +37,15 @@
     </Button>
 </div>
 
-<ModalWindow @ref="_lessonDeletionModal">
+<ConfirmationModal @ref="_lessonDeletionModal">
     <Content>
         Вы хотите удалить урок?
     </Content>
-</ModalWindow>
+</ConfirmationModal>
 
 @code
 {
-    private ModalWindow _lessonDeletionModal = null!;
+    private ConfirmationModal _lessonDeletionModal = null!;
 
     private List<Lesson> _lessons = [];
 

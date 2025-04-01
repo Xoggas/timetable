@@ -1,4 +1,5 @@
-﻿using Timetable.Frontend.LessonsSchedule.Models;
+﻿using System.Net;
+using Timetable.Frontend.LessonsSchedule.Models;
 
 namespace Timetable.Frontend.LessonsSchedule.Services;
 
@@ -20,5 +21,22 @@ public sealed class LessonTableService
     public async Task UpdateByDayOfWeek(CustomDayOfWeek dayOfWeek, LessonTable lessonTable)
     {
         await _httpClient.PutAsJsonAsync($"api/lesson-table/{dayOfWeek}", lessonTable);
+    }
+
+    public async Task MakeBackup(CustomDayOfWeek dayOfWeek)
+    {
+        await _httpClient.PostAsync($"api/lesson-table/{dayOfWeek}/backup", null);
+    }
+
+    public async Task<LessonTable?> RestoreBackup(CustomDayOfWeek dayOfWeek)
+    {
+        var response = await _httpClient.PostAsync($"api/lesson-table/{dayOfWeek}/restore", null);
+
+        if (response.StatusCode is HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+        
+        return await response.Content.ReadFromJsonAsync<LessonTable>();
     }
 }
