@@ -1,8 +1,6 @@
-## 🕒 School Time-Table Management System
+## 🕒 School Timetable Management System
 
-Welcome to the **Time-Table Management System**! This project is designed to help schools efficiently manage their schedules and bell timings. It consists of two main modules: one for managing class schedules and another for managing bell timings. 
-
----
+Welcome to the **Timetable Management System**! This project is designed to help schools efficiently manage their schedules and bell timings. It consists of two main modules: one for managing class schedules and another for managing bell timings.
 
 ## 🔧 Features
 
@@ -14,24 +12,15 @@ Welcome to the **Time-Table Management System**! This project is designed to hel
 ### Bell Management Module
 *(Details coming soon!)*
 
----
-
-## Technology Stack
-
-This project is built with:
-- **ASP.NET Core Web API**: A powerful framework for building web APIs.
-- **SignalR**: For real-time communication features.
-- **MongoDB**: A NoSQL database for efficient data storage and retrieval.
-- **Blazor**: A powerful frontend framework for building web UI applications.
-
----
+## 🛠️ Technology Stack
+- 🖥️ **ASP.NET Core Web API**: A powerful framework for building web APIs.
+- ⚡ **SignalR**: For real-time communication features.
+- 🗄️ **MongoDB**: A NoSQL database for efficient data storage and retrieval.
+- 🌐 **Blazor**: A powerful frontend framework for building web UI applications.
 
 ## 🐋 DockerHub Repositories
-
-- **Frontend**: [Repository](https://hub.docker.com/repository/docker/xoggas/timetable.frontend/general)  
-- **API**: [Repository](https://hub.docker.com/repository/docker/xoggas/timetable.api/general)
-
----
+- 🖥️ **Frontend**: [Docker Image for Blazor Frontend](https://hub.docker.com/repository/docker/xoggas/timetable.frontend/general)  
+- 🔧 **API**: [Docker Image for ASP.NET Core API](https://hub.docker.com/repository/docker/xoggas/timetable.api/general)
 
 ## License
 
