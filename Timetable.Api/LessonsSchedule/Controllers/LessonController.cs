@@ -2,7 +2,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Timetable.Api.LessonsSchedule.Dtos;
-using Timetable.Api.LessonsSchedule.Entities;
 using Timetable.Api.LessonsSchedule.Services;
 
 namespace Timetable.Api.LessonsSchedule.Controllers;

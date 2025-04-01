@@ -1,0 +1,44 @@
+﻿services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - custom-network
+
+  timetable.api:
+    image: xoggas/timetable.api
+    build:
+      context: .
+      dockerfile: Timetable.Api/Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - mongo
+    networks:
+      - custom-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+  
+  timetable.frontend:
+    image: xoggas/timetable.frontend
+    ports:
+      - "80:8080"
+    depends_on:
+      - timetable.api
+    build:
+      context: .
+      dockerfile: Timetable.Frontend/Dockerfile
+    networks:
+      - custom-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+
+networks:
+  custom-network:
+    external: false
+
+volumes:
+  mongo-data:

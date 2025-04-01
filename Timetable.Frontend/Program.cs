@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Timetable.Frontend.Components;
 using Timetable.Frontend.LessonsSchedule.Services;
 using Timetable.Frontend.Shared.Services;
@@ -11,10 +12,10 @@ builder.Services.AddTransient<LessonTableService>();
 builder.Services.AddTransient<HttpClient>(_ =>
 {
     var client = new HttpClient();
-    
+
     client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("ApiUrl") ??
                                  throw new ArgumentException("Api Url not configured."));
-    
+
     return client;
 });
 

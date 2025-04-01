@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
-@inject IConfiguration Configuration
+﻿@using Timetable.Frontend.Shared.Services
+@inherits LayoutComponentBase
+@inject ApiUrlService ApiUrlService
 
 <div class="main-layout-container">
     @Body
@@ -17,10 +18,7 @@
 
     protected override void OnInitialized()
     {
-        var apiUrlBase = Configuration.GetConnectionString("ApiUrl") ??
-                         throw new ArgumentException("Api Url not configured.");
-
-        _randomBackgroundImageEndpointUrl = Path.Join(apiUrlBase, "/api/random-background-image");
+        _randomBackgroundImageEndpointUrl = ApiUrlService.Retrieve("/api/random-background-image", "BackgroundApiUrl");
     }
 }
 
