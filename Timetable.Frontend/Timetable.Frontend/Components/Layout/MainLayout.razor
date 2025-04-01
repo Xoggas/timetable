@@ -1,5 +1,26 @@
 ﻿@inherits LayoutComponentBase
+@inject IConfiguration Configuration
 
-<div class="container">
+<div class="main-layout-container">
     @Body
 </div>
+
+<style>
+    .main-layout-container {
+        background: linear-gradient(45deg, rgba(47, 47, 51, 0.8), rgba(63, 64, 69, 0.8)), url("@_randomBackgroundImageEndpointUrl");
+    }
+</style>
+
+@code
+{
+    private string _randomBackgroundImageEndpointUrl = null!;
+
+    protected override void OnInitialized()
+    {
+        var apiUrlBase = Configuration.GetConnectionString("ApiUrl") ??
+                         throw new ArgumentException("Api Url not configured.");
+
+        _randomBackgroundImageEndpointUrl = Path.Join(apiUrlBase, "/api/random-background-image");
+    }
+}
+

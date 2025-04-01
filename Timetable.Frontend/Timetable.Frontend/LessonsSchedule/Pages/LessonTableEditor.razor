@@ -3,29 +3,71 @@
 
 <Header>
     <ActionItems>
-        <Button>
-            <InnerHtml>
+        <Button class="action-item"
+                @onclick="ToggleEditingMode"
+                IsTransparent="@_isTableBeingEdited"
+                LabelAlwaysVisible="false">
+            <Icon>
+                <EditIcon/>
+            </Icon>
+            <Label>
+                Редакт. таблицу
+            </Label>
+        </Button>
+        <Button class="action-item" LabelAlwaysVisible="false" @onclick="Restore">
+            <Icon>
                 <RestoreIcon/>
-            </InnerHtml>
+            </Icon>
+            <Label>
+                Восст. копию
+            </Label>
         </Button>
-        <Button>
-            <InnerHtml>
+        <Button class="action-item" LabelAlwaysVisible="false" @onclick="Backup">
+            <Icon>
                 <BackupIcon/>
-            </InnerHtml>
+            </Icon>
+            <Label>
+                Создать копию
+            </Label>
         </Button>
-        <Button>
-            <InnerHtml>
+        <Button class="action-item" @onclick="Save" LabelAlwaysVisible="false">
+            <Icon>
                 <SaveIcon/>
-            </InnerHtml>
+            </Icon>
+            <Label>
+                Сохранить
+            </Label>
         </Button>
     </ActionItems>
 </Header>
 
-<EditableLessonTable DayOfWeek="_customDayOfWeek"/>
+<EditableLessonTable IsBeingEdited="_isTableBeingEdited" DayOfWeek="_customDayOfWeek" @ref="_lessonTable"/>
 
 <DayOfWeekSelector @bind-DayOfWeek="_customDayOfWeek"/>
 
 @code
 {
     private CustomDayOfWeek _customDayOfWeek = DateTime.Today.GetNativeDayOfWeek();
+    private EditableLessonTable _lessonTable = null!;
+    private bool _isTableBeingEdited;
+
+    private async Task Save()
+    {
+        await _lessonTable.Save();
+    }
+
+    private void Backup()
+    {
+        _lessonTable.Backup();
+    }
+
+    private void Restore()
+    {
+        _lessonTable.Restore();
+    }
+
+    private void ToggleEditingMode()
+    {
+        _isTableBeingEdited = !_isTableBeingEdited;
+    }
 }

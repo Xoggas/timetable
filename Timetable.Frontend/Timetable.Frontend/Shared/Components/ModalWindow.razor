@@ -1,0 +1,50 @@
+﻿@if (_isVisible)
+{
+    <div class="overlay">
+        <div class="container">
+            <div class="content">
+                @Content
+            </div>
+            <div class="buttons">
+                <Button class="button" @onclick="Confirm">
+                    <Label>
+                        Да
+                    </Label>
+                </Button>
+                <Button class="button" @onclick="Cancel">
+                    <Label>
+                        Отмена
+                    </Label>
+                </Button>
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public RenderFragment? Content { get; set; }
+
+    private bool _isVisible;
+    private Action? _confirmed;
+
+    public void Show(Action confirmed)
+    {
+        _confirmed = confirmed;
+        _isVisible = true;
+        StateHasChanged();
+    }
+
+    private void Confirm()
+    {
+        _confirmed?.Invoke();
+        _confirmed = null;
+        _isVisible = false;
+    }
+
+    private void Cancel()
+    {
+        _confirmed = null;
+        _isVisible = false;
+    }
+}

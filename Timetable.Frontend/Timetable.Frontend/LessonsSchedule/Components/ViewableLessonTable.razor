@@ -1,0 +1,46 @@
+﻿@inject LessonTableService LessonTableService
+
+<table class="table">
+    @foreach (var (row, rowIndex) in _table.Select((x, i) => (x, i)))
+    {
+        <tr class="row">
+            @if (rowIndex == 0)
+            {
+                <!-- filling cell -->
+                <td></td>
+
+                @foreach (var title in row)
+                {
+                    <td class="header-cell">
+                        @title
+                    </td>
+                }
+            }
+            else
+            {
+                <td class="cell" index>
+                    @rowIndex
+                </td>
+
+                @foreach (var lesson in row)
+                {
+                    <td class="cell">
+                        @lesson
+                    </td>
+                }
+            }
+        </tr>
+    }
+</table>
+
+@code
+{
+    [Parameter] public CustomDayOfWeek DayOfWeek { get; set; }
+    
+    private List<List<string>> _table = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _table = (await LessonTableService.GetByDayOfWeek(DayOfWeek)).Lessons;
+    }
+}

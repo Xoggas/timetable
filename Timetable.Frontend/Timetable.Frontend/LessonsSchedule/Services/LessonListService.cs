@@ -4,25 +4,36 @@ namespace Timetable.Frontend.LessonsSchedule.Services;
 
 public sealed class LessonListService
 {
-    private static readonly List<Lesson> s_lessons = [];
+    private readonly HttpClient _httpClient;
+
+    public LessonListService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
 
     public async Task<List<Lesson>> GetAllLessons()
     {
-        return await Task.FromResult(s_lessons);
+        var lessons = await _httpClient.GetFromJsonAsync<List<Lesson>>("api/lesson");
+
+        return lessons ?? [];
     }
 
     public async Task<Lesson> CreateLesson()
     {
-        var lesson = new Lesson
-        {
-            Id = Guid.NewGuid().ToString()
-        };
+        var response = await _httpClient.PostAsJsonAsync("api/lesson", new Lesson());
+
+        var lesson = await response.Content.ReadFromJsonAsync<Lesson>();
         
-        return await Task.FromResult(lesson);
+        return lesson ??  throw new Exception("Lesson wasn't created");
     }
 
     public async Task DeleteLesson(Lesson lesson)
     {
-        await Task.CompletedTask;
+        await _httpClient.DeleteAsync($"api/lesson/{lesson.Id}");
+    }
+
+    public async Task UpdateLesson(Lesson lesson)
+    {
+        await _httpClient.PutAsJsonAsync($"api/lesson/{lesson.Id}", lesson);
     }
 }

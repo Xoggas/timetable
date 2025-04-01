@@ -4,16 +4,17 @@ using Timetable.Frontend.LessonsSchedule.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-
+builder.Services.AddTransient<LessonListService>();
+builder.Services.AddTransient<LessonTableService>();
 builder.Services.AddTransient<HttpClient>(_ =>
 {
     var client = new HttpClient();
+    
     client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("ApiUrl") ??
                                  throw new ArgumentException("Api Url not configured."));
+    
     return client;
 });
-
-builder.Services.AddTransient<LessonListService>();
 
 var app = builder.Build();
 

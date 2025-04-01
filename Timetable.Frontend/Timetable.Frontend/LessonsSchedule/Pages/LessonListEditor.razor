@@ -3,10 +3,13 @@
 
 <Header>
     <ActionItems>
-        <Button @onclick="() => _lessonListRef?.Save()">
-            <InnerHtml>
+        <Button @onclick="Save" LabelAlwaysVisible="false">
+            <Icon>
                 <SaveIcon/>
-            </InnerHtml>
+            </Icon>
+            <Label>
+                Сохранить
+            </Label>
         </Button>
     </ActionItems>
 </Header>
@@ -17,5 +20,10 @@
 
 @code 
 {
-    private LessonList? _lessonListRef;
+    private LessonList _lessonListRef = null!;
+    
+    private async Task Save()
+    {
+        await _lessonListRef.Save();
+    }
 }

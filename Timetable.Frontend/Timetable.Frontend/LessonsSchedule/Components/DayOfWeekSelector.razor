@@ -1,10 +1,12 @@
 ﻿<div class="container">
     @foreach (var dayOfWeek in Enum.GetValues<CustomDayOfWeek>())
     {
-        <Button IsTransparent="IsActive(dayOfWeek)" @onclick="() => SetDayOfWeek(dayOfWeek)">
-            <InnerHtml>
+        <Button IsTransparent="IsActive(dayOfWeek)" 
+                LabelAlwaysVisible="true"
+                @onclick="() => SetDayOfWeek(dayOfWeek)">
+            <Label>
                 @dayOfWeek.ToShortString()
-            </InnerHtml>
+            </Label>
         </Button>
     }
 </div>

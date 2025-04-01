@@ -1,5 +1,22 @@
-﻿<div @attributes="AdditionalAttributes" is-transparent="@IsTransparent">
-    @InnerHtml
+﻿<div @attributes="AdditionalAttributes"
+     id="custom-button"
+     is-transparent="@IsTransparent">
+    @if (Icon is not null)
+    {
+        <div class="custom-button__icon"
+             is-transparent="@IsTransparent">
+            @Icon
+        </div>
+    }
+
+    @if (Label is not null)
+    {
+        <div class="custom-button__label"
+             is-transparent="@IsTransparent"
+             label-always-visible="@LabelAlwaysVisible">
+            @Label
+        </div>
+    }
 </div>
 
 @code
@@ -7,6 +24,8 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-    [Parameter] public RenderFragment? InnerHtml { get; set; }
+    [Parameter] public RenderFragment? Icon { get; set; }
+    [Parameter] public RenderFragment? Label { get; set; }
     [Parameter] public bool IsTransparent { get; set; }
+    [Parameter] public bool LabelAlwaysVisible { get; set; } = true;
 }

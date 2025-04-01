@@ -1,4 +1,5 @@
 ﻿@inject LessonListService LessonListService
+@inject LessonTableService LessonTableService
 
 <table class="table">
     @foreach (var (row, rowIndex) in _table.Select((x, i) => (x, i)))
@@ -14,7 +15,7 @@
                     var index = i;
 
                     <td class="header-cell">
-                        <input @bind="row[index]"/>
+                        <input @bind="row[index]" placeholder="Название класса"/>
                     </td>
                 }
             }
@@ -29,33 +30,161 @@
                     var index = i;
 
                     <td class="cell">
-                        <LessonSelector Lessons="_lessons" @bind-Value="row[index]"/>
+                        <LessonSelector Lessons="_lessons" @bind-Name="row[index]"/>
                     </td>
+                }
+
+                @if (IsBeingEdited)
+                {
+                    <td class="button" @onclick="() => RemoveRow(rowIndex)" disabled="@(RowsCount == 2)">
+                        <div>
+                            <DeleteIcon/>
+                        </div>
+                    </td>
+
+                    @if (rowIndex == 1)
+                    {
+                        <td class="button" @onclick="AddColumn" rowspan="@(RowsCount - 1)">
+                            <div>
+                                <AddIcon/>
+                            </div>
+                        </td>
+                    }
                 }
             }
         </tr>
     }
+
+    @if (IsBeingEdited)
+    {
+        <tr>
+            <!-- filling cell -->
+            <td></td>
+            @for (var i = 0; i < ColumnsCount; i++)
+            {
+                var index = i;
+
+                <td class="button" disabled="@(ColumnsCount == 1)" @onclick="() => RemoveColumn(index)">
+                    <div>
+                        <DeleteIcon/>
+                    </div>
+                </td>
+            }
+        </tr>
+
+        <tr>
+            <!-- filling cell -->
+            <td></td>
+            <td class="button" colspan="@ColumnsCount" @onclick="AddRow">
+                <div>
+                    <AddIcon/>
+                </div>
+            </td>
+        </tr>
+    }
 </table>
+
+<ModalWindow @ref="_tableModificationModal">
+    <Content>
+        Вы хотите удалить колонку/строку?
+    </Content>
+</ModalWindow>
+
+<ModalWindow @ref="_backupModal">
+    <Content>
+        Вы хотите перезаписать резервную копию?
+    </Content>
+</ModalWindow>
+
+<ModalWindow @ref="_restoreModal">
+    <Content>
+        <p>Вы хотите восстановить данные из резервной копии?</p>
+        <p>Данные будут перезаписаны сразу!</p>
+    </Content>
+</ModalWindow>
 
 @code
 {
+    [Parameter] public bool IsBeingEdited { get; set; }
     [Parameter] public CustomDayOfWeek DayOfWeek { get; set; }
 
+    private int RowsCount => _table.Count;
+    private int ColumnsCount => _table.Count > 0 ? _table[0].Count : 0;
+
+    private ModalWindow _tableModificationModal = null!;
+    private ModalWindow _backupModal = null!;
+    private ModalWindow _restoreModal = null!;
+
+    private CustomDayOfWeek _oldDayOfWeek;
     private List<Lesson> _lessons = [];
     private List<List<string>> _table = [];
+
+    public async Task Save()
+    {
+        await LessonTableService.UpdateByDayOfWeek(DayOfWeek, new LessonTable
+        {
+            DayOfWeek = DayOfWeek,
+            Lessons = _table
+        });
+    }
+
+    public void Backup()
+    {
+        _backupModal.Show(() => { });
+    }
+
+    public void Restore()
+    {
+        _restoreModal.Show(() => { });
+    }
 
     protected override async Task OnInitializedAsync()
     {
         _lessons = await LessonListService.GetAllLessons();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        _table.Clear();
-
-        for (var i = 0; i < 6; i++)
+        if (_oldDayOfWeek != DayOfWeek)
         {
-            _table.Add(Enumerable.Repeat(string.Empty, 10).ToList());
+            _table = (await LessonTableService.GetByDayOfWeek(DayOfWeek)).Lessons;
+            _oldDayOfWeek = DayOfWeek;
         }
+    }
+
+    private void AddColumn()
+    {
+        foreach (var row in _table)
+        {
+            row.Add(string.Empty);
+        }
+    }
+
+    private void AddRow()
+    {
+        _table.Add(Enumerable.Repeat(string.Empty, ColumnsCount).ToList());
+    }
+
+    private void RemoveColumn(int index)
+    {
+        _tableModificationModal.Show(() =>
+        {
+            foreach (var row in _table)
+            {
+                row.RemoveAt(index);
+            }
+
+            StateHasChanged();
+        });
+    }
+
+    private void RemoveRow(int index)
+    {
+        _tableModificationModal.Show(() =>
+        {
+            _table.RemoveAt(index);
+
+            StateHasChanged();
+        });
     }
 }

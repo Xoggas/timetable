@@ -1,4 +1,4 @@
-﻿div {
+﻿#custom-button {
     background-color: var(--color-white);
     color: var(--color-gray);
     border-radius: 0.5em;
@@ -7,22 +7,63 @@
     cursor: pointer;
     transition: 150ms;
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     border: 1px solid rgba(0, 0, 0, 0);
+    gap: 0.25em;
 }
 
-div:hover {
+#custom-button:hover {
     background-color: var(--color-white-hover);
 }
 
-div:active {
+#custom-button:active {
     background-color: var(--color-white-press);
 }
 
-div[is-transparent] {
+#custom-button[is-transparent] {
     background-color: var(--color-white-transparent);
     color: var(--color-white);
     border: 1px solid var(--color-white);
     backdrop-filter: blur(16px);
+}
+
+#custom-button[disabled] {
+    background-color: var(--color-white-transparent);
+    color: var(--color-white);
+    border: 1px solid var(--color-white);
+    backdrop-filter: blur(16px);
+    cursor: default;
+    pointer-events: none;
+}
+
+.custom-button__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+::deep .custom-button__icon svg {
+    fill: var(--color-gray);
+    transition: 150ms;
+}
+
+::deep .custom-button__icon[is-transparent] svg {
+    fill: var(--color-white);
+}
+
+.custom-button__label {
+    display: none;
+    white-space: nowrap;
+}
+
+@media (width >= 95em) {
+    .custom-button__label {
+        display: block;
+    }
+}
+
+.custom-button__label[label-always-visible] {
+    display: block;
 }

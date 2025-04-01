@@ -16,32 +16,44 @@
                     <div class="lesson__index">
                         @index
                     </div>
-                    <input maxlength="20" class="lesson__text-input" type="text" @bind="@lesson.Name"/>
+                    <input maxlength="20"
+                           class="lesson__text-input"
+                           type="text"
+                           @bind="@lesson.Name"
+                           placeholder="Название урока"/>
                     <Button class="lesson__button" @onclick="() => DeleteLesson(lesson)">
-                        <InnerHtml>
+                        <Icon>
                             <DeleteIcon/>
-                        </InnerHtml>
+                        </Icon>
                     </Button>
                 </div>
             }
         </div>
     </div>
     <Button class="lesson__button" @onclick="AddLesson">
-        <InnerHtml>
+        <Icon>
             <AddIcon/>
-        </InnerHtml>
+        </Icon>
     </Button>
 </div>
 
+<ModalWindow @ref="_lessonDeletionModal">
+    <Content>
+        Вы хотите удалить урок?
+    </Content>
+</ModalWindow>
+
 @code
 {
+    private ModalWindow _lessonDeletionModal = null!;
+
     private List<Lesson> _lessons = [];
 
-    public void Save()
+    public async Task Save()
     {
-        
+        await Task.WhenAll(_lessons.Select(UpdateLesson));
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         _lessons = await LessonListService.GetAllLessons();
@@ -54,10 +66,20 @@
         _lessons.Add(lesson);
     }
 
-    private async Task DeleteLesson(Lesson lesson)
+    private void DeleteLesson(Lesson lesson)
     {
-        await LessonListService.DeleteLesson(lesson);
+        _lessonDeletionModal.Show(async () =>
+        {
+            await LessonListService.DeleteLesson(lesson);
 
-        _lessons.Remove(lesson);
+            _lessons.Remove(lesson);
+
+            StateHasChanged();
+        });
+    }
+
+    private async Task UpdateLesson(Lesson lesson)
+    {
+        await LessonListService.UpdateLesson(lesson);
     }
 }

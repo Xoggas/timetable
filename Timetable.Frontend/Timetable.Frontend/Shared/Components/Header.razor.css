@@ -15,7 +15,7 @@ nav {
     background-color: var(--color-white);
     color: var(--color-gray);
     border-radius: 0.5em;
-    padding: 0.35em;
+    padding: 0.35em 0.5em;
     font-weight: 700;
     cursor: pointer;
     transition: 150ms;
@@ -23,8 +23,14 @@ nav {
     justify-content: center;
     align-items: center;
     border: 1px solid rgba(0, 0, 0, 0);
-    height: 100%;
-    aspect-ratio: 1 / 1;
+    gap: 0.35em;
+    text-decoration: none;
+}
+
+::deep .nav-item__text {
+    display: none;
+    white-space: nowrap;
+    width: 100%;
 }
 
 ::deep .active {
@@ -56,4 +62,10 @@ nav {
     gap: 0.5em;
     align-items: flex-end;
     justify-self: flex-end;
+}
+
+@media screen and (width >= 95em) {
+    ::deep .nav-item__text {
+        display: block;
+    }
 }

@@ -1,7 +1,8 @@
 ﻿<input class="lesson-selector"
        type="text"
        list="lessons"
-       @bind="SelectedLessonName"/>
+       @bind="CurrentName"
+       placeholder="Урок"/>
 
 <datalist id="lessons">
     @foreach (var lesson in Lessons.OrderBy(x => x.Name))
@@ -13,21 +14,21 @@
 @code
 {
     [Parameter] public required IEnumerable<Lesson> Lessons { get; set; }
-    [Parameter] public string? Value { get; set; }
-    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public EventCallback<string?> NameChanged { get; set; }
 
-    private string? SelectedLessonName
+    private string? CurrentName
     {
-        get => Value;
+        get => Name;
         set
         {
-            if (Value == value)
+            if (Name == value)
             {
                 return;
             }
 
-            Value = value;
-            ValueChanged.InvokeAsync(value);
+            Name = value;
+            NameChanged.InvokeAsync(value);
         }
     }
 }
