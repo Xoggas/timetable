@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Timetable.Api.LessonsSchedule.Dtos;
 using Timetable.Api.LessonsSchedule.Repositories;
+using Timetable.Api.Tests.Integration.Extensions;
 using Timetable.Api.Tests.Integration.Shared;
 using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
@@ -13,6 +14,15 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
 {
     private readonly HttpClient _client;
     private readonly ILessonTablesRepository _lessonTablesRepository;
+    private readonly string[][] _emptyLessonTable =
+    [
+        [
+            string.Empty
+        ],
+        [
+            string.Empty
+        ]
+    ];
 
     public LessonTableControllerTests_Get(MongoDbFixture dbFixture)
     {
@@ -41,7 +51,7 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
         var expectedResult = new LessonTableDto
         {
             DayOfWeek = dayOfWeek,
-            Lessons = []
+            Lessons = _emptyLessonTable
         };
 
         Assert.False(await TableExists(dayOfWeek));
@@ -52,7 +62,7 @@ public sealed class LessonTableControllerTests_Get : IClassFixture<MongoDbFixtur
 
         Assert.Equal(expectedResult, lessonTable, (a, b) =>
             a.DayOfWeek == b.DayOfWeek &&
-            a.Lessons.SequenceEqual(b.Lessons));
+            a.Lessons.StringArraysEqual(b.Lessons));
     }
 
     private async Task<bool> TableExists(Common_DayOfWeek dayOfWeek)

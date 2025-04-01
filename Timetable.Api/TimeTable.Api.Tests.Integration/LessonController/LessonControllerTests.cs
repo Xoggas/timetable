@@ -29,27 +29,12 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
         Assert.NotNull(content);
 
         var lesson = content.First();
-
-        const string expectedName = "created_lesson";
-
-        Assert.Equal(expectedName, lesson.Name);
+        
+        Assert.Equal(string.Empty, lesson.Name);
     }
 
     [Fact]
-    public async Task Post_WhenNameIsInvalid_ShouldReturnBadRequest()
-    {
-        var createLessonDto = new CreateLessonDto
-        {
-            Name = new string('a', 50)
-        };
-
-        var response = await _client.PostAsJsonAsync("api/lesson", createLessonDto);
-
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task Post_WhenNameIsValid_ShouldCreateLesson()
+    public async Task Post_ShouldCreateLesson()
     {
         var createdLesson = await CreateTempLesson();
 
@@ -148,21 +133,14 @@ public sealed class LessonControllerTests : IClassFixture<MongoDbFixture>
 
     private async Task<LessonDto> CreateTempLesson()
     {
-        var createLessonDto = new CreateLessonDto
-        {
-            Name = "created_lesson"
-        };
+        var response = await _client.PostAsJsonAsync<LessonDto>("api/lesson", null);
 
-        var response = await _client.PostAsJsonAsync("api/lesson", createLessonDto);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var createdLessonDto = await response.Content.ReadFromJsonAsync<LessonDto>();
 
-        var createdLesson = await response.Content.ReadFromJsonAsync<LessonDto>();
+        Assert.NotNull(createdLessonDto);
 
-        Assert.NotNull(createdLesson);
-
-        Assert.Equal(createLessonDto.Name, createdLesson.Name);
-
-        return createdLesson;
+        return createdLessonDto;
     }
 }

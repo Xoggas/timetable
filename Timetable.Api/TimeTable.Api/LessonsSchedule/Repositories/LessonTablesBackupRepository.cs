@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 using Timetable.Api.LessonsSchedule.Entities;
-using Timetable.Api.Shared;
+using Timetable.Api.Shared.Services;
 using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 

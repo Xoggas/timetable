@@ -57,28 +57,23 @@ public sealed class LessonControllerTests
     {
         var lessonEntity = _fixture.Create<Lesson>();
 
-        var createLessonDto = _fixture
-            .Build<CreateLessonDto>()
-            .With(x => x.Name, lessonEntity.Name)
-            .Create();
-
         var lessonDto = _fixture
             .Build<LessonDto>()
             .With(x => x.Id, lessonEntity.Id)
             .With(x => x.Name, lessonEntity.Name)
             .Create();
 
+        _lessonsServiceMock
+            .Setup(x => x.CreateAsync())
+            .ReturnsAsync(lessonEntity);
+
         _mapperMock
             .Setup(x => x.Map<LessonDto>(It.IsAny<Lesson>()))
             .Returns(lessonDto);
 
-        _mapperMock
-            .Setup(x => x.Map<Lesson>(It.IsAny<CreateLessonDto>()))
-            .Returns(lessonEntity);
+        var response = await _controller.Post();
 
-        var response = await _controller.Post(createLessonDto);
-
-        var result = Assert.IsType<OkObjectResult>(response.Result);
+        var result = Assert.IsType<CreatedAtActionResult>(response.Result);
 
         var createdLesson = Assert.IsAssignableFrom<LessonDto>(result.Value);
 
@@ -141,7 +136,7 @@ public sealed class LessonControllerTests
 
         Assert.IsType<NotFoundResult>(result);
     }
-    
+
     [Fact]
     public async Task Delete_WhenIdIsCorrect_ShouldReturnNoContent()
     {

@@ -3,7 +3,8 @@ using MongoDB.Driver;
 using Timetable.Api.LessonsSchedule.Hubs;
 using Timetable.Api.LessonsSchedule.Repositories;
 using Timetable.Api.LessonsSchedule.Services;
-using Timetable.Api.Shared;
+using Timetable.Api.Shared.Services;
+using TimeTableBackend.Shared.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,7 @@ builder.Services.AddTransient<ILessonTablesRepository, LessonTablesRepository>()
 builder.Services.AddTransient<ILessonTablesBackupRepository, LessonTablesBackupRepository>();
 builder.Services.AddTransient<ILessonTableService, LessonTableService>();
 
+builder.Services.AddTransient<BackgroundImageProvider>();
 builder.Services.AddTransient<MongoDbService>();
 builder.Services.AddTransient<IMongoDatabase>(_ =>
 {

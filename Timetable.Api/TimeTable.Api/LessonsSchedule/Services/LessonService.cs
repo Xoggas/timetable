@@ -7,7 +7,7 @@ public interface ILessonsService
 {
     Task<IEnumerable<Lesson>> GetAllAsync();
     Task<Lesson?> GetByIdAsync(string id);
-    Task CreateAsync(Lesson lesson);
+    Task<Lesson> CreateAsync();
     Task UpdateAsync(Lesson lesson);
     Task DeleteAsync(Lesson lesson);
 }
@@ -15,12 +15,10 @@ public interface ILessonsService
 public sealed class LessonService : ILessonsService
 {
     private readonly ILessonsRepository _repository;
-    private readonly IEventService _eventService;
 
-    public LessonService(ILessonsRepository repository, IEventService eventService)
+    public LessonService(ILessonsRepository repository)
     {
         _repository = repository;
-        _eventService = eventService;
     }
 
     public async Task<IEnumerable<Lesson>> GetAllAsync()
@@ -40,21 +38,18 @@ public sealed class LessonService : ILessonsService
         }
     }
 
-    public async Task CreateAsync(Lesson lesson)
+    public async Task<Lesson> CreateAsync()
     {
-        await _repository.CreateAsync(lesson);
-        await _eventService.NotifyAllClientsAboutUpdate();
+        return await _repository.CreateAsync();
     }
 
     public async Task UpdateAsync(Lesson lesson)
     {
         await _repository.UpdateAsync(lesson);
-        await _eventService.NotifyAllClientsAboutUpdate();
     }
 
     public async Task DeleteAsync(Lesson lesson)
     {
         await _repository.DeleteAsync(lesson);
-        await _eventService.NotifyAllClientsAboutUpdate();
     }
 }

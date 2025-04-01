@@ -9,16 +9,14 @@ namespace Timetable.Api.Tests.Unit;
 public sealed class LessonServiceTest
 {
     private readonly Mock<ILessonsRepository> _lessonsRepositoryMock;
-    private readonly Mock<IEventService> _eventServiceMock;
     private readonly Fixture _fixture;
     private readonly LessonService _lessonService;
 
     public LessonServiceTest()
     {
         _lessonsRepositoryMock = new Mock<ILessonsRepository>();
-        _eventServiceMock = new Mock<IEventService>();
         _fixture = new Fixture();
-        _lessonService = new LessonService(_lessonsRepositoryMock.Object, _eventServiceMock.Object);
+        _lessonService = new LessonService(_lessonsRepositoryMock.Object);
     }
 
     [Fact]
@@ -70,13 +68,9 @@ public sealed class LessonServiceTest
     [Fact]
     public async Task CreateAsync_ShouldCallRepositoryAndEventService()
     {
-        var lesson = _fixture.Create<Lesson>();
+        await _lessonService.CreateAsync();
 
-        await _lessonService.CreateAsync(lesson);
-
-        _lessonsRepositoryMock.Verify(x => x.CreateAsync(lesson));
-
-        _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate());
+        _lessonsRepositoryMock.Verify(x => x.CreateAsync());
     }
     
     [Fact]
@@ -87,7 +81,5 @@ public sealed class LessonServiceTest
         await _lessonService.DeleteAsync(lesson);
 
         _lessonsRepositoryMock.Verify(x => x.DeleteAsync(lesson));
-
-        _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate());
     }
 }

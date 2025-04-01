@@ -19,6 +19,12 @@
     <ItemGroup>
         <Folder Include="BellsSchedule\"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="BackgroundImages\**\*.*">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
     
     <ItemGroup>
         <InternalsVisibleTo Include="TimeTable.Api.Tests.Integration" />

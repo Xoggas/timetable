@@ -4,6 +4,6 @@ namespace Timetable.Api.LessonsSchedule.Dtos;
 
 public sealed class UpdateLessonTableDto
 {
-    [MinMaxLength(1, 40)]
+    [MinMaxLength(0, 20)]
     public string[][] Lessons { get; init; } = [];
 }

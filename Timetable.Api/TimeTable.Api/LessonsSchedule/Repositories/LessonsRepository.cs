@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 using Timetable.Api.LessonsSchedule.Entities;
-using Timetable.Api.Shared;
+using Timetable.Api.Shared.Services;
 
 namespace Timetable.Api.LessonsSchedule.Repositories;
 
@@ -8,7 +8,7 @@ public interface ILessonsRepository
 {
     Task<IEnumerable<Lesson>> GetAllAsync();
     Task<Lesson?> GetByIdAsync(string id);
-    Task CreateAsync(Lesson lesson);
+    Task<Lesson> CreateAsync();
     Task UpdateAsync(Lesson lesson);
     Task DeleteAsync(Lesson lesson);
 }
@@ -36,9 +36,13 @@ public sealed class LessonsRepository : ILessonsRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task CreateAsync(Lesson lesson)
+    public async Task<Lesson> CreateAsync()
     {
+        var lesson = new Lesson();
+        
         await _lessonsCollection.InsertOneAsync(lesson);
+
+        return lesson;
     }
 
     public async Task UpdateAsync(Lesson lesson)

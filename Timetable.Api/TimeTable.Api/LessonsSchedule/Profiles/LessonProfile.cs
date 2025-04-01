@@ -9,7 +9,6 @@ public sealed class LessonProfile : Profile
     public LessonProfile()
     {
         CreateMap<Lesson, LessonDto>();
-        CreateMap<CreateLessonDto, Lesson>();
         CreateMap<UpdateLessonDto, Lesson>();
     }
 }

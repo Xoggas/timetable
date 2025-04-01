@@ -35,26 +35,41 @@ public class LessonController : ControllerBase
 
         return Ok(_mapper.Map<IEnumerable<LessonDto>>(lessons));
     }
+    
+    /// <summary>
+    /// Retrieves a lesson by id.
+    /// </summary>
+    /// <returns>Found lesson.</returns>
+    /// <response code="200">Returns the lesson by id.</response>
+    /// <response code="404">Lesson not found.</response>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(IEnumerable<LessonDto>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<LessonDto>>> Get(string id)
+    {
+        var lesson = await _lessonsService.GetByIdAsync(id);
+
+        if (lesson is null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(_mapper.Map<IEnumerable<LessonDto>>(lesson));
+    }
 
     /// <summary>
     /// Creates a new lesson.
     /// </summary>
-    /// <param name="dto">The data for the lesson to create.</param>
     /// <returns>The created lesson.</returns>
     /// <response code="200">Returns the created lesson.</response>
-    /// <response code="400">Validation error.</response>
     [HttpPost]
     [ProducesResponseType(typeof(LessonDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<LessonDto>> Post(CreateLessonDto dto)
+    public async Task<ActionResult<LessonDto>> Post()
     {
-        var lessonEntity = _mapper.Map<Lesson>(dto);
+        var createdLesson = await _lessonsService.CreateAsync();
 
-        await _lessonsService.CreateAsync(lessonEntity);
+        var createdLessonDto = _mapper.Map<LessonDto>(createdLesson);
 
-        var createdLesson = _mapper.Map<LessonDto>(lessonEntity);
-
-        return Ok(createdLesson);
+        return CreatedAtAction(nameof(Get), new { id = createdLessonDto.Id }, createdLessonDto);
     }
 
     /// <summary>
