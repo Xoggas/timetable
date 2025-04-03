@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Timetable.Frontend.LessonsSchedule.Policies
 @using Timetable.Frontend.Shared.Services
 @inject ApiUrlService ApiUrlService
 @inject LessonTableService LessonTableService
@@ -37,22 +38,26 @@
     }
 </table>
 
+<ConnectionIssuesOverlay IsVisible="_isReconnectionOverlayVisible"/>
+
 @code
 {
     [Parameter] public CustomDayOfWeek DayOfWeek { get; set; }
 
     private HubConnection? _hubConnection;
-
+    private bool _isReconnectionOverlayVisible;
     private List<List<string>> _table = [];
 
     protected override async Task OnInitializedAsync()
     {
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(ApiUrlService.Retrieve("lessons-schedule"))
-            .WithAutomaticReconnect()
+            .WithAutomaticReconnect(new InfiniteRetryPolicy())
             .Build();
 
         _hubConnection.On("Update", async () => await UpdateTable());
+        _hubConnection.Reconnecting += async _ => await OnReconnecting();
+        _hubConnection.Reconnected += async _ => await OnReconnected();
 
         await _hubConnection.StartAsync();
     }
@@ -67,6 +72,20 @@
         _table = (await LessonTableService.GetByDayOfWeek(DayOfWeek)).Lessons;
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnReconnecting()
+    {
+        _isReconnectionOverlayVisible = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnReconnected()
+    {
+        _isReconnectionOverlayVisible = false;
+
+        await UpdateTable();
     }
 
     public async ValueTask DisposeAsync()

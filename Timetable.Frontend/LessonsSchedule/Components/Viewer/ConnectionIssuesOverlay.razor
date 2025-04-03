@@ -1,0 +1,15 @@
+@if (IsVisible)
+{
+    <div class="overlay">
+        <div class="container">
+            <p>Соединение с сервером потеряно!</p>
+            <p>Пытаемся переподключиться!</p>
+            <Spinner />
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter] public bool IsVisible { get; set; }
+}

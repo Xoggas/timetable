@@ -14,11 +14,12 @@
 
 @code
 {
-    private string _randomBackgroundImageEndpointUrl = null!;
+    private string? _randomBackgroundImageEndpointUrl;
 
     protected override void OnInitialized()
     {
-        _randomBackgroundImageEndpointUrl = ApiUrlService.Retrieve("/api/random-background-image", "BackgroundApiUrl");
+        _randomBackgroundImageEndpointUrl = Environment.GetEnvironmentVariable("BG_API_URL") ??
+                                            ApiUrlService.Retrieve("/api/random-background-image");
     }
 }
 

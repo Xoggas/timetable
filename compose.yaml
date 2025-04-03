@@ -35,6 +35,8 @@
       - custom-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - BG_API_URL=http://localhost:5000/api/random-background-image
+      - TZ=Europe/Moscow
 
 networks:
   custom-network:
