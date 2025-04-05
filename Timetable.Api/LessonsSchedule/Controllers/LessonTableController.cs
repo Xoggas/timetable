@@ -10,7 +10,7 @@ using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 namespace Timetable.Api.LessonsSchedule.Controllers;
 
 [ApiController]
-[Route("api/lesson-table/{dayOfWeek}")]
+[Route("api/lesson-table/{dayOfWeek:dayofweek}")]
 [DisplayName("Lesson Table Controller")]
 [Produces("application/json")]
 public class LessonTableController : ControllerBase

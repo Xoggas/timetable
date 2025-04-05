@@ -3,8 +3,7 @@ using Moq;
 using Timetable.Api.LessonsSchedule.Entities;
 using Timetable.Api.LessonsSchedule.Repositories;
 using Timetable.Api.LessonsSchedule.Services;
-using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
-using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
+using Timetable.Api.Shared.Services;
 using LessonsSchedule_Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
 namespace Timetable.Api.Tests.Unit;
@@ -13,7 +12,7 @@ public sealed class LessonTableServiceTests
 {
     private readonly Mock<ILessonTablesRepository> _lessonTablesRepositoryMock;
     private readonly Mock<ILessonTablesBackupRepository> _lessonTablesBackupRepositoryMock;
-    private readonly Mock<IEventService> _eventServiceMock;
+    private readonly Mock<ILessonScheduleEventService> _eventServiceMock;
     private readonly Fixture _fixture;
     private readonly LessonTableService _lessonTableService;
 
@@ -21,7 +20,7 @@ public sealed class LessonTableServiceTests
     {
         _lessonTablesRepositoryMock = new Mock<ILessonTablesRepository>();
         _lessonTablesBackupRepositoryMock = new Mock<ILessonTablesBackupRepository>();
-        _eventServiceMock = new Mock<IEventService>();
+        _eventServiceMock = new Mock<ILessonScheduleEventService>();
         _fixture = new Fixture();
         _lessonTableService = new LessonTableService(_lessonTablesRepositoryMock.Object,
             _lessonTablesBackupRepositoryMock.Object, _eventServiceMock.Object);
@@ -51,7 +50,7 @@ public sealed class LessonTableServiceTests
 
         _lessonTablesRepositoryMock.Verify(x => x.UpdateAsync(It.Is<LessonTable>(y => y == lessonTableEntity)));
 
-        _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate());
+        _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate(lessonTableEntity));
     }
 
     [Fact]
@@ -98,7 +97,7 @@ public sealed class LessonTableServiceTests
 
         _lessonTablesRepositoryMock.Verify(x => x.UpdateAsync(It.Is<LessonTable>(y => y == lessonTableEntityBackup)));
 
-        _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate());
+        _eventServiceMock.Verify(x => x.NotifyAllClientsAboutUpdate(lessonTableEntityBackup));
 
         Assert.Equal(result, lessonTableEntityBackup);
     }

@@ -1,4 +1,4 @@
-namespace TimeTableBackend.Shared.Controllers;
+namespace Timetable.Api.Shared.Services;
 
 public sealed class BackgroundImageProvider
 {

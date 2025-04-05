@@ -41,7 +41,7 @@ public class LessonController : ControllerBase
     /// <returns>Found lesson.</returns>
     /// <response code="200">Returns the lesson by id.</response>
     /// <response code="404">Lesson not found.</response>
-    [HttpGet("{id}")]
+    [HttpGet("{id:mongoid}")]
     [ProducesResponseType(typeof(IEnumerable<LessonDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<LessonDto>>> Get(string id)
     {
@@ -79,7 +79,7 @@ public class LessonController : ControllerBase
     /// <response code="204">The lesson was successfully updated.</response>
     /// <response code="400">Validation error.</response>
     /// <response code="404">Lesson not found.</response>
-    [HttpPut("{id}")]
+    [HttpPut("{id:mongoid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,7 +105,7 @@ public class LessonController : ControllerBase
     /// <param name="id">The ID of the lesson to delete.</param>
     /// <response code="204">The lesson was successfully deleted.</response>
     /// <response code="404">Lesson not found.</response>
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:mongoid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Delete(string id)

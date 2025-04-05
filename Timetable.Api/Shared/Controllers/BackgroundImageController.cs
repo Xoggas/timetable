@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using Microsoft.AspNetCore.Mvc;
-using TimeTableBackend.Shared.Controllers;
+using Timetable.Api.Shared.Services;
 
-namespace Timetable.Api.Shared.Services;
+namespace Timetable.Api.Shared.Controllers;
 
 [ApiController]
 [Route("api/random-background-image")]
@@ -27,7 +27,7 @@ public sealed class BackgroundImageController : ControllerBase
     public async Task<FileResult> Get()
     {
         var bytes = await _backgroundImageProvider.GetRandomBackgroundImageBytes();
-        
+
         return File(bytes, "image/jpeg");
     }
 }
