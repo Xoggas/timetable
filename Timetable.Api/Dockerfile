@@ -19,4 +19,7 @@ RUN dotnet publish "Timetable.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publis
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER root
+RUN mkdir -p /app/SoundFiles && chmod -R 777 /app/SoundFiles
+USER $APP_UID
 ENTRYPOINT ["dotnet", "Timetable.Api.dll"]

@@ -16,7 +16,7 @@ public interface ISoundFileService
 
 public sealed class SoundFileService : ISoundFileService
 {
-    private const string SoundFilesPath = "SoundFiles";
+    private static string SoundFilesPath => Path.Combine(AppContext.BaseDirectory, "SoundFiles");
 
     private readonly IMongoCollection<SoundFile> _soundFilesCollection;
 
