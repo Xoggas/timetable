@@ -55,7 +55,7 @@
 
     private AudioFilePlayer _audioFilePlayer = null!;
     private CustomTimer _timer = null!;
-    private int _lastActivationTime;
+    private int _lastActivationTime = -1;
 
     protected override void OnInitialized()
     {
@@ -90,9 +90,13 @@
             return;
         }
 
-        var time = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+        var time = DateTime.Now.GetTotalMinutes();
 
-        if (_lastActivationTime == time)
+        if (_lastActivationTime != time)
+        {
+            _lastActivationTime = -1;
+        }
+        else
         {
             return;
         }

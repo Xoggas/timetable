@@ -19,7 +19,7 @@
 
     private void CheckTime()
     {
-        var time = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+        var time = DateTime.Now.GetTotalMinutes();
         var row = BellTimeResolver.ResolveRowAndState(BellTable.Rows, time, out _);
 
         if (row is null)

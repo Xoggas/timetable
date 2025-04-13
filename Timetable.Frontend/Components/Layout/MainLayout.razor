@@ -18,7 +18,8 @@
 
     protected override void OnInitialized()
     {
-        _randomBackgroundImageEndpointUrl = ApiUrlService.Retrieve("api/random-background-image");
+        _randomBackgroundImageEndpointUrl = Environment.GetEnvironmentVariable("BG_API_URL") ??
+                                            ApiUrlService.Retrieve("api/random-background-image");
     }
 }
 

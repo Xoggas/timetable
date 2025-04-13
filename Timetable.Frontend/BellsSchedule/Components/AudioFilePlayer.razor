@@ -4,13 +4,28 @@
 
 <audio @ref="_audioRef"
        @onended="() => PlaybackEnded.InvokeAsync()"
-       src="@ApiUrlService.Retrieve($"/api/bells-schedule/sound-file/{_fileId}")">
+       src="@SoundFileUrl">
 </audio>
 
 @code
 {
     [Parameter]
     public EventCallback PlaybackEnded { get; set; }
+
+    private string SoundFileUrl
+    {
+        get
+        {
+            var soundApiUrl = Environment.GetEnvironmentVariable("SOUND_API_URL");
+
+            if (soundApiUrl is not null)
+            {
+                return new Uri(new Uri(soundApiUrl), _fileId).ToString();
+            }
+
+            return ApiUrlService.Retrieve($"api/bells-schedule/sound-file/{_fileId}");
+        }
+    }
 
     private ElementReference _audioRef;
     private string _fileId = string.Empty;
