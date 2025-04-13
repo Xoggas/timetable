@@ -21,6 +21,8 @@
       - custom-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - sound-files:/SoundFiles
   
   timetable.frontend:
     image: xoggas/timetable.frontend
@@ -35,7 +37,7 @@
       - custom-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - BG_API_URL=http://localhost:5000/api/random-background-image
+      - API_URL=http://localhost:5000/api
       - TZ=Europe/Moscow
 
 networks:
@@ -44,3 +46,4 @@ networks:
 
 volumes:
   mongo-data:
+  sound-files:

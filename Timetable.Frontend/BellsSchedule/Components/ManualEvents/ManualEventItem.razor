@@ -1,0 +1,52 @@
+<div class="event-container">
+    <input type="text"
+           maxlength="15"
+           class="event-name"
+           placeholder="Название события"
+           @bind="@ManualEvent.Name"/>
+    <SoundSelector SoundFiles="SoundFiles"
+                   @bind-SoundFileId="@ManualEvent.SoundFileId"/>
+    <div class="buttons">
+        <Button @onclick="PlaySound">
+            <Icon>
+                <PlayIcon/>
+            </Icon>
+        </Button>
+        <Button @onclick="StopSound">
+            <Icon>
+                <StopIcon/>
+            </Icon>
+        </Button>
+        <Button @onclick="() => Deleted.InvokeAsync()">
+            <Icon>
+                <DeleteIcon/>
+            </Icon>
+        </Button>
+    </div>
+</div>
+
+<AudioFilePlayer @ref="_audioFilePlayer"/>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public ManualEvent ManualEvent { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public List<SoundFile> SoundFiles { get; set; } = [];
+
+    [Parameter]
+    public EventCallback Deleted { get; set; }
+
+    private AudioFilePlayer _audioFilePlayer = null!;
+
+    private void PlaySound()
+    {
+        InvokeAsync(() => _audioFilePlayer.PlayAsync(ManualEvent.SoundFileId));
+    }
+
+    private void StopSound()
+    {
+        InvokeAsync(() => _audioFilePlayer.PauseAsync());
+    }
+}

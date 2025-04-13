@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.AspNetCore.Http.Features;
+using Timetable.Frontend.BellsSchedule.Services;
 using Timetable.Frontend.Components;
 using Timetable.Frontend.LessonsSchedule.Services;
 using Timetable.Frontend.Shared.Services;
@@ -6,9 +7,12 @@ using Timetable.Frontend.Shared.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.Configure<FormOptions>(x => { x.MultipartBodyLengthLimit = long.MaxValue; });
+
+builder.WebHost.ConfigureKestrel(options => { options.Limits.MaxRequestBodySize = long.MaxValue; });
+
 builder.Services.AddTransient<ApiUrlService>();
-builder.Services.AddTransient<LessonListService>();
-builder.Services.AddTransient<LessonTableService>();
 builder.Services.AddTransient<HttpClient>(_ =>
 {
     var client = new HttpClient();
@@ -18,6 +22,14 @@ builder.Services.AddTransient<HttpClient>(_ =>
 
     return client;
 });
+
+builder.Services.AddTransient<LessonListService>();
+builder.Services.AddTransient<LessonTableService>();
+
+builder.Services.AddTransient<SoundFileService>();
+builder.Services.AddTransient<BellTableService>();
+builder.Services.AddTransient<AutomaticEventService>();
+builder.Services.AddTransient<ManualEventService>();
 
 var app = builder.Build();
 

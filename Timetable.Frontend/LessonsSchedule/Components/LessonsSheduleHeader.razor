@@ -1,0 +1,29 @@
+<Header>
+    <NavItems>
+        <NavLink class="nav-item" href="/lesson-table/editor" Match="NavLinkMatch.All">
+            <LessonTableIcon/>
+            <p class="nav-item__text">Редактор расписания</p>
+        </NavLink>
+        <NavLink class="nav-item" href="/lesson-list" Match="NavLinkMatch.All">
+            <LessonListIcon/>
+            <p class="nav-item__text">Список уроков</p>
+        </NavLink>
+        <NavLink class="nav-item" href="/lesson-table/viewer" Match="NavLinkMatch.All">
+            <EyeIcon/>
+            <p class="nav-item__text">Просмотр расписания</p>
+        </NavLink>
+        <NavLink class="nav-item" href="/bell-table/editor" Match="NavLinkMatch.All">
+            <BellIcon/>
+            <p class="nav-item__text">Редактор звонков</p>
+        </NavLink>
+    </NavItems>
+    <ActionItems>
+        @ActionItems
+    </ActionItems>
+</Header>
+
+@code 
+{
+    [Parameter]
+    public RenderFragment? ActionItems { get; set; }
+}

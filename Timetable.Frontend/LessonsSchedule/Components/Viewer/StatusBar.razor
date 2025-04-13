@@ -1,0 +1,50 @@
+@using Timetable.Frontend.BellsSchedule.Helpers
+@using Timetable.Frontend.BellsSchedule.Models
+
+<div class="container">
+    @if (_activeRow is null)
+    {
+        <p>Таблица звонков не заполнена!</p>
+    }
+    else
+    {
+        @if (_lessonState is LessonState.LessonsNotStarted)
+        {
+            <p>Первый урок начнётся в @_activeRow.StartTime</p>
+        }
+        else if (_lessonState is LessonState.LessonIsGoing)
+        {
+            <p>Урок идёт</p>
+        }
+        else if (_lessonState is LessonState.NextLessonWillStartSoon)
+        {
+            <p>Следующий урок начнётся в @_activeRow.StartTime</p>
+        }
+        else if (_lessonState is LessonState.LessonsEnded)
+        {
+            <p>Уроки закончились</p>
+        }
+    }
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public BellTable BellTable { get; set; } = new();
+
+    private CustomTimer _customTimer = null!;
+    private LessonState _lessonState;
+    private BellTableRow? _activeRow;
+
+    protected override void OnInitialized()
+    {
+        _customTimer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateStateAndActiveRow);
+    }
+
+    private void UpdateStateAndActiveRow()
+    {
+        _activeRow = BellTimeResolver.ResolveRowAndState(BellTable.Rows, DateTime.Now.GetTotalMinutes(), out _lessonState);
+
+        InvokeAsync(StateHasChanged);
+    }
+}

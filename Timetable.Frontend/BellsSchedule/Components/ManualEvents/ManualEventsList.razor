@@ -1,0 +1,68 @@
+@using Timetable.Frontend.BellsSchedule.Services
+@inject SoundFileService SoundFileService
+@inject ManualEventService ManualEventService
+
+<ScrollView IsEmpty="_manualEvents.Count == 0" EmptyListText="Список ручных событий пуст">
+    <HeaderContent>
+        <p class="title">Ручные события</p>
+    </HeaderContent>
+    <ScrollViewContent>
+        @foreach (var manualEvent in _manualEvents)
+        {
+            <ManualEventItem ManualEvent="manualEvent"
+                             SoundFiles="_soundFiles"
+                             Deleted="() => DeleteEvent(manualEvent)"/>
+        }
+    </ScrollViewContent>
+    <FooterContent>
+        <Button @onclick="AddEvent">
+            <Icon>
+                <AddIcon/>
+            </Icon>
+            <Label>
+                Добавить руч. событие
+            </Label>
+        </Button>
+    </FooterContent>
+</ScrollView>
+
+<ConfirmationModal @ref="_eventDeletionModal">
+    <Content>
+        Вы хотите удалить ручное событие?
+    </Content>
+</ConfirmationModal>
+
+@code
+{
+    private ConfirmationModal _eventDeletionModal = null!;
+    private List<SoundFile> _soundFiles = [];
+    private List<ManualEvent> _manualEvents = [];
+
+    public async Task Save()
+    {
+        await ManualEventService.UpdateAsync(_manualEvents);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _soundFiles = await SoundFileService.GetAllAsync();
+        _manualEvents = await ManualEventService.GetAllAsync();
+    }
+
+    private async Task AddEvent()
+    {
+        _manualEvents.Add(await ManualEventService.CreateAsync());
+    }
+
+    private void DeleteEvent(ManualEvent manualEvent)
+    {
+        _eventDeletionModal.Show(() =>
+        {
+            InvokeAsync(() => ManualEventService.DeleteAsync(manualEvent));
+
+            _manualEvents.Remove(manualEvent);
+
+            InvokeAsync(StateHasChanged);
+        });
+    }
+}

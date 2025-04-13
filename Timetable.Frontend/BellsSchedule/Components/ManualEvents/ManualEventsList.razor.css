@@ -1,0 +1,10 @@
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25em;
+    color: var(--color-gray);
+    background-color: var(--color-white);
+    border-radius: 0.5em;
+    font-weight: bold;
+}

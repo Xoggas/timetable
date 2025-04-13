@@ -1,0 +1,64 @@
+@using Timetable.Frontend.BellsSchedule.Helpers
+@implements IDisposable
+
+<AudioFilePlayer @ref="_audioFilePlayer"/>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public BellTable BellTable { get; set; } = null!;
+
+    private CustomTimer _customTimer = null!;
+    private AudioFilePlayer _audioFilePlayer = null!;
+    private int _lastActivationTime;
+
+    protected override void OnInitialized()
+    {
+        _customTimer = new CustomTimer(TimeSpan.FromSeconds(1), CheckTime);
+    }
+
+    private void CheckTime()
+    {
+        var time = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+        var row = BellTimeResolver.ResolveRowAndState(BellTable.Rows, time, out _);
+
+        if (row is null)
+        {
+            return;
+        }
+
+        if (time == _lastActivationTime)
+        {
+            return;
+        }
+        
+        if (time == row.StartTime.TotalMinutes)
+        {
+            PlaySound(row.StartSoundId);
+
+            _lastActivationTime = time;
+        }
+
+        if (time == row.EndTime.TotalMinutes)
+        {
+            PlaySound(row.EndSoundId);
+
+            _lastActivationTime = time;
+        }
+    }
+
+    private void PlaySound(string soundId)
+    {
+        if (string.IsNullOrEmpty(soundId))
+        {
+            return;
+        }
+
+        InvokeAsync(() => _audioFilePlayer.PlayAsync(soundId));
+    }
+
+    public void Dispose()
+    {
+        _customTimer.Dispose();
+    }
+}

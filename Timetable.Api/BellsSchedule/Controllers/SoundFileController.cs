@@ -1,4 +1,3 @@
-using System.Collections;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Timetable.Api.BellsSchedule.Dtos;
@@ -8,7 +7,7 @@ using Timetable.Api.BellsSchedule.Services;
 namespace Timetable.Api.BellsSchedule.Controllers;
 
 [ApiController]
-[Route("api/bells-schedule/sound")]
+[Route("api/bells-schedule/sound-file")]
 public class SoundFileController : ControllerBase
 {
     private readonly ISoundFileService _soundFileService;
@@ -42,7 +41,8 @@ public class SoundFileController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<IEnumerable<SoundFileDto>>> Post(IFormFile[] files)
+    [RequestSizeLimit(100 * 1024 * 1024)]
+    public async Task<ActionResult<IEnumerable<SoundFileDto>>> Post([FromForm] List<IFormFile> files)
     {
         var soundFiles = new List<SoundFile>();
 

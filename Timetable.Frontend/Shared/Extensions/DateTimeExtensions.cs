@@ -33,4 +33,9 @@ public static class DateTimeExtensions
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+
+    public static int GetTotalMinutes(this DateTime dateTime)
+    {
+        return dateTime.Hour * 60 + dateTime.Minute;
+    }
 }

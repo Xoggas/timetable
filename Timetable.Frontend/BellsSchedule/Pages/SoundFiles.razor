@@ -1,0 +1,29 @@
+@page "/sound-files"
+@rendermode InteractiveServer
+
+<BellsScheduleHeader>
+    <ActionItems>
+        <Button class="action-item" @onclick="Save" LabelAlwaysVisible="false">
+            <Icon>
+                <SaveIcon/>
+            </Icon>
+            <Label>
+                Сохранить
+            </Label>
+        </Button>
+    </ActionItems>
+</BellsScheduleHeader>
+
+<SoundFileList @ref="_soundFileList"></SoundFileList>
+
+<div></div>
+
+@code
+{
+    private SoundFileList _soundFileList = null!;
+
+    private async Task Save()
+    {
+        await _soundFileList.Save();
+    }
+}

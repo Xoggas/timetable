@@ -50,6 +50,7 @@ builder.Services.AddTransient<ILessonTableService, LessonTableService>();
 builder.Services.AddTransient<IBellsScheduleEventService, BellsScheduleEventService>();
 builder.Services.AddTransient<ISoundFileService, SoundFileService>();
 builder.Services.AddTransient<IAutomaticEventService, AutomaticEventService>();
+builder.Services.AddTransient<IManualEventService, ManualEventService>();
 builder.Services.AddTransient<IBellTableService, BellTableService>();
 
 var app = builder.Build();

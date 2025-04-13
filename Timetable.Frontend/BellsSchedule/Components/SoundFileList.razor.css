@@ -1,0 +1,11 @@
+.sound-file {
+    display: flex;
+    gap: 0.25em;
+}
+
+.sound-file__name-input {
+    background-color: var(--color-white);
+    color: var(--color-gray);
+    text-align: center;
+    border-radius: 0.5em;
+}

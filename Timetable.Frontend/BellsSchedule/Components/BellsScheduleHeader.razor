@@ -1,0 +1,25 @@
+<Header>
+    <NavItems>
+        <NavLink class="nav-item" href="/bell-table/editor" Match="NavLinkMatch.All">
+            <BellIcon/>
+            <p class="nav-item__text">Редактор звонков</p>
+        </NavLink>
+        <NavLink class="nav-item" href="sound-files" Match="NavLinkMatch.All">
+            <SoundFilesIcon/>
+            <p class="nav-item__text">Звуковые файлы</p>
+        </NavLink>
+        <NavLink class="nav-item" href="/lesson-table/editor" Match="NavLinkMatch.All">
+            <LessonTableIcon/>
+            <p class="nav-item__text">Редактор расписания</p>
+        </NavLink>
+    </NavItems>
+    <ActionItems>
+        @ActionItems
+    </ActionItems>
+</Header>
+
+@code
+{
+    [Parameter]
+    public RenderFragment? ActionItems { get; set; }
+}

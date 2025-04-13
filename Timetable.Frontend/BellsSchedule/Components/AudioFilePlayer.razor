@@ -1,0 +1,33 @@
+@using Timetable.Frontend.Shared.Services
+@inject IJSRuntime JsRuntime
+@inject ApiUrlService ApiUrlService
+
+<audio @ref="_audioRef"
+       @onended="() => PlaybackEnded.InvokeAsync()"
+       src="@ApiUrlService.Retrieve($"/api/bells-schedule/sound-file/{_fileId}")">
+</audio>
+
+@code
+{
+    [Parameter]
+    public EventCallback PlaybackEnded { get; set; }
+
+    private ElementReference _audioRef;
+    private string _fileId = string.Empty;
+
+    public async Task PlayAsync(string fileId)
+    {
+        _fileId = fileId;
+
+        await InvokeAsync(StateHasChanged);
+
+        await Task.Delay(100);
+
+        await JsRuntime.InvokeVoidAsync("audioPlayerInterop.playAudio", _audioRef);
+    }
+
+    public async Task PauseAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("audioPlayerInterop.pauseAudio", _audioRef);
+    }
+}

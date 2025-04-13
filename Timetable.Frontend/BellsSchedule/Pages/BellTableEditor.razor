@@ -1,0 +1,56 @@
+@page "/bell-table/editor"
+@using Timetable.Frontend.BellsSchedule.Components.ManualEvents
+
+@rendermode InteractiveServer
+
+<BellsScheduleHeader>
+    <ActionItems>
+        <Button class="action-item"
+                @onclick="ToggleEditingMode"
+                IsTransparent="@_isTableBeingEdited"
+                LabelAlwaysVisible="false">
+            <Icon>
+                <EditIcon/>
+            </Icon>
+            <Label>
+                Редакт. таблицу
+            </Label>
+        </Button>
+        <Button class="action-item" @onclick="Save" LabelAlwaysVisible="false">
+            <Icon>
+                <SaveIcon/>
+            </Icon>
+            <Label>
+                Сохранить
+            </Label>
+        </Button>
+    </ActionItems>
+</BellsScheduleHeader>
+
+<div class="tables">
+    <AutomaticEventsList @ref="_automaticEventsList"/>
+    <EditableBellTable @ref="_editableBellTable" IsBeingEdited="_isTableBeingEdited"/>
+    <ManualEventsList @ref="_manualEventsList"/>
+</div>
+
+<div></div>
+
+@code
+{
+    private AutomaticEventsList _automaticEventsList = null!;
+    private EditableBellTable _editableBellTable = null!;
+    private ManualEventsList _manualEventsList = null!;
+    private bool _isTableBeingEdited;
+
+    private void ToggleEditingMode()
+    {
+        _isTableBeingEdited = !_isTableBeingEdited;
+    }
+
+    private async Task Save()
+    {
+        await _automaticEventsList.Save();
+        await _editableBellTable.Save();
+        await _manualEventsList.Save();
+    }
+}

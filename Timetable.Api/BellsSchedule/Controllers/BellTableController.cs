@@ -28,7 +28,7 @@ public sealed class BellTableController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ActionResult<BellTableDto>> Get(UpdateBellTableDto dto)
+    public async Task<ActionResult> Put(UpdateBellTableDto dto)
     {
         var bellTable = _mapper.Map<BellTable>(dto);
 

@@ -1,0 +1,118 @@
+@using Timetable.Frontend.BellsSchedule.Services
+@inject SoundFileService SoundFileService
+@inject BellTableService BellTableService
+
+<table class="container">
+    @if (RowCount == 0)
+    {
+        <tr>
+            <td class="table-is-empty-text">
+                Таблица звонков пуста!
+            </td>
+        </tr>
+
+        <tr>
+            <td class="button" colspan="6" @onclick="AddRow">
+                <div>
+                    <AddIcon/>
+                </div>
+            </td>
+        </tr>
+    }
+    else
+    {
+        @foreach (var (row, index) in _bellTable.Rows.Select((x, i) => (x, i + 1)))
+        {
+            <tr>
+                <td>
+                    @index.ToString("D2")
+                </td>
+                <td>
+                    <SoundSelector SoundFiles="_soundFiles"
+                                   @bind-SoundFileId="row.StartSoundId"/>
+                </td>
+                <td>
+                    <TimeInput @bind-Hour="row.StartTime.Hour"
+                               @bind-Minute="row.StartTime.Minute"/>
+                </td>
+                <td transparent>
+                    <HyphenIcon/>
+                </td>
+                <td>
+                    <TimeInput @bind-Hour="row.EndTime.Hour"
+                               @bind-Minute="row.EndTime.Minute"/>
+                </td>
+                <td>
+                    <SoundSelector SoundFiles="_soundFiles"
+                                   @bind-SoundFileId="row.EndSoundId"/>
+                </td>
+
+                @if (IsBeingEdited)
+                {
+                    <td class="button" @onclick="() => DeleteRow(row)" disabled="@(RowCount <= 1)">
+                        <div>
+                            <DeleteIcon/>
+                        </div>
+                    </td>
+                }
+            </tr>
+        }
+    }
+
+    @if (IsBeingEdited)
+    {
+        <tr>
+            <td class="button" colspan="6" @onclick="AddRow">
+                <div>
+                    <AddIcon/>
+                </div>
+            </td>
+        </tr>
+    }
+</table>
+
+<ConfirmationModal @ref="_rowDeletionModal">
+    <Content>
+        Вы хотите удалить ряд?
+    </Content>
+</ConfirmationModal>
+
+<BellSoundPlayer BellTable="_bellTable"/>
+
+@code
+{
+    [Parameter]
+    public bool IsBeingEdited { get; set; }
+
+    private int RowCount => _bellTable.Rows.Count;
+
+    private ConfirmationModal _rowDeletionModal = null!;
+    private List<SoundFile> _soundFiles = [];
+    private BellTable _bellTable = new();
+
+    public async Task Save()
+    {
+        await BellTableService.UpdateBellTableAsync(_bellTable);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _soundFiles = await SoundFileService.GetAllAsync();
+        _bellTable = await BellTableService.GetBellTableAsync();
+    }
+
+    private void AddRow()
+    {
+        _bellTable.Rows.Add(new BellTableRow());
+    }
+
+    private void DeleteRow(BellTableRow row)
+    {
+        _rowDeletionModal.Show(() =>
+        {
+            _bellTable.Rows.Remove(row);
+            
+            StateHasChanged();
+        });
+    }
+}

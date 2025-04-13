@@ -32,6 +32,23 @@
     font-weight: 800;
 }
 
+.cell[active] {
+    border: 3px solid red;
+    animation: pulse-red 2s infinite linear;
+}
+
+@keyframes pulse-red {
+    0% {
+        border-color: rgba(255, 0, 0, 0);
+    }
+    50% {
+        border-color: rgba(255, 0, 0, 1);
+    }
+    100% {
+        border-color: rgba(255, 0, 0, 0);
+    }
+}
+
 .header-cell {
     background-color: var(--color-white);
     padding: 0.5em;

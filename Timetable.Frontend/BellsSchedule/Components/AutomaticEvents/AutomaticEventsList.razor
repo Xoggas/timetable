@@ -1,0 +1,68 @@
+@using Timetable.Frontend.BellsSchedule.Services
+@inject SoundFileService SoundFileService
+@inject AutomaticEventService AutomaticEventService
+
+<ScrollView IsEmpty="_automaticEvents.Count == 0" EmptyListText="Список авт. событий пуст">
+    <HeaderContent>
+        <p class="title">Автомат. события</p>
+    </HeaderContent>
+    <ScrollViewContent>
+        @foreach (var automaticEvent in _automaticEvents)
+        {
+            <AutomaticEventItem AutomaticEvent="@automaticEvent"
+                                SoundFiles="_soundFiles"
+                                Deleted="_ => DeleteEvent(automaticEvent)"/>
+        }
+    </ScrollViewContent>
+    <FooterContent>
+        <Button @onclick="AddEvent">
+            <Label>
+                Добавить авт. событие
+            </Label>
+            <Icon>
+                <AddIcon/>
+            </Icon>
+        </Button>
+    </FooterContent>
+</ScrollView>
+
+<ConfirmationModal @ref="_eventDeletionModal">
+    <Content>
+        Вы хотите удалить автоматическое событие?
+    </Content>
+</ConfirmationModal>
+
+@code
+{
+    private ConfirmationModal _eventDeletionModal = null!;
+    private List<SoundFile> _soundFiles = [];
+    private List<AutomaticEvent> _automaticEvents = [];
+
+    public async Task Save()
+    {
+        await AutomaticEventService.UpdateAsync(_automaticEvents);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _soundFiles = await SoundFileService.GetAllAsync();
+        _automaticEvents = await AutomaticEventService.GetAllAsync();
+    }
+
+    private async Task AddEvent()
+    {
+        _automaticEvents.Add(await AutomaticEventService.CreateAsync());
+    }
+
+    private void DeleteEvent(AutomaticEvent automaticEvent)
+    {
+        _eventDeletionModal.Show(() =>
+        {
+            InvokeAsync(() => AutomaticEventService.DeleteAsync(automaticEvent));
+
+            _automaticEvents.Remove(automaticEvent);
+
+            InvokeAsync(StateHasChanged);
+        });
+    }
+}

@@ -6,16 +6,13 @@ namespace Timetable.Api.BellsSchedule.Dtos;
 
 public sealed class UpdateAutomaticEventDto
 {
-    [Required]
+    public bool IsEnabled { get; init; } = true;
+    
     [MaxLength(20)]
     public string Name { get; init; } = string.Empty;
-
-    [Required]
-    public TimeDto? ActivationTime { get; init; }
-
-    [Required]
+    
+    public TimeDto ActivationTime { get; init; } = new();
+    
     [MongoId]
     public string SoundFileId { get; init; } = string.Empty;
-
-    public bool IsEnabled { get; init; } = true;
 }

@@ -1,0 +1,63 @@
+<div class="container">
+    <select @bind="SelectedHour">
+        @for (var hour = 0; hour <= 23; hour++)
+        {
+            <option selected="@(SelectedHour == hour)" value="@hour">
+                @hour.ToString("D2")
+            </option>
+        }
+    </select>
+    <select @bind="SelectedMinute">
+        @for (var minute = 0; minute <= 59; minute++)
+        {
+            <option selected="@(SelectedMinute == minute)" value="@minute">
+                @minute.ToString("D2")
+            </option>
+        }
+    </select>
+</div>
+
+@code
+{
+    [Parameter]
+    public int Hour { get; set; }
+
+    [Parameter]
+    public EventCallback<int> HourChanged { get; set; }
+
+    [Parameter]
+    public int Minute { get; set; }
+
+    [Parameter]
+    public EventCallback<int> MinuteChanged { get; set; }
+
+    private int SelectedHour
+    {
+        get => Hour;
+        set
+        {
+            if (Hour == value)
+            {
+                return;
+            }
+
+            Hour = value;
+            HourChanged.InvokeAsync(value);
+        }
+    }
+
+    private int SelectedMinute
+    {
+        get => Minute;
+        set
+        {
+            if (Minute == value)
+            {
+                return;
+            }
+
+            Minute = value;
+            MinuteChanged.InvokeAsync(value);
+        }
+    }
+}

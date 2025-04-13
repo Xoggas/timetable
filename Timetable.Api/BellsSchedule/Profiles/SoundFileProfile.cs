@@ -9,5 +9,6 @@ public sealed class SoundFileProfile : Profile
     public SoundFileProfile()
     {
         CreateMap<SoundFile, SoundFileDto>();
+        CreateMap<UpdateSoundFileDto, SoundFile>();
     }
 }

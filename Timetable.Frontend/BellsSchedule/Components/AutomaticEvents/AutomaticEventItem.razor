@@ -1,0 +1,114 @@
+@implements IDisposable
+
+<div class="event-container">
+    <input placeholder="Название события"
+           class="event-name"
+           type="text"
+           maxlength="15" @bind="@AutomaticEvent.Name"/>
+    <TimeInput @bind-Hour="@AutomaticEvent.ActivationTime.Hour"
+               @bind-Minute="@AutomaticEvent.ActivationTime.Minute"/>
+    <SoundSelector SoundFiles="SoundFiles"
+                   @bind-SoundFileId="@AutomaticEvent.SoundFileId"/>
+    <div class="buttons">
+        <Button @onclick="PlaySound">
+            <Icon>
+                <PlayIcon/>
+            </Icon>
+        </Button>
+        <Button @onclick="StopSound">
+            <Icon>
+                <StopIcon/>
+            </Icon>
+        </Button>
+        <Button @onclick="ToggleEvent">
+            <Icon>
+                @if (AutomaticEvent.IsEnabled)
+                {
+                    <EnabledIcon/>
+                }
+                else
+                {
+                    <DisabledIcon/>
+                }
+            </Icon>
+        </Button>
+        <Button @onclick="() => Deleted.InvokeAsync()">
+            <Icon>
+                <DeleteIcon/>
+            </Icon>
+        </Button>
+    </div>
+</div>
+
+<AudioFilePlayer @ref="_audioFilePlayer"/>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public List<SoundFile> SoundFiles { get; set; } = [];
+
+    [Parameter, EditorRequired]
+    public AutomaticEvent AutomaticEvent { get; set; } = new();
+
+    [Parameter]
+    public EventCallback Deleted { get; set; }
+
+    private AudioFilePlayer _audioFilePlayer = null!;
+    private CustomTimer _timer = null!;
+    private int _lastActivationTime;
+
+    protected override void OnInitialized()
+    {
+        _timer = new CustomTimer(TimeSpan.FromSeconds(1), CheckTime);
+    }
+
+    private void ToggleEvent()
+    {
+        AutomaticEvent.IsEnabled = !AutomaticEvent.IsEnabled;
+        StateHasChanged();
+    }
+
+    private async Task PlaySound()
+    {
+        if (string.IsNullOrEmpty(AutomaticEvent.SoundFileId))
+        {
+            return;
+        }
+
+        await _audioFilePlayer.PlayAsync(AutomaticEvent.SoundFileId);
+    }
+
+    private async Task StopSound()
+    {
+        await _audioFilePlayer.PauseAsync();
+    }
+
+    private void CheckTime()
+    {
+        if (AutomaticEvent.IsEnabled is false)
+        {
+            return;
+        }
+
+        var time = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+
+        if (_lastActivationTime == time)
+        {
+            return;
+        }
+
+        if (time != AutomaticEvent.ActivationTime.TotalMinutes)
+        {
+            return;
+        }
+
+        _lastActivationTime = time;
+
+        InvokeAsync(PlaySound);
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+    }
+}

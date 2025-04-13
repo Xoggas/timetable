@@ -1,0 +1,69 @@
+@page "/sound-files/upload"
+@rendermode InteractiveServer
+@using Timetable.Frontend.BellsSchedule.Services
+@inject SoundFileService SoundFileService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+<div></div>
+
+<div class="container">
+    <Button @onclick="OpenFilePicker">
+        <Label>
+            Нажмите, чтобы выбрать звуковые файлы
+        </Label>
+    </Button>
+
+    @foreach (var file in _files)
+    {
+        <div class="file">
+            @file.Name
+        </div>
+    }
+
+    <InputFile @ref="_filePicker" OnChange="LoadFiles" multiple/>
+
+    <Button @onclick="SendFilesAndNavigateBackToList" disabled="@IsFileListEmpty">
+        <Label>
+            Отправить
+        </Label>
+    </Button>
+
+    <Button @onclick="GoBackToList">
+        <Label>
+            Отмена
+        </Label>
+    </Button>
+</div>
+
+<div></div>
+
+@code
+{
+    private bool IsFileListEmpty => _files.Count == 0;
+
+    private InputFile _filePicker = null!;
+    private IReadOnlyList<IBrowserFile> _files = [];
+
+    private void LoadFiles(InputFileChangeEventArgs e)
+    {
+        _files = e.GetMultipleFiles().Where(x => x.ContentType.Equals("audio/mpeg")).ToList();
+    }
+
+    private async Task OpenFilePicker()
+    {
+        await JsRuntime.InvokeVoidAsync("HTMLElement.prototype.click.call", _filePicker.Element);
+    }
+
+    private async Task SendFilesAndNavigateBackToList()
+    {
+        await SoundFileService.UploadAsync(_files);
+
+        GoBackToList();
+    }
+
+    private void GoBackToList()
+    {
+        NavigationManager.NavigateTo("/sound-files");
+    }
+}

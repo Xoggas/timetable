@@ -1,0 +1,51 @@
+<div class="container">
+    <select @bind="SelectedSoundFileId">
+        <option value="" selected>Нет звука</option>
+        
+        @foreach (var soundFile in SoundFiles)
+        {
+            <option value="@soundFile.FileId">@soundFile.FileName</option>
+        }
+    </select>
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public List<SoundFile> SoundFiles { get; set; } = [];
+
+    [Parameter]
+    public string SoundFileId { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> SoundFileIdChanged { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (SoundFileExists(SelectedSoundFileId) is false)
+        {
+            SelectedSoundFileId = string.Empty;
+        }
+    }
+
+    private string SelectedSoundFileId
+    {
+        get => SoundFileId;
+        set
+        {
+            if (SoundFileId == value)
+            {
+                return;
+            }
+
+            SoundFileId = value;
+            SoundFileIdChanged.InvokeAsync(value);
+        }
+    }
+
+    private bool SoundFileExists(string id)
+    {
+        return string.IsNullOrEmpty(SelectedSoundFileId) ||
+               SoundFiles.Any(x => x.FileId == SelectedSoundFileId);
+    }
+}

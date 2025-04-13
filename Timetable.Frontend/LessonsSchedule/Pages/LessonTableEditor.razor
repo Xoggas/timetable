@@ -2,7 +2,7 @@
 
 @rendermode InteractiveServer
 
-<Header>
+<LessonsSheduleHeader>
     <ActionItems>
         <Button class="action-item"
                 @onclick="ToggleEditingMode"
@@ -40,7 +40,7 @@
             </Label>
         </Button>
     </ActionItems>
-</Header>
+</LessonsSheduleHeader>
 
 <EditableLessonTable IsBeingEdited="_isTableBeingEdited" DayOfWeek="_customDayOfWeek" @ref="_lessonTable"/>
 

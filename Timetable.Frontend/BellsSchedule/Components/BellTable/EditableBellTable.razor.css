@@ -1,0 +1,69 @@
+.container {
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    border-radius: 0.5em;
+    backdrop-filter: blur(16px);
+    border-collapse: separate;
+    border-spacing: 0.25em;
+    padding: 0.25em;
+}
+
+.table-is-empty-text {
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    color: var(--color-white);
+    padding: 0.5em 0.75em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5em;
+    width: 100%;
+    cursor: default;
+}
+
+td {
+    background-color: var(--color-white);
+    padding: 0.25em 1em;
+    border-radius: 0.5em;
+}
+
+td[transparent] {
+    background-color: transparent;
+    padding: 0.25em 0.5em;
+}
+
+.button {
+    background-color: var(--color-white);
+    padding: 0.25em;
+    border-radius: 0.5em;
+    text-align: center;
+    transition: background-color 150ms;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--color-white-hover);
+}
+
+.button[disabled] {
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    padding: 0.25em;
+    border-radius: 0.5em;
+    text-align: center;
+    transition: background-color 150ms;
+    cursor: default;
+    pointer-events: none;
+}
+
+::deep .button[disabled] svg {
+    fill: var(--color-white);
+}
+
+.button div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}

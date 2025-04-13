@@ -1,7 +1,7 @@
 ﻿@page "/lesson-list"
 @rendermode InteractiveServer
 
-<Header>
+<LessonsSheduleHeader>
     <ActionItems>
         <Button @onclick="Save" LabelAlwaysVisible="false">
             <Icon>
@@ -12,7 +12,7 @@
             </Label>
         </Button>
     </ActionItems>
-</Header>
+</LessonsSheduleHeader>
 
 <LessonList @ref="_lessonListRef" />
 

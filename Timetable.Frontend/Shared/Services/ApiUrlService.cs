@@ -11,8 +11,9 @@ public sealed class ApiUrlService
 
     public string Retrieve(string url, string connectionStringName = "ApiUrl")
     {
-        var baseUrl = _configuration.GetConnectionString(connectionStringName)!;
-        
+        var baseUrl = Environment.GetEnvironmentVariable("API_URL") ??
+                      _configuration.GetConnectionString(connectionStringName)!;
+
         return new Uri(new Uri(baseUrl), url).ToString();
     }
 }

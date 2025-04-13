@@ -1,41 +1,34 @@
 ﻿@inject LessonListService LessonListService
 
-<div class="container">
-    <div class="lesson-list-container" has-scrollbar="@(_lessons.Count > 0)">
-        <div class="lesson-list">
-            @if (_lessons.Count == 0)
-            {
-                <div class="lesson-list__empty-list-text">
-                    Список уроков пуст
+<ScrollView IsEmpty="_lessons.Count == 0" EmptyListText="Список уроков пуст!">
+    <ScrollViewContent>
+        @foreach (var (lesson, index) in _lessons.Select((x, i) => (x, i + 1)))
+        {
+            <div class="lesson">
+                <div class="lesson__index">
+                    @index
                 </div>
-            }
-
-            @foreach (var (lesson, index) in _lessons.Select((x, i) => (x, i + 1)))
-            {
-                <div class="lesson">
-                    <div class="lesson__index">
-                        @index
-                    </div>
-                    <input maxlength="20"
-                           class="lesson__text-input"
-                           type="text"
-                           @bind="@lesson.Name"
-                           placeholder="Название урока"/>
-                    <Button class="lesson__button" @onclick="() => DeleteLesson(lesson)">
-                        <Icon>
-                            <DeleteIcon/>
-                        </Icon>
-                    </Button>
-                </div>
-            }
-        </div>
-    </div>
-    <Button class="lesson__button" @onclick="AddLesson">
-        <Icon>
-            <AddIcon/>
-        </Icon>
-    </Button>
-</div>
+                <input maxlength="20"
+                       class="lesson__name-input"
+                       type="text"
+                       @bind="@lesson.Name"
+                       placeholder="Название урока"/>
+                <Button class="lesson__button" @onclick="() => DeleteLesson(lesson)">
+                    <Icon>
+                        <DeleteIcon/>
+                    </Icon>
+                </Button>
+            </div>
+        }
+    </ScrollViewContent>
+    <FooterContent>
+        <Button class="lesson__button" @onclick="AddLesson">
+            <Icon>
+                <AddIcon/>
+            </Icon>
+        </Button>
+    </FooterContent>
+</ScrollView>
 
 <ConfirmationModal @ref="_lessonDeletionModal">
     <Content>

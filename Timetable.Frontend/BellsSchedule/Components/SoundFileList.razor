@@ -1,0 +1,109 @@
+@using Timetable.Frontend.BellsSchedule.Services
+@inject SoundFileService SoundFileService
+@inject NavigationManager NavigationManager
+
+<AudioFilePlayer PlaybackEnded="OnPlaybackEnded"
+                 @ref="_audioFilePlayer"/>
+
+<ScrollView IsEmpty="_files.Count == 0" EmptyListText="Список звуковых файлов пуст!">
+    <ScrollViewContent>
+        @foreach (var soundFile in _files)
+        {
+            <div class="sound-file">
+                <Button @onclick="() => DeleteSound(soundFile)">
+                    <Icon>
+                        <DeleteIcon/>
+                    </Icon>
+                </Button>
+
+                <input class="sound-file__name-input"
+                       type="text"
+                       @bind="@soundFile.FileName"/>
+
+                @if (soundFile.FileId == _currentSoundFileId)
+                {
+                    <Button @onclick="StopSound">
+                        <Icon>
+                            <StopIcon/>
+                        </Icon>
+                    </Button>
+                }
+                else
+                {
+                    <Button @onclick="() => PlaySound(soundFile)">
+                        <Icon>
+                            <PlayIcon/>
+                        </Icon>
+                    </Button>
+                }
+            </div>
+        }
+    </ScrollViewContent>
+    <FooterContent>
+        <Button @onclick="AddSound">
+            <Icon>
+                <AddIcon/>
+            </Icon>
+        </Button>
+    </FooterContent>
+</ScrollView>
+
+<ConfirmationModal @ref=" _soundDeleteModal">
+    <Content>
+        <p>Вы хотите удалить звук?</p>
+    </Content>
+</ConfirmationModal>
+
+@code
+{
+    private ConfirmationModal _soundDeleteModal = null!;
+    private AudioFilePlayer _audioFilePlayer = null!;
+    private List<SoundFile> _files = [];
+    private string? _currentSoundFileId;
+
+    public async Task Save()
+    {
+        await SoundFileService.UpdateAsync(_files);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _files = await SoundFileService.GetAllAsync();
+    }
+
+    private async Task PlaySound(SoundFile soundFile)
+    {
+        _currentSoundFileId = soundFile.FileId;
+
+        await _audioFilePlayer.PlayAsync(soundFile.FileId);
+    }
+
+    private async Task StopSound()
+    {
+        await _audioFilePlayer.PauseAsync();
+
+        _currentSoundFileId = null;
+    }
+
+    private void DeleteSound(SoundFile soundFile)
+    {
+        _soundDeleteModal.Show(async () =>
+        {
+            await SoundFileService.DeleteSoundFile(soundFile);
+
+            _files.Remove(soundFile);
+
+            StateHasChanged();
+        });
+    }
+
+    private void OnPlaybackEnded()
+    {
+        _currentSoundFileId = null;
+    }
+
+    private void AddSound()
+    {
+        NavigationManager.NavigateTo("/sound-files/upload");
+    }
+}

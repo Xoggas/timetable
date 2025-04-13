@@ -9,11 +9,11 @@ public sealed class BellTableRowDto
     public string StartSoundId { get; init; } = string.Empty;
 
     [Required]
-    public TimeDto? StartTime { get; init; }
+    public TimeDto StartTime { get; init; } = new();
 
     [MongoId]
     public string EndSoundId { get; init; } = string.Empty;
 
     [Required]
-    public TimeDto? EndTime { get; init; }
+    public TimeDto EndTime { get; init; } = new();
 }

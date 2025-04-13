@@ -1,0 +1,15 @@
+.container {
+    background-color: var(--color-white);
+    border-radius: 0.5em;
+    padding: 0 0.5em;
+    align-self: stretch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+select {
+    background-color: var(--color-white);
+    text-align: center;
+    padding: 0.5em;
+}

@@ -12,5 +12,6 @@ public sealed class BellTableProfile : Profile
         CreateMap<BellTableDto, BellTable>();
         CreateMap<BellTableRow, BellTableRowDto>();
         CreateMap<BellTableRowDto, BellTableRow>();
+        CreateMap<UpdateBellTableDto, BellTable>();
     }
 }

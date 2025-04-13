@@ -1,0 +1,46 @@
+<div class="container">
+    @if (HeaderContent is not null)
+    {
+        <div class="header-content">
+            @HeaderContent
+        </div>
+    }
+
+    @if (IsEmpty)
+    {
+        <p class="empty-list-text">@EmptyListText</p>
+    }
+    else
+    {
+        <div class="scroll-view-wrapper">
+            <div class="scroll-view-content">
+                @ScrollViewContent
+            </div>
+        </div>
+    }
+
+    @if (FooterContent is not null)
+    {
+        <div class="footer-content">
+            @FooterContent
+        </div>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public RenderFragment? HeaderContent { get; set; }
+
+    [Parameter]
+    public bool IsEmpty { get; set; }
+
+    [Parameter, EditorRequired]
+    public string? EmptyListText { get; set; }
+
+    [Parameter]
+    public RenderFragment? ScrollViewContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? FooterContent { get; set; }
+}
