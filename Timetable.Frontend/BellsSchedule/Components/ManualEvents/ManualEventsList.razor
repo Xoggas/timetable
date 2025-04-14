@@ -12,6 +12,11 @@
             <ManualEventItem ManualEvent="manualEvent"
                              SoundFiles="_soundFiles"
                              Deleted="() => DeleteEvent(manualEvent)"/>
+            
+            @if (_manualEvents.Last() != manualEvent)
+            {
+                <div class="separator"></div>    
+            }
         }
     </ScrollViewContent>
     <FooterContent>

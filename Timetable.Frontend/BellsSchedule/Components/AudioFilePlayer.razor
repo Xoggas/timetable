@@ -3,6 +3,7 @@
 @inject ApiUrlService ApiUrlService
 
 <audio @ref="_audioRef"
+       @key="_fileId"
        @onended="() => PlaybackEnded.InvokeAsync()"
        src="@SoundFileUrl">
 </audio>
@@ -35,9 +36,7 @@
         _fileId = fileId;
 
         await InvokeAsync(StateHasChanged);
-
-        await Task.Delay(100);
-
+        await Task.Yield();
         await JsRuntime.InvokeVoidAsync("audioPlayerInterop.playAudio", _audioRef);
     }
 

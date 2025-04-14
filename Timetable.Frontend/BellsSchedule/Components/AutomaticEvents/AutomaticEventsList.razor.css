@@ -8,3 +8,11 @@
     border-radius: 0.5em;
     font-weight: bold;
 }
+
+.separator {
+    background-color: var(--color-white-transparent);
+    height: 2px;
+    width: 100%;
+    border-radius: 1em;
+    margin: 0.25em 0;
+}
