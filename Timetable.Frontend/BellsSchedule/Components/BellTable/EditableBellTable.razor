@@ -77,12 +77,15 @@
     </Content>
 </ConfirmationModal>
 
-<BellSoundPlayer BellTable="_bellTable"/>
+<BellSoundPlayer BellTable="_bellTable" AreBellsActive="AreBellsActive"/>
 
 @code
 {
     [Parameter]
     public bool IsBeingEdited { get; set; }
+    
+    [Parameter]
+    public bool AreBellsActive { get; set; }
 
     private int RowCount => _bellTable.Rows.Count;
 

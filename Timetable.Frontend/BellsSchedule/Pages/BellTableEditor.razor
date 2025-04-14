@@ -16,6 +16,31 @@
                 Редакт. таблицу
             </Label>
         </Button>
+        <Button class="action-item"
+                @onclick="ToggleBells"
+                IsTransparent="@_areBellsActive is false"
+                LabelAlwaysVisible="false">
+            <Icon>
+                @if (_areBellsActive)
+                {
+                    <EnabledIcon/>
+                }
+                else
+                {
+                    <DisabledIcon/>
+                }
+            </Icon>
+            <Label>
+                @if (_areBellsActive)
+                {
+                    <p>Отключить звонки</p>
+                }
+                else
+                {
+                    <p>Включить звонки</p>
+                }
+            </Label>
+        </Button>
         <Button class="action-item" @onclick="Save" LabelAlwaysVisible="false">
             <Icon>
                 <SaveIcon/>
@@ -29,7 +54,9 @@
 
 <div class="tables">
     <AutomaticEventsList @ref="_automaticEventsList"/>
-    <EditableBellTable @ref="_editableBellTable" IsBeingEdited="_isTableBeingEdited"/>
+    <EditableBellTable @ref="_editableBellTable"
+                       IsBeingEdited="_isTableBeingEdited"
+                       AreBellsActive="_areBellsActive"/>
     <ManualEventsList @ref="_manualEventsList"/>
 </div>
 
@@ -41,10 +68,16 @@
     private EditableBellTable _editableBellTable = null!;
     private ManualEventsList _manualEventsList = null!;
     private bool _isTableBeingEdited;
+    private bool _areBellsActive = true;
 
     private void ToggleEditingMode()
     {
         _isTableBeingEdited = !_isTableBeingEdited;
+    }
+
+    private void ToggleBells()
+    {
+        _areBellsActive = !_areBellsActive;
     }
 
     private async Task Save()
