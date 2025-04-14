@@ -9,53 +9,64 @@ public class BellTimeResolverTests
     [
         new()
         {
-            StartTime = new TimeModel(08, 50),
-            EndTime = new TimeModel(09, 50),
+            StartTime = new TimeModel(08, 20),
+            EndTime = new TimeModel(08, 35),
         },
         new()
         {
-            StartTime = new TimeModel(09, 55),
-            EndTime = new TimeModel(10, 40),
+            StartTime = new TimeModel(08, 40),
+            EndTime = new TimeModel(09, 20),
+        },
+        new()
+        {
+            StartTime = new TimeModel(09, 35),
+            EndTime = new TimeModel(10, 15),
+        },
+        new()
+        {
+            StartTime = new TimeModel(10, 30),
+            EndTime = new TimeModel(11, 10),
+        },
+        new()
+        {
+            StartTime = new TimeModel(11, 20),
+            EndTime = new TimeModel(12, 00),
+        },
+        new()
+        {
+            StartTime = new TimeModel(12, 10),
+            EndTime = new TimeModel(12, 50),
+        },
+        new()
+        {
+            StartTime = new TimeModel(13, 10),
+            EndTime = new TimeModel(13, 50),
+        },
+        new()
+        {
+            StartTime = new TimeModel(14, 10),
+            EndTime = new TimeModel(14, 50),
+        },
+        new()
+        {
+            StartTime = new TimeModel(15, 00),
+            EndTime = new TimeModel(15, 40),
         }
     ];
 
-    [Fact]
-    public void TimeBeforeAllLessons_ShouldReturnFirstRow_LessonsNotStarted()
+    [Theory]
+    [InlineData(08, 10, 0, LessonState.BeforeLessons)]
+    [InlineData(08, 20, 0, LessonState.LessonIsGoing)]
+    [InlineData(08, 35, 0, LessonState.Break)]
+    [InlineData(08, 36, 0, LessonState.Break)]
+    [InlineData(08, 40, 1, LessonState.LessonIsGoing)]
+    [InlineData(15, 40, 8, LessonState.AfterLessons)]
+    public void Tests(int hour, int minute, int expectedRowIndex, LessonState expectedState)
     {
-        var row = BellTimeResolver.ResolveRowAndState(_rows, 8 * 60 + 40, out var state);
+        var row = BellTimeResolver.ResolveRowAndState(_rows, hour * 60 + minute, out var state);
         
-        Assert.Equal(_rows[0], row);
+        Assert.Equal(_rows[expectedRowIndex], row);
         
-        Assert.Equal(LessonState.LessonsNotStarted, state);
-    }
-    
-    [Fact]
-    public void TimeInRangeOfFirstLesson_ShouldReturnFirstRow_LessonIsGoing()
-    {
-        var row = BellTimeResolver.ResolveRowAndState(_rows, 8 * 60 + 50, out var state);
-        
-        Assert.Equal(_rows[0], row);
-        
-        Assert.Equal(LessonState.LessonIsGoing, state);
-    }
-    
-    [Fact]
-    public void TimeAfterFirstLessonAndBeforeSecondLesson_ShouldReturnSecondRow_NextLessonWillStartSoon()
-    {
-        var row = BellTimeResolver.ResolveRowAndState(_rows, 9 * 60 + 52, out var state);
-        
-        Assert.Equal(_rows[1], row);
-        
-        Assert.Equal(LessonState.NextLessonWillStartSoon, state);
-    }
-    
-    [Fact]
-    public void TimeAfterAllLessons_ShouldReturnFirst_LessonsEnded()
-    {
-        var row = BellTimeResolver.ResolveRowAndState(_rows, 10 * 60 + 40, out var state);
-        
-        Assert.Equal(_rows[0], row);
-        
-        Assert.Equal(LessonState.LessonsEnded, state);
+        Assert.Equal(expectedState, state);
     }
 }

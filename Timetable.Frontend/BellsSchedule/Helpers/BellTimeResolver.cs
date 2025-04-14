@@ -6,7 +6,7 @@ public static class BellTimeResolver
 {
     public static BellTableRow? ResolveRowAndState(List<BellTableRow> rows, int totalMinutes, out LessonState state)
     {
-        state = LessonState.LessonsEnded;
+        state = LessonState.AfterLessons;
 
         if (rows.Count == 0)
         {
@@ -15,60 +15,59 @@ public static class BellTimeResolver
 
         if (totalMinutes < rows.First().StartTime.TotalMinutes)
         {
-            state = LessonState.LessonsNotStarted;
+            state = LessonState.BeforeLessons;
             return rows.First();
         }
 
         if (totalMinutes >= rows.Last().EndTime.TotalMinutes)
         {
-            state = LessonState.LessonsEnded;
-            return rows.First();
+            state = LessonState.AfterLessons;
+            return rows.Last();
         }
 
-        var row = rows.FirstOrDefault(t =>
-            totalMinutes >= t.StartTime.TotalMinutes && totalMinutes <= t.EndTime.TotalMinutes);
+        var resolvedRow = default(BellTableRow);
 
-        if (row is not null)
+        foreach (var row in rows)
         {
+            if (totalMinutes >= row.StartTime.TotalMinutes && totalMinutes < row.EndTime.TotalMinutes)
+            {
+                resolvedRow = row;
+            }
+
             state = LessonState.LessonIsGoing;
-            return row;
+        }
+
+        if (resolvedRow is not null)
+        {
+            return resolvedRow;
         }
 
         for (var i = 0; i < rows.Count; i++)
         {
             if (i + 1 == rows.Count)
             {
-                return null;
+                break;
             }
-
-            if (totalMinutes < rows[i].EndTime.TotalMinutes || totalMinutes > rows[i + 1].StartTime.TotalMinutes)
+            
+            var row = rows[i];
+            var nextRow = rows[i + 1];
+            
+            if (totalMinutes >= row.EndTime.TotalMinutes && totalMinutes < nextRow.StartTime.TotalMinutes)
             {
-                continue;
+                resolvedRow = row;
             }
-
-            state = LessonState.NextLessonWillStartSoon;
-            return rows[i + 1];
+            
+            state = LessonState.Break;
         }
-
-        return null;
-    }
-
-    public static BellTableRow? ResolveRow(List<BellTableRow> rows, int totalMinutes)
-    {
-        return ResolveRowAndState(rows, totalMinutes, out _);
-    }
-
-    public static LessonState ResolveLessonState(List<BellTableRow> rows, int totalMinutes)
-    {
-        ResolveRowAndState(rows, totalMinutes, out var state);
-        return state;
+        
+        return resolvedRow;
     }
 }
 
 public enum LessonState
 {
-    LessonsNotStarted,
+    BeforeLessons,
     LessonIsGoing,
-    NextLessonWillStartSoon,
-    LessonsEnded
+    Break,
+    AfterLessons
 }

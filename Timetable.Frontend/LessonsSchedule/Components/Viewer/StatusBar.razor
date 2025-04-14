@@ -8,7 +8,7 @@
     }
     else
     {
-        @if (_lessonState is LessonState.LessonsNotStarted)
+        @if (_lessonState is LessonState.BeforeLessons)
         {
             <p>Первый урок начнётся в @_activeRow.StartTime</p>
         }
@@ -16,11 +16,11 @@
         {
             <p>Урок идёт</p>
         }
-        else if (_lessonState is LessonState.NextLessonWillStartSoon)
+        else if (_lessonState is LessonState.Break)
         {
             <p>Следующий урок начнётся в @_activeRow.StartTime</p>
         }
-        else if (_lessonState is LessonState.LessonsEnded)
+        else if (_lessonState is LessonState.AfterLessons)
         {
             <p>Уроки закончились</p>
         }
@@ -44,6 +44,11 @@
     private void UpdateStateAndActiveRow()
     {
         _activeRow = BellTimeResolver.ResolveRowAndState(BellTable.Rows, DateTime.Now.GetTotalMinutes(), out _lessonState);
+
+        if (_activeRow is not null && _lessonState is LessonState.Break)
+        {
+            _activeRow = BellTable.Rows[BellTable.Rows.IndexOf(_activeRow) + 1];
+        }
 
         InvokeAsync(StateHasChanged);
     }

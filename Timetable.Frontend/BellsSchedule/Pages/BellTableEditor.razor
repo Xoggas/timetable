@@ -18,7 +18,7 @@
         </Button>
         <Button class="action-item"
                 @onclick="ToggleBells"
-                IsTransparent="@_areBellsActive is false"
+                IsTransparent="@(_areBellsActive is false)"
                 LabelAlwaysVisible="false">
             <Icon>
                 @if (_areBellsActive)

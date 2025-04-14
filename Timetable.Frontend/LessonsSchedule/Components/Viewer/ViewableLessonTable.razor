@@ -30,8 +30,8 @@
             {
                 var bellTableRow = _bellTable.Rows.ElementAtOrDefault(rowIndex - 1);
                 var isRowActive = _activeRow is not null && _lessonState is LessonState.LessonIsGoing or
-                    LessonState.LessonsNotStarted or
-                    LessonState.NextLessonWillStartSoon && _activeRow == rowIndex - 1;
+                    LessonState.BeforeLessons or
+                    LessonState.Break && _activeRow == rowIndex - 1;
 
                 <td class="cell" index active="@isRowActive">
                     @rowIndex
@@ -160,6 +160,10 @@
         if (row is null)
         {
             _activeRow = null;
+        }
+        else if (_lessonState is LessonState.Break)
+        {
+            _activeRow = _bellTable.Rows.IndexOf(row) + 1;
         }
         else
         {
