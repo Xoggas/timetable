@@ -1,0 +1,122 @@
+﻿@using Timetable.Frontend.LessonsSchedule.Models
+@inject SoundFileService SoundFileService
+@inject PlaylistService PlaylistService
+
+<ScrollView EmptyListText="Плейлист пуст!" IsEmpty="@(_playlist.Count == 0)">
+    <ScrollViewContent>
+        @for (var i = 0; i < _playlist.Count; i++)
+        {
+            var index = i;
+
+            <div class="playlist-item">
+                <SoundSelector SoundFiles="_soundFiles"
+                               @bind-SoundFileId="_playlist[index]"/>
+
+                <Button @onclick="() => RemoveSound(index)">
+                    <Icon>
+                        <DeleteIcon/>
+                    </Icon>
+                </Button>
+
+                <Button @onclick="() => PlaySound(index)">
+                    <Icon>
+                        <PlayIcon/>
+                    </Icon>
+                </Button>
+            </div>
+        }
+    </ScrollViewContent>
+    <FooterContent>
+        <Button @onclick="AddSound">
+            <Icon>
+                <AddIcon/>
+            </Icon>
+        </Button>
+    </FooterContent>
+</ScrollView>
+
+<AudioFilePlayer @ref="_audioFilePlayer" PlaybackEnded="PlayNext"/>
+
+@code
+{
+    [Parameter]
+    public CustomDayOfWeek DayOfWeek { get; set; }
+
+    private AudioFilePlayer _audioFilePlayer = null!;
+    private List<SoundFile> _soundFiles = [];
+    private List<string> _playlist = [];
+    private int _currentSong = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _soundFiles = await SoundFileService.GetAllAsync();
+
+        await LoadPlaylist();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadPlaylist();
+    }
+
+    public async Task Save()
+    {
+        await PlaylistService.UpdateByDayOfWeekAsync(DayOfWeek, new Playlist
+        {
+            DayOfWeek = DayOfWeek,
+            SoundFilesIds = _playlist
+        });
+    }
+
+    private async Task LoadPlaylist()
+    {
+        var playlist = await PlaylistService.GetByDayOfWeekAsync(DayOfWeek);
+
+        _playlist = playlist.SoundFilesIds
+            .Where(x => _soundFiles.Any(y => y.FileId == x))
+            .ToList();
+    }
+
+    private void PlayNext()
+    {
+        if (_playlist.Count == 0)
+        {
+            return;
+        }
+
+        var nextSongIndex = _currentSong + 1;
+
+        PlaySound(nextSongIndex >= _playlist.Count ? 0 : nextSongIndex);
+    }
+
+    private void PlayPrevious()
+    {
+        if (_playlist.Count == 0)
+        {
+            return;
+        }
+
+        var previousSongIndex = _currentSong - 1;
+
+        PlaySound(previousSongIndex < 0 ? _playlist.Count - 1 : previousSongIndex);
+    }
+
+    private void PlaySound(int index)
+    {
+        _currentSong = index;
+
+        var songId = _playlist[_currentSong];
+
+        InvokeAsync(() => _audioFilePlayer.PlayAsync(songId));
+    }
+
+    private void AddSound()
+    {
+        _playlist.Add(string.Empty);
+    }
+
+    private void RemoveSound(int index)
+    {
+        _playlist.RemoveAt(index);
+    }
+}

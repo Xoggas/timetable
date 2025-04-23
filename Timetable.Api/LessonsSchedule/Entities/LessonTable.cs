@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
-using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
+using Newtonsoft.Json;
+using Timetable.Api.LessonsSchedule.Common;
 
 namespace Timetable.Api.LessonsSchedule.Entities;
 
@@ -9,10 +9,11 @@ public sealed class LessonTable
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
+    [JsonIgnore]
     public string Id { get; init; } = string.Empty;
 
     [BsonElement("dayOfWeek")]
-    public Common_DayOfWeek DayOfWeek { get; set; }
+    public CustomDayOfWeek DayOfWeek { get; set; }
 
     [BsonElement("lessons")]
     public string[][] Lessons { get; set; } = [];

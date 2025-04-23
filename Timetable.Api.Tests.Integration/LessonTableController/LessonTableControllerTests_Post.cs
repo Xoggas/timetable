@@ -1,13 +1,12 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
+using Timetable.Api.LessonsSchedule.Common;
 using Timetable.Api.LessonsSchedule.Dtos;
 using Timetable.Api.LessonsSchedule.Entities;
 using Timetable.Api.LessonsSchedule.Repositories;
 using Timetable.Api.Tests.Integration.Extensions;
 using Timetable.Api.Tests.Integration.Shared;
-using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
-using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
 namespace Timetable.Api.Tests.Integration;
 
@@ -40,7 +39,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
     [Fact]
     public async Task Post_MakeBackup_WhenDayOfWeekIsInvalid_ShouldReturnBadRequest()
     {
-        const Common_DayOfWeek dayOfWeek = (Common_DayOfWeek)999;
+        const CustomDayOfWeek dayOfWeek = (CustomDayOfWeek)999;
 
         var response = await _client.PostAsync($"api/lesson-table/{dayOfWeek}/backup", null);
 
@@ -50,7 +49,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
     [Fact]
     public async Task Post_MakeBackup_WhenTableDoesntExist_ShouldCreateOneAndBackupIt()
     {
-        const Common_DayOfWeek dayOfWeek = Common_DayOfWeek.Monday;
+        const CustomDayOfWeek dayOfWeek = CustomDayOfWeek.Monday;
 
         var expectedBackup = new LessonTable
         {
@@ -76,7 +75,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
     [Fact]
     public async Task Post_MakeBackup_WhenTableExists_ShouldReturnTheSameTable()
     {
-        const Common_DayOfWeek dayOfWeek = Common_DayOfWeek.Tuesday;
+        const CustomDayOfWeek dayOfWeek = CustomDayOfWeek.Tuesday;
 
         var updateLessonTableDto = new UpdateLessonTableDto
         {
@@ -113,7 +112,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
     [Fact]
     public async Task Post_RestoreBackup_WhenDayOfWeekIsInvalid_ShouldReturnBadRequest()
     {
-        const Common_DayOfWeek dayOfWeek = (Common_DayOfWeek)999;
+        const CustomDayOfWeek dayOfWeek = (CustomDayOfWeek)999;
 
         var response = await _client.PostAsync($"api/lesson-table/{dayOfWeek}/restore", null);
 
@@ -123,7 +122,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
     [Fact]
     public async Task Post_RestoreBackup_WhenBackupDoesntExist_ShouldReturnNotFound()
     {
-        const Common_DayOfWeek dayOfWeek = Common_DayOfWeek.Wednesday;
+        const CustomDayOfWeek dayOfWeek = CustomDayOfWeek.Wednesday;
 
         Assert.Null(await _lessonTablesBackupRepository.GetByDayOfWeekAsync(dayOfWeek));
 
@@ -137,7 +136,7 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
     [Fact]
     public async Task Post_RestoreBackup_ShouldRestoreTheBackup()
     {
-        const Common_DayOfWeek dayOfWeek = Common_DayOfWeek.Thursday;
+        const CustomDayOfWeek dayOfWeek = CustomDayOfWeek.Thursday;
 
         var updateLessonTableDtoBeforeBackup = new UpdateLessonTableDto
         {
@@ -187,26 +186,26 @@ public sealed class LessonTableControllerTests_Post : IClassFixture<MongoDbFixtu
 
         Assert.NotNull(restoredLessonTable);
 
-        Assert.Equal(dayOfWeek, restoredLessonTable.DayOfWeek);
+        Assert.Equal(dayOfWeek, restoredLessonTable.CustomDayOfWeek);
 
         Assert.True(updateLessonTableDtoBeforeBackup.Lessons.StringArraysEqual(restoredLessonTable.Lessons));
 
         await GetAndCompareTables(dayOfWeek, updateLessonTableDtoBeforeBackup.Lessons);
     }
 
-    private async Task GetAndCompareTables(Common_DayOfWeek dayOfWeek, string[][] expectedLessonsCollection)
+    private async Task GetAndCompareTables(CustomDayOfWeek customDayOfWeek, string[][] expectedLessonsCollection)
     {
-        var lessonTable = await _client.GetFromJsonAsync<LessonTableDto>($"api/lesson-table/{dayOfWeek}");
+        var lessonTable = await _client.GetFromJsonAsync<LessonTableDto>($"api/lesson-table/{customDayOfWeek}");
 
         Assert.NotNull(lessonTable);
 
-        Assert.Equal(dayOfWeek, lessonTable.DayOfWeek);
+        Assert.Equal(customDayOfWeek, lessonTable.CustomDayOfWeek);
 
         Assert.True(expectedLessonsCollection.StringArraysEqual(lessonTable.Lessons));
     }
 
-    private async Task<bool> TableExists(Common_DayOfWeek dayOfWeek)
+    private async Task<bool> TableExists(CustomDayOfWeek customDayOfWeek)
     {
-        return await _lessonTablesRepository.GetAsync(dayOfWeek) is not null;
+        return await _lessonTablesRepository.GetAsync(customDayOfWeek) is not null;
     }
 }

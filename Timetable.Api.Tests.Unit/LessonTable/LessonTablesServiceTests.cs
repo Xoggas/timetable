@@ -1,10 +1,10 @@
 ﻿using AutoFixture;
 using Moq;
+using Timetable.Api.LessonsSchedule.Common;
 using Timetable.Api.LessonsSchedule.Entities;
 using Timetable.Api.LessonsSchedule.Repositories;
 using Timetable.Api.LessonsSchedule.Services;
 using Timetable.Api.Shared.Services;
-using LessonsSchedule_Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
 namespace Timetable.Api.Tests.Unit;
 
@@ -33,7 +33,7 @@ public sealed class LessonTableServiceTests
         var dayOfWeek = lessonTable.DayOfWeek;
 
         _lessonTablesRepositoryMock
-            .Setup(x => x.GetAsync(It.IsAny<LessonsSchedule_Common_DayOfWeek>()))
+            .Setup(x => x.GetAsync(It.IsAny<CustomDayOfWeek>()))
             .ReturnsAsync(lessonTable);
 
         var result = await _lessonTableService.GetLessonTableByDayOfWeekAsync(dayOfWeek);
@@ -60,7 +60,7 @@ public sealed class LessonTableServiceTests
         var dayOfWeek = lessonTableEntityToBackup.DayOfWeek;
 
         _lessonTablesRepositoryMock
-            .Setup(x => x.GetAsync(It.IsAny<LessonsSchedule_Common_DayOfWeek>()))
+            .Setup(x => x.GetAsync(It.IsAny<CustomDayOfWeek>()))
             .ReturnsAsync(lessonTableEntityToBackup);
 
         await _lessonTableService.MakeLessonTableBackupAsync(dayOfWeek);
@@ -72,10 +72,10 @@ public sealed class LessonTableServiceTests
     [Fact]
     public async Task RestoreLessonFromBackupAsync_WhenBackupDoesntExist_ShouldReturnNull()
     {
-        var dayOfWeek = _fixture.Create<LessonsSchedule_Common_DayOfWeek>();
+        var dayOfWeek = _fixture.Create<CustomDayOfWeek>();
 
         _lessonTablesBackupRepositoryMock
-            .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<LessonsSchedule_Common_DayOfWeek>()))
+            .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<CustomDayOfWeek>()))
             .ReturnsAsync(default(LessonTable));
 
         var result = await _lessonTableService.RestoreLessonTableFromBackupAsync(dayOfWeek);
@@ -90,7 +90,7 @@ public sealed class LessonTableServiceTests
         var dayOfWeek = lessonTableEntityBackup.DayOfWeek;
 
         _lessonTablesBackupRepositoryMock
-            .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<LessonsSchedule_Common_DayOfWeek>()))
+            .Setup(x => x.GetByDayOfWeekAsync(It.IsAny<CustomDayOfWeek>()))
             .ReturnsAsync(lessonTableEntityBackup);
 
         var result = await _lessonTableService.RestoreLessonTableFromBackupAsync(dayOfWeek);

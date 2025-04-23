@@ -1,3 +1,5 @@
+using Timetable.Api.LessonsSchedule.Common;
+
 namespace Timetable.Api.Shared.Constraints;
 
 public sealed class DayOfWeekConstraint : IRouteConstraint
@@ -7,7 +9,7 @@ public sealed class DayOfWeekConstraint : IRouteConstraint
     {
         if (values.TryGetValue(routeKey, out var value) && value is string dayOfWeek)
         {
-            return Enum.TryParse(dayOfWeek, out DayOfWeek _);
+            return Enum.TryParse(dayOfWeek, out CustomDayOfWeek _);
         }
 
         return false;

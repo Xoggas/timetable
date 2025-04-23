@@ -30,6 +30,7 @@ builder.Services.AddTransient<SoundFileService>();
 builder.Services.AddTransient<BellTableService>();
 builder.Services.AddTransient<AutomaticEventService>();
 builder.Services.AddTransient<ManualEventService>();
+builder.Services.AddTransient<PlaylistService>();
 
 var app = builder.Build();
 

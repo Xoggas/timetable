@@ -31,6 +31,11 @@
     private ElementReference _audioRef;
     private string _fileId = string.Empty;
 
+    public async Task<bool> IsPlaying()
+    {
+        return await JsRuntime.InvokeAsync<bool>("audioPlayerInterop.isPlaying", _audioRef);
+    }
+
     public async Task PlayAsync(string fileId)
     {
         _fileId = fileId;
@@ -43,5 +48,10 @@
     public async Task PauseAsync()
     {
         await JsRuntime.InvokeVoidAsync("audioPlayerInterop.pauseAudio", _audioRef);
+    }
+
+    public async Task StopAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("audioPlayerInterop.stopAudio", _audioRef);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Timetable.Api.LessonsSchedule.Common;
 
-public enum DayOfWeek
+public enum CustomDayOfWeek
 {
     Monday = 1,
     Tuesday,

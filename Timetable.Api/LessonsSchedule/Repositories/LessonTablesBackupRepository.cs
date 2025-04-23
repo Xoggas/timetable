@@ -1,14 +1,13 @@
 ﻿using MongoDB.Driver;
+using Timetable.Api.LessonsSchedule.Common;
 using Timetable.Api.LessonsSchedule.Entities;
 using Timetable.Api.Shared.Services;
-using Common_DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
-using DayOfWeek = Timetable.Api.LessonsSchedule.Common.DayOfWeek;
 
 namespace Timetable.Api.LessonsSchedule.Repositories;
 
 public interface ILessonTablesBackupRepository
 {
-    Task<LessonTable?> GetByDayOfWeekAsync(Common_DayOfWeek dayOfWeek);
+    Task<LessonTable?> GetByDayOfWeekAsync(CustomDayOfWeek customDayOfWeek);
     Task CreateAsync(LessonTable lessonTable);
 }
 
@@ -21,10 +20,10 @@ public sealed class LessonTablesBackupRepository : ILessonTablesBackupRepository
         _lessonTablesBackupCollection = mongoDbService.GetCollection<LessonTable>("lesson-tables-backups");
     }
 
-    public async Task<LessonTable?> GetByDayOfWeekAsync(Common_DayOfWeek dayOfWeek)
+    public async Task<LessonTable?> GetByDayOfWeekAsync(CustomDayOfWeek customDayOfWeek)
     {
         return await _lessonTablesBackupCollection
-            .Find(x => x.DayOfWeek == dayOfWeek)
+            .Find(x => x.DayOfWeek == customDayOfWeek)
             .FirstOrDefaultAsync();
     }
 

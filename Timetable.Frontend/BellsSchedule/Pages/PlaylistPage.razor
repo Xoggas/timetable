@@ -1,0 +1,60 @@
+@page "/playlist"
+@using Timetable.Frontend.LessonsSchedule.Components.Editor
+@using Timetable.Frontend.LessonsSchedule.Models
+@implements IDisposable
+@rendermode InteractiveServer
+
+<BellsScheduleHeader>
+    <ActionItems>
+        <Button class="action-item"
+                @onclick="Save"
+                LabelAlwaysVisible="false">
+            <Icon>
+                <SaveIcon/>
+            </Icon>
+            <Label>
+                Сохранить
+            </Label>
+        </Button>
+    </ActionItems>
+</BellsScheduleHeader>
+
+<PlaylistTable DayOfWeek="_dayOfWeek" @ref="_playlist"/>
+
+<DayOfWeekSelector @bind-DayOfWeek="_dayOfWeek"/>
+
+@code
+{
+    private CustomDayOfWeek _dayOfWeek = DateTime.Today.GetNativeDayOfWeek();
+    private CustomTimer _timer = null!;
+    private PlaylistTable _playlist = null!;
+
+    protected override void OnInitialized()
+    {
+        _timer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateDayOfWeek);
+    }
+
+    private async Task Save()
+    {
+        await _playlist.Save();
+    }
+
+    private void UpdateDayOfWeek()
+    {
+        var newDayOfWeek = DateTime.Today.GetNativeDayOfWeek();
+
+        if (newDayOfWeek == _dayOfWeek)
+        {
+            return;
+        }
+
+        _dayOfWeek = newDayOfWeek;
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+    }
+}

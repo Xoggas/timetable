@@ -7,6 +7,16 @@ public sealed class MongoIdAttribute : ValidationAttribute
 {
     public override bool IsValid(object? value)
     {
-        return value is string id && (string.IsNullOrEmpty(id) || ObjectId.TryParse(id, out _));
+        return value switch
+        {
+            string id => ValidateSingleId(id),
+            string[] ids => ids.All(ValidateSingleId),
+            _ => throw new ValidationException($"The constraint isn't applicable for {value?.GetType()}")
+        };
+    }
+
+    private bool ValidateSingleId(string id)
+    {
+        return string.IsNullOrEmpty(id) || ObjectId.TryParse(id, out _);
     }
 }
