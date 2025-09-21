@@ -1,0 +1,36 @@
+﻿@page "/"
+@using Timetable.Frontend.BellsSchedule.Icons
+
+<div></div>
+
+<div class="container">
+    <div class="title">Добро пожаловать в электронное расписание!</div>
+    <div class="links">
+        <a href="/lesson-table/editor" class="link">
+            <LessonTableIcon/>
+            <p>Редактор расписания</p>
+        </a>
+
+        <a href="/lesson-table/viewer" class="link">
+            <EyeIcon/>
+            <p>Просмотр расписания</p>
+        </a>
+
+        <a href="/bell-table/editor" class="link">
+            <BellIcon/>
+            <p>Редактор звонков</p>
+        </a>
+
+        <a href="/playlist" class="link">
+            <PlaylistIcon/>
+            <p>Плейлист</p>
+        </a>
+    </div>
+</div>
+
+<div></div>
+
+@code
+{
+
+}

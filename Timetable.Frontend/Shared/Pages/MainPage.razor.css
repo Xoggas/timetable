@@ -1,0 +1,68 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.title {
+    font-size: 1.25em;
+    font-weight: bold;
+    color: var(--color-white);
+    background-color: var(--color-white-transparent);
+    padding: 1em;
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--color-white);
+    border-radius: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.links {
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+}
+
+.link {
+    background-color: var(--color-white-transparent);
+    text-decoration: none;
+    color: var(--color-white);
+    padding: 1em;
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--color-white);
+    border-radius: 1em;
+    transition: 150ms;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+    justify-content: center;
+    flex: 1;                  /* равномерное распределение */
+    aspect-ratio: 1 / 1;
+    text-align: center;
+}
+
+.link:hover {
+    background-color: var(--color-white);
+    color: var(--color-gray);
+    border: 1px solid rgba(1, 1, 1, 0);
+    transform: scale(1.05);
+}
+
+.link a {
+    text-decoration: none;
+    color: inherit;
+}
+
+::deep .link svg {
+    fill: var(--color-white);
+    transition: 150ms;
+    width: 3em;
+    height: 3em;
+}
+
+::deep .link:hover svg {
+    fill: var(--color-gray);
+}
