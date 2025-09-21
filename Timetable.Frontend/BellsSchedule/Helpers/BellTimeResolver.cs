@@ -69,5 +69,6 @@ public enum LessonState
     BeforeLessons,
     LessonIsGoing,
     Break,
-    AfterLessons
+    AfterLessons,
+    None,
 }

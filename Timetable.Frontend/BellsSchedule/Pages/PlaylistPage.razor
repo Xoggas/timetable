@@ -9,6 +9,8 @@
 @inject ApiUrlService ApiUrlService
 @inject BellTableService BellTableService
 
+<PageTitle>Плейлист</PageTitle>
+
 <BellsScheduleHeader/>
 
 <ConnectionIssuesOverlay IsVisible="_isReconnectionOverlayVisible"/>
@@ -27,6 +29,7 @@
     private BellTable _bellTable = new();
     private CustomTimer _timer = null!;
 
+    private LessonState _lastState = LessonState.None;
     private bool _isPlayerLocked;
     private bool _isReconnectionOverlayVisible;
     private HubConnection? _bellsScheduleHubConnection;
@@ -68,19 +71,24 @@
     private void UpdateStateAndRow()
     {
         BellTimeResolver.ResolveRowAndState(_bellTable.Rows, DateTime.Now.GetTotalMinutes(), out LessonState lessonState);
-        
-        if (lessonState is LessonState.Break or LessonState.BeforeLessons)
+
+        if (_lastState == lessonState)
         {
-            _isPlayerLocked = false;
+            return;
+        }
+
+        _lastState = lessonState;
+
+        if (lessonState is LessonState.Break or LessonState.BeforeLessons or LessonState.AfterLessons)
+        {
             _audioPlayerRef.Play();
         }
         else
         {
-            _isPlayerLocked = true;
             _audioPlayerRef.Pause();
         }
 
-        InvokeAsync(StateHasChanged);
+        _isPlayerLocked = lessonState is LessonState.LessonIsGoing;
     }
 
     private async Task UpdateTables()
