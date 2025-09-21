@@ -53,6 +53,10 @@
     fill: var(--color-white);
 }
 
+::deep .custom-button__icon[disabled] svg {
+    fill: var(--color-white);
+}
+
 .custom-button__label {
     display: none;
     white-space: nowrap;

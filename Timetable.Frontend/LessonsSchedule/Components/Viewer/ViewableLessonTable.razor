@@ -71,7 +71,8 @@
     public CustomDayOfWeek DayOfWeek { get; set; }
 
     private CustomTimer _timer = null!;
-    private HubConnection? _hubConnection;
+    private HubConnection? _lessonsScheduleHubConnection;
+    private HubConnection? _bellsScheduleHubConnection;
     private bool _isReconnectionOverlayVisible;
     private List<List<string>> _table = [];
 
@@ -97,38 +98,38 @@
 
     private async Task CreateHubForLessonTable()
     {
-        _hubConnection = new HubConnectionBuilder()
+        _lessonsScheduleHubConnection = new HubConnectionBuilder()
             .WithUrl(ApiUrlService.Retrieve("lessons-schedule"))
             .WithAutomaticReconnect(new InfiniteRetryPolicy())
             .Build();
 
-        _hubConnection.Reconnecting += async _ => await OnReconnecting();
-        _hubConnection.Reconnected += async _ => await OnReconnected();
-        _hubConnection.On<LessonTable>("Update", table =>
+        _lessonsScheduleHubConnection.Reconnecting += async _ => await OnReconnecting();
+        _lessonsScheduleHubConnection.Reconnected += async _ => await OnReconnected();
+        _lessonsScheduleHubConnection.On<LessonTable>("Update", table =>
         {
             _table = table.Lessons;
 
             InvokeAsync(StateHasChanged);
         });
 
-        await _hubConnection.StartAsync();
+        await _lessonsScheduleHubConnection.StartAsync();
     }
 
     private async Task CreateHubForBellTable()
     {
-        _hubConnection = new HubConnectionBuilder()
+        _bellsScheduleHubConnection = new HubConnectionBuilder()
             .WithUrl(ApiUrlService.Retrieve("bells-schedule"))
             .WithAutomaticReconnect(new InfiniteRetryPolicy())
             .Build();
 
-        _hubConnection.On<BellTable>("Update", table =>
+        _bellsScheduleHubConnection.On<BellTable>("Update", table =>
         {
             _bellTable = table;
 
             InvokeAsync(StateHasChanged);
         });
 
-        await _hubConnection.StartAsync();
+        await _bellsScheduleHubConnection.StartAsync();
     }
 
     private async Task UpdateTables()
@@ -175,9 +176,14 @@
 
     public async ValueTask DisposeAsync()
     {
-        if (_hubConnection != null)
+        if (_lessonsScheduleHubConnection != null)
         {
-            await _hubConnection.DisposeAsync();
+            await _lessonsScheduleHubConnection.DisposeAsync();
+        }
+
+        if (_bellsScheduleHubConnection is not null)
+        {
+            await _bellsScheduleHubConnection.DisposeAsync();
         }
 
         _timer.Dispose();

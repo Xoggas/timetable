@@ -1,0 +1,84 @@
+﻿.audio-player {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+    background-color: var(--color-white-transparent);
+    border: 1px solid var(--color-white);
+    backdrop-filter: blur(16px);
+    border-radius: 1em;
+    align-items: center;
+    justify-content: center;
+}
+
+.volume-container {
+    display: flex;
+    gap: 1em;
+}
+
+.volume-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2em;
+}
+
+::deep #custom-button {
+    width: 100%;
+}
+
+input {
+    -webkit-appearance: none; /* For WebKit browsers (Chrome, Safari, Opera) */
+    appearance: none; /* Standard property */
+    width: 100%; /* Adjust as needed */
+    cursor: pointer;
+    outline: none; /* Remove outline on focus */
+    background-color: transparent;
+}
+
+input::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 4px;
+    background-color: var(--color-white);
+}
+
+input::-moz-range-track {
+    height: 8px;
+    border-radius: 4px;
+    background-color: var(--color-white);
+}
+
+input::-ms-track {
+    height: 8px;
+    border-radius: 4px;
+    border-color: transparent; /* Hide default border */
+    color: transparent; /* Hide default fill */
+    background-color: var(--color-white);
+}
+
+input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    background-color: var(--color-white);
+    border-radius: 50%;
+    border: 2px solid var(--color-gray);
+    margin-top: -6px; /* Adjust to align with track */
+}
+
+input::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    background-color: var(--color-white);
+    border-radius: 50%;
+    border: 2px solid var(--color-gray);
+}
+
+input::-ms-thumb {
+    height: 20px;
+    width: 20px;
+    background-color: var(--color-white);
+    border-radius: 50%;
+    border: 2px solid var(--color-gray);
+}

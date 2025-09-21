@@ -1,0 +1,114 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject IJSRuntime JsRuntime
+
+<div class="audio-player">
+    @if (IsLocked)
+    {
+        <Button LabelAlwaysVisible="true"
+                disabled>
+            <Icon>
+                <LockIcon/>
+            </Icon>
+            <Label>
+                Идёт урок
+            </Label>
+        </Button>
+    }
+    else if (_isPlaying)
+    {
+        <Button LabelAlwaysVisible="true"
+                @onclick="PauseInternal">
+            <Icon>
+                <StopIcon/>
+            </Icon>
+            <Label>
+                Остановить
+            </Label>
+        </Button>
+    }
+    else
+    {
+        <Button LabelAlwaysVisible="true"
+                disabled="@IsLocked"
+                @onclick="PlayInternal">
+            <Icon>
+                <PlayIcon/>
+            </Icon>
+            <Label>
+                Проиграть
+            </Label>
+        </Button>
+    }
+    
+    <div class="volume-container">
+        <div class="volume-icon">
+            <VolumeIcon />
+        </div>
+        <input type="range" min="0" max="100" @bind="Volume" @oninput="UpdateVolume">
+    </div>
+</div>
+
+<audio @ref="_audioRef">
+    <source src="@Source" type="audio/mpeg">
+</audio>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public bool IsLocked { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Source { get; set; } = string.Empty;
+
+    [Parameter, Range(0, 100)]
+    public int Volume { get; set; } = 100;
+
+    private ElementReference _audioRef;
+    private bool _isPlaying = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JsRuntime.InvokeVoidAsync("audioPlayerInterop.setVolume", _audioRef, Volume / 100f);
+    }
+
+    private void PlayInternal()
+    {
+        _isPlaying = true;
+
+        Play();
+    }
+
+    private void PauseInternal()
+    {
+        _isPlaying = false;
+
+        Pause();
+    }
+
+    public void Play()
+    {
+        if (IsLocked || _isPlaying is false)
+        {
+            Pause();
+            return;
+        }
+
+        InvokeAsync(() => JsRuntime.InvokeVoidAsync("audioPlayerInterop.playAudio", _audioRef));
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Pause()
+    {
+        InvokeAsync(() => JsRuntime.InvokeVoidAsync("audioPlayerInterop.pauseAudio", _audioRef));
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdateVolume(ChangeEventArgs args)
+    {
+        var volume = int.Parse(args.Value?.ToString() ?? "0") / 100f;
+
+        InvokeAsync(() => JsRuntime.InvokeVoidAsync("audioPlayerInterop.setVolume", _audioRef, volume));
+    }
+}

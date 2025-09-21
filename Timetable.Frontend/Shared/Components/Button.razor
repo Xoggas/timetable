@@ -4,7 +4,8 @@
     @if (Icon is not null)
     {
         <div class="custom-button__icon"
-             is-transparent="@IsTransparent">
+             is-transparent="@IsTransparent"
+             @attributes="AdditionalAttributes">
             @Icon
         </div>
     }
@@ -13,7 +14,8 @@
     {
         <div class="custom-button__label"
              is-transparent="@IsTransparent"
-             label-always-visible="@LabelAlwaysVisible">
+             label-always-visible="@LabelAlwaysVisible"
+             @attributes="AdditionalAttributes">
             @Label
         </div>
     }
@@ -24,8 +26,15 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
-    [Parameter] public RenderFragment? Icon { get; set; }
-    [Parameter] public RenderFragment? Label { get; set; }
-    [Parameter] public bool IsTransparent { get; set; }
-    [Parameter] public bool LabelAlwaysVisible { get; set; } = true;
+    [Parameter]
+    public RenderFragment? Icon { get; set; }
+
+    [Parameter]
+    public RenderFragment? Label { get; set; }
+
+    [Parameter]
+    public bool IsTransparent { get; set; }
+
+    [Parameter]
+    public bool LabelAlwaysVisible { get; set; } = true;
 }

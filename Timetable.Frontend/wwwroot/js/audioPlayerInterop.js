@@ -11,5 +11,8 @@ window.audioPlayerInterop = {
     },
     isPlaying: audioElement => {
         return audioElement.paused === false;
+    },
+    setVolume: (audioElement, volume) => {
+        audioElement.volume = volume;
     }
 };

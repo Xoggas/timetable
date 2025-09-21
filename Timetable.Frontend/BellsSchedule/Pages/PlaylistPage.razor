@@ -1,9 +1,116 @@
 @page "/playlist"
 @rendermode InteractiveServer
+@implements IAsyncDisposable
+@using Microsoft.AspNetCore.SignalR.Client
+@using Timetable.Frontend.BellsSchedule.Helpers
+@using Timetable.Frontend.LessonsSchedule.Components.Viewer
+@using Timetable.Frontend.LessonsSchedule.Policies
+@using Timetable.Frontend.Shared.Services
+@inject ApiUrlService ApiUrlService
+@inject BellTableService BellTableService
 
 <BellsScheduleHeader/>
 
+<ConnectionIssuesOverlay IsVisible="_isReconnectionOverlayVisible"/>
+
+<AudioPlayer @ref="_audioPlayerRef"
+             IsLocked="_isPlayerLocked"
+             Source="https://icecast-radioclassica.cdnvideo.ru/radioclassica"
+             Volume="10"/>
+
+<div></div>
+
 @code
 {
+    private AudioPlayer _audioPlayerRef = null!;
 
+    private BellTable _bellTable = new();
+    private CustomTimer _timer = null!;
+
+    private bool _isPlayerLocked;
+    private bool _isReconnectionOverlayVisible;
+    private HubConnection? _bellsScheduleHubConnection;
+
+    protected override void OnInitialized()
+    {
+        _timer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateStateAndRow);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CreateHubForBellTable();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateTables();
+    }
+
+    private async Task CreateHubForBellTable()
+    {
+        _bellsScheduleHubConnection = new HubConnectionBuilder()
+            .WithUrl(ApiUrlService.Retrieve("bells-schedule"))
+            .WithAutomaticReconnect(new InfiniteRetryPolicy())
+            .Build();
+
+        _bellsScheduleHubConnection.Reconnecting += async _ => await OnReconnecting();
+        _bellsScheduleHubConnection.Reconnected += async _ => await OnReconnected();
+        _bellsScheduleHubConnection.On<BellTable>("Update", table =>
+        {
+            _bellTable = table;
+
+            InvokeAsync(StateHasChanged);
+        });
+
+        await _bellsScheduleHubConnection.StartAsync();
+    }
+
+    private void UpdateStateAndRow()
+    {
+        BellTimeResolver.ResolveRowAndState(_bellTable.Rows, DateTime.Now.GetTotalMinutes(), out LessonState lessonState);
+        
+        if (lessonState is LessonState.Break or LessonState.BeforeLessons)
+        {
+            _isPlayerLocked = false;
+            _audioPlayerRef.Play();
+        }
+        else
+        {
+            _isPlayerLocked = true;
+            _audioPlayerRef.Pause();
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task UpdateTables()
+    {
+        _bellTable = await BellTableService.GetBellTableAsync();
+
+        UpdateStateAndRow();
+    }
+
+    private async Task OnReconnecting()
+    {
+        _isReconnectionOverlayVisible = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnReconnected()
+    {
+        _isReconnectionOverlayVisible = false;
+
+        await UpdateTables();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_bellsScheduleHubConnection is not null)
+        {
+            await _bellsScheduleHubConnection.DisposeAsync();
+        }
+
+        _timer.Dispose();
+    }
 }
