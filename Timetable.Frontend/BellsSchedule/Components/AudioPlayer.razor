@@ -5,7 +5,7 @@
     @if (IsLocked)
     {
         <Button LabelAlwaysVisible="true"
-                disabled>
+                IsDisabled="true">
             <Icon>
                 <LockIcon/>
             </Icon>
@@ -29,7 +29,7 @@
     else
     {
         <Button LabelAlwaysVisible="true"
-                disabled="@IsLocked"
+                IsDisabled="@IsLocked"
                 @onclick="PlayInternal">
             <Icon>
                 <PlayIcon/>

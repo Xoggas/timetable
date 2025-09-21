@@ -44,17 +44,17 @@
     align-items: center;
 }
 
-::deep .custom-button__icon svg {
-    fill: var(--color-gray);
-    transition: 150ms;
+::deep .custom-button__icon[disabled] svg {
+    fill: var(--color-white);
 }
 
 ::deep .custom-button__icon[is-transparent] svg {
     fill: var(--color-white);
 }
 
-::deep .custom-button__icon[disabled] svg {
-    fill: var(--color-white);
+::deep .custom-button__icon svg {
+    fill: var(--color-gray);
+    transition: 150ms;
 }
 
 .custom-button__label {

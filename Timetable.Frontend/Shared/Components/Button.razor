@@ -1,11 +1,12 @@
 ﻿<div @attributes="AdditionalAttributes"
      id="custom-button"
-     is-transparent="@IsTransparent">
+     is-transparent="@IsTransparent"
+     disabled="@IsDisabled">
     @if (Icon is not null)
     {
         <div class="custom-button__icon"
              is-transparent="@IsTransparent"
-             @attributes="AdditionalAttributes">
+             disabled="@IsDisabled">
             @Icon
         </div>
     }
@@ -15,7 +16,7 @@
         <div class="custom-button__label"
              is-transparent="@IsTransparent"
              label-always-visible="@LabelAlwaysVisible"
-             @attributes="AdditionalAttributes">
+             disabled="@IsDisabled">
             @Label
         </div>
     }
@@ -34,6 +35,9 @@
 
     [Parameter]
     public bool IsTransparent { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
 
     [Parameter]
     public bool LabelAlwaysVisible { get; set; } = true;

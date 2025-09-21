@@ -72,11 +72,15 @@
     private void ToggleEditingMode()
     {
         _isTableBeingEdited = !_isTableBeingEdited;
+        
+        InvokeAsync(StateHasChanged);
     }
 
     private void ToggleBells()
     {
         _areBellsActive = !_areBellsActive;
+
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task Save()
