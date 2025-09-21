@@ -1,6 +1,7 @@
-@using Timetable.Frontend.BellsSchedule.Services
 @inject SoundFileService SoundFileService
 @inject BellTableService BellTableService
+@using Timetable.Frontend.BellsSchedule.Helpers
+@implements IDisposable
 
 <table class="container">
     @if (RowCount == 0)
@@ -23,7 +24,7 @@
     {
         @foreach (var (row, index) in _bellTable.Rows.Select((x, i) => (x, i + 1)))
         {
-            <tr>
+            <tr active="@(_activeRow == index - 1)">
                 <td>
                     @index.ToString("D2")
                 </td>
@@ -83,15 +84,20 @@
 {
     [Parameter]
     public bool IsBeingEdited { get; set; }
-    
+
     [Parameter]
     public bool AreBellsActive { get; set; }
+
+    [Parameter]
+    public EventCallback<BellTable> BellTableLoaded { get; set; }
 
     private int RowCount => _bellTable.Rows.Count;
 
     private ConfirmationModal _rowDeletionModal = null!;
     private List<SoundFile> _soundFiles = [];
+    private CustomTimer _timer = null!;
     private BellTable _bellTable = new();
+    private int _activeRow = -1;
 
     public async Task Save()
     {
@@ -100,8 +106,30 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _timer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateStateAndRow);
         _soundFiles = await SoundFileService.GetAllAsync();
         _bellTable = await BellTableService.GetBellTableAsync();
+        await BellTableLoaded.InvokeAsync(_bellTable);
+    }
+
+    private void UpdateStateAndRow()
+    {
+        var row = BellTimeResolver.ResolveRowAndState(_bellTable.Rows, DateTime.Now.GetTotalMinutes(), out LessonState lessonState);
+
+        if (row is null)
+        {
+            _activeRow = -1;
+        }
+        else if (lessonState is LessonState.Break)
+        {
+            _activeRow = _bellTable.Rows.IndexOf(row) + 1;
+        }
+        else
+        {
+            _activeRow = _bellTable.Rows.IndexOf(row);
+        }
+
+        InvokeAsync(StateHasChanged);
     }
 
     private void AddRow()
@@ -114,8 +142,13 @@
         _rowDeletionModal.Show(() =>
         {
             _bellTable.Rows.Remove(row);
-            
+
             StateHasChanged();
         });
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
     }
 }

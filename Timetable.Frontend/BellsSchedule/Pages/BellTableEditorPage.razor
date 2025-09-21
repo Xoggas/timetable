@@ -1,5 +1,6 @@
 @page "/bell-table/editor"
 @using Timetable.Frontend.BellsSchedule.Components.ManualEvents
+@using Timetable.Frontend.LessonsSchedule.Components.Viewer
 @rendermode InteractiveServer
 
 <PageTitle>Редактор звонков</PageTitle>
@@ -57,19 +58,26 @@
     <AutomaticEventsList @ref="_automaticEventsList"/>
     <EditableBellTable @ref="_editableBellTable"
                        IsBeingEdited="_isTableBeingEdited"
-                       AreBellsActive="_areBellsActive"/>
+                       AreBellsActive="_areBellsActive"
+                       BellTableLoaded="OnBellTableLoaded"/>
     <ManualEventsList @ref="_manualEventsList"/>
 </div>
 
-<div></div>
+<StatusBar BellTable="_bellTableReference"></StatusBar>
 
 @code
 {
     private AutomaticEventsList _automaticEventsList = null!;
     private EditableBellTable _editableBellTable = null!;
     private ManualEventsList _manualEventsList = null!;
+    private BellTable _bellTableReference = new();
     private bool _isTableBeingEdited;
     private bool _areBellsActive = true;
+
+    private void OnBellTableLoaded(BellTable bellTable)
+    {
+        _bellTableReference = bellTable;
+    }
 
     private void ToggleEditingMode()
     {
