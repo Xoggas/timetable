@@ -29,7 +29,6 @@
     private BellTable _bellTable = new();
     private CustomTimer _timer = null!;
 
-    private LessonState _lastState = LessonState.None;
     private bool _isPlayerLocked;
     private bool _isReconnectionOverlayVisible;
     private HubConnection? _bellsScheduleHubConnection;
@@ -72,13 +71,6 @@
     {
         BellTimeResolver.ResolveRowAndState(_bellTable.Rows, DateTime.Now.GetTotalMinutes(), out LessonState lessonState);
 
-        if (_lastState == lessonState)
-        {
-            return;
-        }
-
-        _lastState = lessonState;
-
         if (lessonState is LessonState.Break or LessonState.BeforeLessons or LessonState.AfterLessons)
         {
             _audioPlayerRef.Play();
@@ -89,6 +81,8 @@
         }
 
         _isPlayerLocked = lessonState is LessonState.LessonIsGoing;
+        
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task UpdateTables()
