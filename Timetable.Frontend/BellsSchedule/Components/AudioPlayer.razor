@@ -48,7 +48,7 @@
     </div>
 </div>
 
-<audio @ref="_audioRef">
+<audio @ref="_audioRef" @onended="RestartStream" @onerror="RestartStream">
     <source src="@Source" type="audio/mpeg">
 </audio>
 
@@ -100,23 +100,30 @@
         }
 
         InvokeAsync(() => JsRuntime.InvokeVoidAsync("audioPlayerInterop.playAudio", _audioRef));
-
         InvokeAsync(StateHasChanged);
     }
 
     public void Pause()
     {
         InvokeAsync(() => JsRuntime.InvokeVoidAsync("audioPlayerInterop.pauseAudio", _audioRef));
-
         InvokeAsync(StateHasChanged);
+    }
+
+    private async Task RestartStream()
+    {
+        if (IsLocked is false && _isPlaying)
+        {
+            await JsRuntime.InvokeVoidAsync("audioPlayerInterop.pauseAudio", _audioRef);
+            await JsRuntime.InvokeVoidAsync("audioPlayerInterop.playAudio", _audioRef);
+        }
     }
 
     private void UpdateVolume(ChangeEventArgs args)
     {
-        var volume = int.Parse(args.Value?.ToString() ?? "0") ;
-        
+        var volume = int.Parse(args.Value?.ToString() ?? "0");
+
         Volume = volume;
-        
+
         InvokeAsync(() => VolumeChanged.InvokeAsync(Volume));
 
         var normalizedVolume = volume / 100f;
