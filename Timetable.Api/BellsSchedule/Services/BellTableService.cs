@@ -14,11 +14,14 @@ public sealed class BellTableService : IBellTableService
 {
     private readonly IMongoCollection<BellTable> _bellTableCollection;
     private readonly IBellsScheduleEventService _eventService;
+    private readonly BellTableUpdateSharedEventBus _bellTableUpdateSharedEventBus;
 
-    public BellTableService(MongoDbService mongoDbService, IBellsScheduleEventService eventService)
+    public BellTableService(MongoDbService mongoDbService, IBellsScheduleEventService eventService,
+        BellTableUpdateSharedEventBus bellTableUpdateSharedEventBus)
     {
         _bellTableCollection = mongoDbService.GetCollection<BellTable>("bell-table");
         _eventService = eventService;
+        _bellTableUpdateSharedEventBus = bellTableUpdateSharedEventBus;
     }
 
     public async Task<BellTable> Get()
@@ -48,5 +51,7 @@ public sealed class BellTableService : IBellTableService
         });
 
         await _eventService.NotifyAllClientsAboutUpdate(bellTable);
+
+        _bellTableUpdateSharedEventBus.TriggerUpdate(bellTable);
     }
 }

@@ -7,6 +7,8 @@ namespace Timetable.Api.Shared.Services;
 public interface IBellsScheduleEventService
 {
     Task NotifyAllClientsAboutUpdate(BellTable bellTable);
+    Task NotifyAllClientsThatClassStarted();
+    Task NotifyAllClientsThatClassEnded(LessonState state);
 }
 
 public sealed class BellsScheduleEventService : IBellsScheduleEventService
@@ -21,5 +23,15 @@ public sealed class BellsScheduleEventService : IBellsScheduleEventService
     public async Task NotifyAllClientsAboutUpdate(BellTable bellTable)
     {
         await _eventHub.Clients.All.Update(bellTable);
+    }
+
+    public async Task NotifyAllClientsThatClassStarted()
+    {
+        await _eventHub.Clients.All.ClassStarted();
+    }
+
+    public async Task NotifyAllClientsThatClassEnded(LessonState state)
+    {
+        await _eventHub.Clients.All.ClassEnded(state);
     }
 }

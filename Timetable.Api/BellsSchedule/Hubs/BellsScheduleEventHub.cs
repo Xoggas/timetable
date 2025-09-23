@@ -5,9 +5,9 @@ namespace Timetable.Api.BellsSchedule.Hubs;
 
 public interface IBellsScheduleEventHub
 {
-    public Task Update(BellTable bellTable);
-    public Task ClassStarted();
-    public Task ClassEnded();
+    Task Update(BellTable bellTable);
+    Task ClassStarted();
+    Task ClassEnded(LessonState state);
 }
 
 public sealed class BellsScheduleEventHub : Hub<IBellsScheduleEventHub>
@@ -22,8 +22,8 @@ public sealed class BellsScheduleEventHub : Hub<IBellsScheduleEventHub>
         await Clients.All.ClassStarted();
     }
 
-    public async Task ClassEnded()
+    public async Task ClassEnded(LessonState state)
     {
-        await Clients.All.ClassEnded();
+        await Clients.All.ClassEnded(state);
     }
 }

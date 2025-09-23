@@ -13,5 +13,7 @@ public sealed class BellsScheduleModule : IModule
         builder.Services.AddTransient<IAutomaticEventService, AutomaticEventService>();
         builder.Services.AddTransient<IManualEventService, ManualEventService>();
         builder.Services.AddTransient<IBellTableService, BellTableService>();
+        builder.Services.AddSingleton<BellTableUpdateSharedEventBus>();
+        builder.Services.AddHostedService<ClassStartEndNotificationService>();
     }
 }
