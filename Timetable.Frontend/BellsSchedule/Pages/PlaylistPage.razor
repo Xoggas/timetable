@@ -18,7 +18,7 @@
 <AudioPlayer @ref="_audioPlayerRef"
              IsLocked="_isPlayerLocked"
              Source="https://icecast-radioclassica.cdnvideo.ru/radioclassica"
-             Volume="10"/>
+             @bind-Volume="_musicVolume"/>
 
 <div></div>
 
@@ -29,6 +29,7 @@
     private BellTable _bellTable = new();
     private CustomTimer _timer = null!;
 
+    private int _musicVolume = 10;
     private bool _isPlayerLocked;
     private bool _isReconnectionOverlayVisible;
     private HubConnection? _bellsScheduleHubConnection;

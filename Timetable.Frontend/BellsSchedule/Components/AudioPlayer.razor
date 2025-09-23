@@ -39,10 +39,10 @@
             </Label>
         </Button>
     }
-    
+
     <div class="volume-container">
         <div class="volume-icon">
-            <VolumeIcon />
+            <VolumeIcon/>
         </div>
         <input type="range" min="0" max="100" @bind="Volume" @oninput="UpdateVolume">
     </div>
@@ -60,15 +60,21 @@
     [Parameter, EditorRequired]
     public string Source { get; set; } = string.Empty;
 
-    [Parameter, Range(0, 100)]
-    public int Volume { get; set; } = 100;
+    [Parameter]
+    public int Volume { get; set; }
+
+    [Parameter]
+    public EventCallback<int> VolumeChanged { get; set; }
 
     private ElementReference _audioRef;
     private bool _isPlaying = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JsRuntime.InvokeVoidAsync("audioPlayerInterop.setVolume", _audioRef, Volume / 100f);
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("audioPlayerInterop.setVolume", _audioRef, Volume / 100f);
+        }
     }
 
     private void PlayInternal()
@@ -107,8 +113,14 @@
 
     private void UpdateVolume(ChangeEventArgs args)
     {
-        var volume = int.Parse(args.Value?.ToString() ?? "0") / 100f;
+        var volume = int.Parse(args.Value?.ToString() ?? "0") ;
+        
+        Volume = volume;
+        
+        InvokeAsync(() => VolumeChanged.InvokeAsync(Volume));
 
-        InvokeAsync(() => JsRuntime.InvokeVoidAsync("audioPlayerInterop.setVolume", _audioRef, volume));
+        var normalizedVolume = volume / 100f;
+
+        InvokeAsync(() => JsRuntime.InvokeVoidAsync("audioPlayerInterop.setVolume", _audioRef, normalizedVolume));
     }
 }
