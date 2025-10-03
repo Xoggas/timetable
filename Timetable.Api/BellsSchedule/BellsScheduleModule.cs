@@ -1,3 +1,4 @@
+using Timetable.Api.BellsSchedule.BackgroundServices;
 using Timetable.Api.BellsSchedule.Services;
 using Timetable.Api.Shared;
 using Timetable.Api.Shared.Services;
@@ -13,7 +14,7 @@ public sealed class BellsScheduleModule : IModule
         builder.Services.AddTransient<IAutomaticEventService, AutomaticEventService>();
         builder.Services.AddTransient<IManualEventService, ManualEventService>();
         builder.Services.AddTransient<IBellTableService, BellTableService>();
-        builder.Services.AddSingleton<BellTableUpdateSharedEventBus>();
-        builder.Services.AddHostedService<ClassStartEndNotificationService>();
+        builder.Services.AddSingleton<BellTableSharedEventBus>();
+        builder.Services.AddHostedService<TimeStateNotificationService>();
     }
 }

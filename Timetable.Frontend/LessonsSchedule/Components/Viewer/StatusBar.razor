@@ -1,29 +1,30 @@
-@using Timetable.Frontend.BellsSchedule.Helpers
 @using Timetable.Frontend.BellsSchedule.Models
+@using Timetable.Frontend.BellsSchedule.Services
 @implements IDisposable
+@inject BellTableEventService BellTableEventService
+@inject BellTableService BellTableService
 
 <div class="container">
-    @if (_activeRow is null)
+    @if (IsBellTableFilled is false)
     {
         <p>Таблица звонков не заполнена!</p>
     }
     else
     {
-        @if (_lessonState is LessonState.BeforeLessons)
+        @switch (_lessonState)
         {
-            <p>Первый урок начнётся в @_activeRow.StartTime</p>
-        }
-        else if (_lessonState is LessonState.LessonIsGoing)
-        {
-            <p>Урок идёт</p>
-        }
-        else if (_lessonState is LessonState.Break)
-        {
-            <p>Следующий урок начнётся в @_activeRow.StartTime</p>
-        }
-        else if (_lessonState is LessonState.AfterLessons)
-        {
-            <p>Уроки закончились</p>
+            case LessonState.BeforeLessons:
+                <p>Первый урок начнётся в @_lessonStartTime</p>
+                break;
+            case LessonState.LessonIsGoing:
+                <p>Урок идёт</p>
+                break;
+            case LessonState.Break:
+                <p>Следующий урок начнётся в @_lessonEndTime</p>
+                break;
+            case LessonState.AfterLessons:
+                <p>Уроки закончились</p>
+                break;
         }
     }
 </div>
@@ -31,36 +32,33 @@
 @code
 {
     [Parameter, EditorRequired]
-    public BellTable BellTable { get; set; } = new();
+    public bool IsBellTableFilled { get; set; }
 
-    private CustomTimer _customTimer = null!;
     private LessonState _lessonState;
-    private BellTableRow? _activeRow;
+    private TimeModel? _lessonStartTime;
+    private TimeModel? _lessonEndTime;
 
     protected override void OnInitialized()
     {
-        _customTimer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateStateAndActiveRow);
+        BellTableEventService.TimeStateUpdated += UpdateStateAndActiveRow;
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnInitializedAsync()
     {
-        UpdateStateAndActiveRow();
+        var timeState = await BellTableService.GetTimeStateAsync();
+        UpdateStateAndActiveRow(timeState);
     }
 
-    private void UpdateStateAndActiveRow()
+    private void UpdateStateAndActiveRow(TimeState timeState)
     {
-        _activeRow = BellTimeResolver.ResolveRowAndState(BellTable.Rows, DateTime.Now.GetTotalMinutes(), out _lessonState);
-
-        if (_activeRow is not null && _lessonState is LessonState.Break)
-        {
-            _activeRow = BellTable.Rows[BellTable.Rows.IndexOf(_activeRow) + 1];
-        }
-
+        _lessonState = timeState.LessonState;
+        _lessonStartTime = timeState.Row?.StartTime;
+        _lessonEndTime = timeState.Row?.EndTime;
         InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        _customTimer.Dispose();
+        BellTableEventService.TimeStateUpdated -= UpdateStateAndActiveRow;
     }
 }

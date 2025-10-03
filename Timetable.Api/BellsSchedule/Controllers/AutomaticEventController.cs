@@ -20,7 +20,7 @@ public sealed class AutomaticEventController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AutomaticEventDto>>> Get()
+    public async Task<ActionResult<IEnumerable<AutomaticEventDto>>> GetAllEventsAsync()
     {
         var automaticEvents = await _automaticEventService.GetAllEvents();
 
@@ -28,7 +28,7 @@ public sealed class AutomaticEventController : ControllerBase
     }
 
     [HttpGet("{id:mongoid}")]
-    public async Task<ActionResult<AutomaticEventDto>> Get(string id)
+    public async Task<ActionResult<AutomaticEventDto>> GetEventByIdAsync(string id)
     {
         var automaticEvent = await _automaticEventService.GetEventById(id);
 
@@ -47,11 +47,11 @@ public sealed class AutomaticEventController : ControllerBase
 
         var automaticEventDto = _mapper.Map<AutomaticEventDto>(automaticEvent);
 
-        return CreatedAtAction(nameof(Get), new { id = automaticEventDto.Id }, automaticEventDto);
+        return CreatedAtAction(nameof(GetEventByIdAsync), new { id = automaticEventDto.Id }, automaticEventDto);
     }
 
     [HttpPut("{id:mongoid}")]
-    public async Task<ActionResult> Put(string id, UpdateAutomaticEventDto dto)
+    public async Task<ActionResult> UpdateEventAsync(string id, UpdateAutomaticEventDto dto)
     {
         if (await _automaticEventService.GetEventById(id) is null)
         {
@@ -68,7 +68,7 @@ public sealed class AutomaticEventController : ControllerBase
     }
 
     [HttpDelete("{id:mongoid}")]
-    public async Task<ActionResult> Delete(string id)
+    public async Task<ActionResult> DeleteEventAsync(string id)
     {
         if (await _automaticEventService.GetEventById(id) is null)
         {

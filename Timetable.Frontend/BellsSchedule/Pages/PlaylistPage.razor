@@ -1,13 +1,9 @@
 @page "/playlist"
 @rendermode InteractiveServer
-@implements IAsyncDisposable
-@using Microsoft.AspNetCore.SignalR.Client
-@using Timetable.Frontend.BellsSchedule.Helpers
+@implements IDisposable
 @using Timetable.Frontend.LessonsSchedule.Components.Viewer
-@using Timetable.Frontend.LessonsSchedule.Policies
-@using Timetable.Frontend.Shared.Services
-@inject ApiUrlService ApiUrlService
 @inject BellTableService BellTableService
+@inject BellTableEventService BellTableEventService
 
 <PageTitle>Плейлист</PageTitle>
 
@@ -25,54 +21,26 @@
 @code
 {
     private AudioPlayer _audioPlayerRef = null!;
-
-    private BellTable _bellTable = new();
-    private CustomTimer _timer = null!;
-
     private int _musicVolume = 10;
     private bool _isPlayerLocked;
     private bool _isReconnectionOverlayVisible;
-    private HubConnection? _bellsScheduleHubConnection;
 
     protected override void OnInitialized()
     {
-        _timer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateStateAndRow);
+        BellTableEventService.Reconnected += OnReconnect;
+        BellTableEventService.Disconnected += OnDisconnect;
+        BellTableEventService.TimeStateUpdated += UpdatePlaybackState;
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await CreateHubForBellTable();
+        var timeState = await BellTableService.GetTimeStateAsync();
+        UpdatePlaybackState(timeState);
     }
 
-    protected override async Task OnParametersSetAsync()
+    private void UpdatePlaybackState(TimeState timeState)
     {
-        await UpdateTables();
-    }
-
-    private async Task CreateHubForBellTable()
-    {
-        _bellsScheduleHubConnection = new HubConnectionBuilder()
-            .WithUrl(ApiUrlService.Retrieve("bells-schedule"))
-            .WithAutomaticReconnect(new InfiniteRetryPolicy())
-            .Build();
-
-        _bellsScheduleHubConnection.Reconnecting += async _ => await OnReconnecting();
-        _bellsScheduleHubConnection.Reconnected += async _ => await OnReconnected();
-        _bellsScheduleHubConnection.On<BellTable>("Update", table =>
-        {
-            _bellTable = table;
-
-            InvokeAsync(StateHasChanged);
-        });
-
-        await _bellsScheduleHubConnection.StartAsync();
-    }
-
-    private void UpdateStateAndRow()
-    {
-        BellTimeResolver.ResolveRowAndState(_bellTable.Rows, DateTime.Now.GetTotalMinutes(), out LessonState lessonState);
-
-        if (lessonState is LessonState.Break or LessonState.BeforeLessons or LessonState.AfterLessons)
+        if (timeState.LessonState is LessonState.Break or LessonState.BeforeLessons or LessonState.AfterLessons)
         {
             _audioPlayerRef.Play();
         }
@@ -81,39 +49,31 @@
             _audioPlayerRef.Pause();
         }
 
-        _isPlayerLocked = lessonState is LessonState.LessonIsGoing;
-        
+        _isPlayerLocked = timeState.LessonState is LessonState.LessonIsGoing;
+
         InvokeAsync(StateHasChanged);
     }
 
-    private async Task UpdateTables()
-    {
-        _bellTable = await BellTableService.GetBellTableAsync();
-
-        UpdateStateAndRow();
-    }
-
-    private async Task OnReconnecting()
+    private async Task OnDisconnect()
     {
         _isReconnectionOverlayVisible = true;
 
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task OnReconnected()
+    private async Task OnReconnect()
     {
         _isReconnectionOverlayVisible = false;
 
-        await UpdateTables();
+        var timeState = await BellTableService.GetTimeStateAsync();
+        
+        UpdatePlaybackState(timeState);
     }
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        if (_bellsScheduleHubConnection is not null)
-        {
-            await _bellsScheduleHubConnection.DisposeAsync();
-        }
-
-        _timer.Dispose();
+        BellTableEventService.Reconnected -= OnReconnect;
+        BellTableEventService.Disconnected -= OnDisconnect;
+        BellTableEventService.TimeStateUpdated -= UpdatePlaybackState;
     }
 }

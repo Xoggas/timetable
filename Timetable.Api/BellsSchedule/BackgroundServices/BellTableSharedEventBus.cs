@@ -1,12 +1,12 @@
 ﻿using Timetable.Api.BellsSchedule.Entities;
 
-namespace Timetable.Api.BellsSchedule.Services;
+namespace Timetable.Api.BellsSchedule.BackgroundServices;
 
-public class BellTableUpdateSharedEventBus
+public class BellTableSharedEventBus
 {
     public event Action<BellTable>? Updated;
 
-    public void TriggerUpdate(BellTable bellTable)
+    public void Update(BellTable bellTable)
     {
         Updated?.Invoke(bellTable);
     }

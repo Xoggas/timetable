@@ -6,11 +6,9 @@ using Timetable.Frontend.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-
-builder.Services.Configure<FormOptions>(x => { x.MultipartBodyLengthLimit = long.MaxValue; });
-
 builder.WebHost.ConfigureKestrel(options => { options.Limits.MaxRequestBodySize = long.MaxValue; });
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.Configure<FormOptions>(x => { x.MultipartBodyLengthLimit = long.MaxValue; });
 
 builder.Services.AddTransient<ApiUrlService>();
 builder.Services.AddTransient<HttpClient>(_ =>
@@ -28,6 +26,7 @@ builder.Services.AddTransient<LessonTableService>();
 
 builder.Services.AddTransient<SoundFileService>();
 builder.Services.AddTransient<BellTableService>();
+builder.Services.AddTransient<BellTableEventService>();
 builder.Services.AddTransient<AutomaticEventService>();
 builder.Services.AddTransient<ManualEventService>();
 
@@ -38,6 +37,9 @@ if (app.Environment.IsDevelopment() is false)
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
+
+var bellTableEventService = app.Services.GetRequiredService<BellTableEventService>();
+await bellTableEventService.OpenConnectionAsync();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

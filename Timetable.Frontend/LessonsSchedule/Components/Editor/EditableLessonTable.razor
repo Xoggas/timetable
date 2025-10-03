@@ -129,7 +129,7 @@
 
     public async Task Save()
     {
-        await LessonTableService.UpdateByDayOfWeek(DayOfWeek, new LessonTable
+        await LessonTableService.UpdateByDayOfWeekAsync(DayOfWeek, new LessonTable
         {
             DayOfWeek = DayOfWeek,
             Lessons = _table
@@ -140,7 +140,7 @@
     {
         _backupModal.Show(async () =>
         {
-            await LessonTableService.MakeBackup(DayOfWeek);
+            await LessonTableService.MakeBackupAsync(DayOfWeek);
         });
     }
 
@@ -148,7 +148,7 @@
     {
         _restoreModal.Show(async () =>
         {
-            var restoredTable = await LessonTableService.RestoreBackup(DayOfWeek);
+            var restoredTable = await LessonTableService.RestoreBackupAsync(DayOfWeek);
             
             if (restoredTable is null)
             {
@@ -172,7 +172,7 @@
     {
         if (_oldDayOfWeek != DayOfWeek)
         {
-            _table = (await LessonTableService.GetByDayOfWeek(DayOfWeek)).Lessons;
+            _table = (await LessonTableService.GetByDayOfWeekAsync(DayOfWeek)).Lessons;
             _oldDayOfWeek = DayOfWeek;
         }
     }

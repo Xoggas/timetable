@@ -1,3 +1,5 @@
+using Timetable.Frontend.BellsSchedule.Models;
+
 namespace Timetable.Frontend.BellsSchedule.Services;
 
 public sealed class BellTableService
@@ -9,10 +11,16 @@ public sealed class BellTableService
         _httpClient = httpClient;
     }
 
-    public async Task<Models.BellTable> GetBellTableAsync()
+    public async Task<BellTable> GetBellTableAsync()
     {
-        return await _httpClient.GetFromJsonAsync<Models.BellTable>("api/bells-schedule/bell-table") ??
+        return await _httpClient.GetFromJsonAsync<BellTable>("api/bells-schedule/bell-table") ??
                throw new Exception("An error occured when retrieving the bell table");
+    }
+
+    public async Task<TimeState> GetTimeStateAsync()
+    {
+        return await _httpClient.GetFromJsonAsync<TimeState>("api/bells-schedule/bell-table/time-state") ??
+               throw new Exception("An error occured when retrieving the time state");
     }
 
     public async Task UpdateBellTableAsync(Models.BellTable bellTable)

@@ -20,19 +20,27 @@ public sealed class BellTableController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<BellTableDto>> Get()
+    public async Task<ActionResult<BellTableDto>> GetTableAsync()
     {
-        var bellTable = await _bellTableService.Get();
+        var bellTable = await _bellTableService.GetBellTableAsync();
 
         return Ok(_mapper.Map<BellTableDto>(bellTable));
     }
 
+    [HttpGet("time-state")]
+    public async Task<ActionResult<TimeStateDto>> GetTimeStateAsync()
+    {
+        var bellTable = await _bellTableService.GetBellTableAsync();
+        var timeState = _bellTableService.GetTimeState(bellTable);
+        return Ok(_mapper.Map<TimeStateDto>(timeState));
+    }
+
     [HttpPut]
-    public async Task<ActionResult> Put(UpdateBellTableDto dto)
+    public async Task<ActionResult> UpdateTableAsync(UpdateBellTableDto dto)
     {
         var bellTable = _mapper.Map<BellTable>(dto);
 
-        await _bellTableService.Update(bellTable);
+        await _bellTableService.UpdateBellTableAsync(bellTable);
 
         return NoContent();
     }

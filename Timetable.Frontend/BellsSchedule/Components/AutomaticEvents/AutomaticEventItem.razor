@@ -59,7 +59,7 @@
 
     protected override void OnInitialized()
     {
-        _timer = new CustomTimer(TimeSpan.FromSeconds(1), CheckTime);
+        _timer = new CustomTimer(TimeSpan.FromMilliseconds(10), CheckTime);
     }
 
     private void ToggleEvent()

@@ -1,7 +1,7 @@
+@implements IDisposable
 @inject SoundFileService SoundFileService
 @inject BellTableService BellTableService
-@using Timetable.Frontend.BellsSchedule.Helpers
-@implements IDisposable
+@inject BellTableEventService BellTableEventService
 
 <table class="container">
     @if (RowCount == 0)
@@ -95,39 +95,28 @@
 
     private ConfirmationModal _rowDeletionModal = null!;
     private List<SoundFile> _soundFiles = [];
-    private CustomTimer _timer = null!;
     private BellTable _bellTable = new();
-    private int _activeRow = -1;
+    private int? _activeRow;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _soundFiles = await SoundFileService.GetAllAsync();
+        _bellTable = await BellTableService.GetBellTableAsync();
+
+        var timeState = await BellTableService.GetTimeStateAsync();
+        UpdateStateAndRow(timeState);
+        
+        await BellTableLoaded.InvokeAsync(_bellTable);
+    }
 
     public async Task Save()
     {
         await BellTableService.UpdateBellTableAsync(_bellTable);
     }
 
-    protected override async Task OnInitializedAsync()
+    private void UpdateStateAndRow(TimeState timeState)
     {
-        _timer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateStateAndRow);
-        _soundFiles = await SoundFileService.GetAllAsync();
-        _bellTable = await BellTableService.GetBellTableAsync();
-        await BellTableLoaded.InvokeAsync(_bellTable);
-    }
-
-    private void UpdateStateAndRow()
-    {
-        var row = BellTimeResolver.ResolveRowAndState(_bellTable.Rows, DateTime.Now.GetTotalMinutes(), out LessonState lessonState);
-
-        if (row is null)
-        {
-            _activeRow = -1;
-        }
-        else if (lessonState is LessonState.Break)
-        {
-            _activeRow = _bellTable.Rows.IndexOf(row) + 1;
-        }
-        else
-        {
-            _activeRow = _bellTable.Rows.IndexOf(row);
-        }
+        _activeRow = timeState.RowIndex;
 
         InvokeAsync(StateHasChanged);
     }
@@ -149,6 +138,6 @@
 
     public void Dispose()
     {
-        _timer.Dispose();
+        BellTableEventService.TimeStateUpdated -= UpdateStateAndRow;
     }
 }

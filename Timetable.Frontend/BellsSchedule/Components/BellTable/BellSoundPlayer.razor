@@ -1,5 +1,5 @@
-@using Timetable.Frontend.BellsSchedule.Helpers
 @implements IDisposable
+@inject BellTableEventService BellTableEventService
 
 <AudioFilePlayer @ref="_audioFilePlayer"/>
 
@@ -11,51 +11,35 @@
     [Parameter]
     public bool AreBellsActive { get; set; }
 
-    private CustomTimer _customTimer = null!;
     private AudioFilePlayer _audioFilePlayer = null!;
-    private int _lastActivationTime;
 
     protected override void OnInitialized()
     {
-        _customTimer = new CustomTimer(TimeSpan.FromSeconds(1), CheckTime);
+        BellTableEventService.TimeStateUpdated += UpdateTimeStateAndPlaySoundIfNeeded;
     }
 
-    private void CheckTime()
+    private void UpdateTimeStateAndPlaySoundIfNeeded(TimeState timeState)
     {
-        if (AreBellsActive is false)
+        if (AreBellsActive is false || timeState.Row is null)
         {
             return;
         }
 
-        var time = DateTime.Now.GetTotalMinutes();
-        var row = BellTimeResolver.ResolveRowAndState(BellTable.Rows, time, out _);
-
-        if (row is null)
+        switch (timeState.LessonState)
         {
-            return;
-        }
-
-        if (time == _lastActivationTime)
-        {
-            return;
-        }
-
-        if (time == row.StartTime.TotalMinutes)
-        {
-            PlaySound(row.StartSoundId);
-
-            _lastActivationTime = time;
-        }
-
-        if (time == row.EndTime.TotalMinutes)
-        {
-            PlaySound(row.EndSoundId);
-
-            _lastActivationTime = time;
+            case LessonState.LessonIsGoing:
+                PlaySound(timeState.Row.StartSoundId);
+                break;
+            case LessonState.AfterLessons:
+                PlaySound(timeState.Row.EndSoundId);
+                break;
+            case LessonState.Break:
+                PlaySound(timeState.PreviousRow?.EndSoundId);
+                break;
         }
     }
 
-    private void PlaySound(string soundId)
+    private void PlaySound(string? soundId)
     {
         if (string.IsNullOrEmpty(soundId))
         {
@@ -67,6 +51,6 @@
 
     public void Dispose()
     {
-        _customTimer.Dispose();
+        BellTableEventService.TimeStateUpdated -= UpdateTimeStateAndPlaySoundIfNeeded;
     }
 }

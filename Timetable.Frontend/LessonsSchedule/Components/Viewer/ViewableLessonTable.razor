@@ -1,16 +1,17 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
-@using Timetable.Frontend.BellsSchedule.Helpers
 @using Timetable.Frontend.BellsSchedule.Models
 @using Timetable.Frontend.BellsSchedule.Services
 @using Timetable.Frontend.LessonsSchedule.Policies
 @using Timetable.Frontend.Shared.Services
+@implements IDisposable
+@implements IAsyncDisposable
 @inject ApiUrlService ApiUrlService
 @inject LessonTableService LessonTableService
 @inject BellTableService BellTableService
-@implements IAsyncDisposable
+@inject BellTableEventService BellTableEventService
 
 <table class="table">
-    @foreach (var (row, rowIndex) in _table.Select((x, i) => (x, i)))
+    @foreach (var (row, rowIndex) in _lessonTable.Lessons.Select((x, i) => (x, i)))
     {
         <tr class="row">
             @if (rowIndex == 0)
@@ -28,16 +29,13 @@
             }
             else
             {
-                var bellTableRow = _bellTable.Rows.ElementAtOrDefault(rowIndex - 1);
-                var isRowActive = _activeRow is not null && _lessonState is LessonState.LessonIsGoing or
-                    LessonState.BeforeLessons or
-                    LessonState.Break && _activeRow == rowIndex - 1;
+                var isRowActive = rowIndex == _timeState.RowIndex;
 
                 <td class="cell" index active="@isRowActive">
                     @rowIndex
                 </td>
 
-                @if (bellTableRow is null)
+                @if (_timeState.Row?.StartTime is null || _timeState.Row?.EndTime is null)
                 {
                     <td class="cell">
                         ---
@@ -46,7 +44,7 @@
                 else
                 {
                     <td class="cell" active="@isRowActive">
-                        @bellTableRow
+                        @_timeState.Row
                     </td>
                 }
 
@@ -61,7 +59,7 @@
     }
 </table>
 
-<StatusBar BellTable="_bellTable"/>
+<StatusBar IsBellTableFilled="_bellTable.Rows.Count > 0"/>
 
 <ConnectionIssuesOverlay IsVisible="_isReconnectionOverlayVisible"/>
 
@@ -70,30 +68,27 @@
     [Parameter]
     public CustomDayOfWeek DayOfWeek { get; set; }
 
-    private CustomTimer _timer = null!;
     private HubConnection? _lessonsScheduleHubConnection;
-    private HubConnection? _bellsScheduleHubConnection;
     private bool _isReconnectionOverlayVisible;
-    private List<List<string>> _table = [];
 
+    private LessonTable _lessonTable = new();
     private BellTable _bellTable = new();
-    private int? _activeRow;
-    private LessonState _lessonState;
+    private TimeState _timeState = new();
 
     protected override void OnInitialized()
     {
-        _timer = new CustomTimer(TimeSpan.FromSeconds(1), UpdateStateAndRow);
+        BellTableEventService.BellTableUpdated += OnBellTableUpdate;
+        BellTableEventService.TimeStateUpdated += OnTimeStateUpdate;
     }
 
     protected override async Task OnInitializedAsync()
     {
         await CreateHubForLessonTable();
-        await CreateHubForBellTable();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await UpdateTables();
+        await UpdateTablesAndState();
     }
 
     private async Task CreateHubForLessonTable()
@@ -105,87 +100,58 @@
 
         _lessonsScheduleHubConnection.Reconnecting += async _ => await OnReconnecting();
         _lessonsScheduleHubConnection.Reconnected += async _ => await OnReconnected();
-        _lessonsScheduleHubConnection.On<LessonTable>("Update", table =>
+        _lessonsScheduleHubConnection.On<LessonTable>("Update", lessonTable =>
         {
-            _table = table.Lessons;
-
+            _lessonTable = lessonTable;
             InvokeAsync(StateHasChanged);
         });
 
         await _lessonsScheduleHubConnection.StartAsync();
     }
 
-    private async Task CreateHubForBellTable()
+    private void OnBellTableUpdate(BellTable bellTable)
     {
-        _bellsScheduleHubConnection = new HubConnectionBuilder()
-            .WithUrl(ApiUrlService.Retrieve("bells-schedule"))
-            .WithAutomaticReconnect(new InfiniteRetryPolicy())
-            .Build();
-
-        _bellsScheduleHubConnection.On<BellTable>("Update", table =>
-        {
-            _bellTable = table;
-
-            InvokeAsync(StateHasChanged);
-        });
-
-        await _bellsScheduleHubConnection.StartAsync();
+        _bellTable = bellTable;
+        InvokeAsync(StateHasChanged);
     }
 
-    private async Task UpdateTables()
+    private void OnTimeStateUpdate(TimeState timeState)
     {
-        _table = (await LessonTableService.GetByDayOfWeek(DayOfWeek)).Lessons;
-        _bellTable = await BellTableService.GetBellTableAsync();
+        _timeState = timeState;
+        InvokeAsync(StateHasChanged);
+    }
 
+    private async Task UpdateTablesAndState()
+    {
+        _lessonTable = await LessonTableService.GetByDayOfWeekAsync(DayOfWeek);
+        _bellTable = await BellTableService.GetBellTableAsync();
+        _timeState = await BellTableService.GetTimeStateAsync();
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnReconnecting()
     {
         _isReconnectionOverlayVisible = true;
-
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnReconnected()
     {
         _isReconnectionOverlayVisible = false;
-
-        await UpdateTables();
+        await UpdateTablesAndState();
     }
 
-    private void UpdateStateAndRow()
+    public void Dispose()
     {
-        var row = BellTimeResolver.ResolveRowAndState(_bellTable.Rows, DateTime.Now.GetTotalMinutes(), out _lessonState);
-
-        if (row is null)
-        {
-            _activeRow = null;
-        }
-        else if (_lessonState is LessonState.Break)
-        {
-            _activeRow = _bellTable.Rows.IndexOf(row) + 1;
-        }
-        else
-        {
-            _activeRow = _bellTable.Rows.IndexOf(row);
-        }
-
-        InvokeAsync(StateHasChanged);
+        BellTableEventService.BellTableUpdated -= OnBellTableUpdate;
+        BellTableEventService.TimeStateUpdated -= OnTimeStateUpdate;
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_lessonsScheduleHubConnection != null)
+        if (_lessonsScheduleHubConnection is not null)
         {
             await _lessonsScheduleHubConnection.DisposeAsync();
         }
-
-        if (_bellsScheduleHubConnection is not null)
-        {
-            await _bellsScheduleHubConnection.DisposeAsync();
-        }
-
-        _timer.Dispose();
     }
 }

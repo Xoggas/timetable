@@ -20,7 +20,7 @@ public sealed class ManualEventController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ManualEventDto>>> Get()
+    public async Task<ActionResult<IEnumerable<ManualEventDto>>> GetAllEventsAsync()
     {
         var manualEvents = await _manualEventService.GetAllEvents();
 
@@ -28,7 +28,7 @@ public sealed class ManualEventController : ControllerBase
     }
 
     [HttpGet("{id:mongoid}")]
-    public async Task<ActionResult<ManualEventDto>> Get(string id)
+    public async Task<ActionResult<ManualEventDto>> GetEventByIdAsync(string id)
     {
         var manualEvent = await _manualEventService.GetEventById(id);
 
@@ -47,11 +47,11 @@ public sealed class ManualEventController : ControllerBase
 
         var manualEventDto = _mapper.Map<ManualEventDto>(manualEvent);
 
-        return CreatedAtAction(nameof(Get), new { id = manualEventDto.Id }, manualEventDto);
+        return CreatedAtAction(nameof(GetEventByIdAsync), new { id = manualEventDto.Id }, manualEventDto);
     }
 
     [HttpPut("{id:mongoid}")]
-    public async Task<ActionResult> Put(string id, UpdateManualEventDto dto)
+    public async Task<ActionResult> UpdateEventAsync(string id, UpdateManualEventDto dto)
     {
         if (await _manualEventService.GetEventById(id) is null)
         {
@@ -68,7 +68,7 @@ public sealed class ManualEventController : ControllerBase
     }
 
     [HttpDelete("{id:mongoid}")]
-    public async Task<ActionResult> Delete(string id)
+    public async Task<ActionResult> DeleteEventAsync(string id)
     {
         if (await _manualEventService.GetEventById(id) is null)
         {
