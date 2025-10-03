@@ -2,7 +2,13 @@
 
 namespace Timetable.Api.BellsSchedule.BackgroundServices;
 
-public class BellTableSharedEventBus
+public interface IBellTableSharedEventBus
+{
+    event Action<BellTable>? Updated;
+    void Update(BellTable bellTable);
+}
+
+public class BellTableSharedEventBus : IBellTableSharedEventBus
 {
     public event Action<BellTable>? Updated;
 

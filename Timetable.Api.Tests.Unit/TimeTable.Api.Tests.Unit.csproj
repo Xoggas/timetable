@@ -27,4 +27,8 @@
       <ProjectReference Include="..\TimeTable.Api\TimeTable.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="LessonsSchedule\" />
+    </ItemGroup>
+
 </Project>

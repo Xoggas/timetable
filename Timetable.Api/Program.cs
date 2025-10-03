@@ -1,16 +1,9 @@
 using System.Reflection;
-using MongoDB.Driver;
 using Timetable.Api.BellsSchedule;
-using Timetable.Api.BellsSchedule.Entities;
 using Timetable.Api.BellsSchedule.Hubs;
-using Timetable.Api.BellsSchedule.Services;
 using Timetable.Api.LessonsSchedule;
-using Timetable.Api.LessonsSchedule.Repositories;
-using Timetable.Api.LessonsSchedule.Services;
 using Timetable.Api.Shared;
-using Timetable.Api.Shared.Constraints;
 using Timetable.Api.Shared.Hubs;
-using Timetable.Api.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

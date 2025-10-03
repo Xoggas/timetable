@@ -27,4 +27,19 @@ public sealed class BellTableRow
 
     [BsonElement("end_time")]
     public TimeEntity EndTime { get; init; }
+
+    public BellTableRow(int startHour, int startMinute, int endHour, int endMinute)
+    {
+        StartTime = new TimeEntity
+        {
+            Hour = startHour,
+            Minute = startMinute
+        };
+        
+        EndTime = new TimeEntity
+        {
+            Hour = endHour,
+            Minute = endMinute
+        };
+    }
 }

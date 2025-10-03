@@ -9,6 +9,7 @@ public sealed class BellsScheduleModule : IModule
 {
     public void Register(WebApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<ITimeProvider, DateTimeTimeProvider>();
         builder.Services.AddTransient<IBellsScheduleEventService, BellsScheduleEventService>();
         builder.Services.AddTransient<ISoundFileService, SoundFileService>();
         builder.Services.AddTransient<IAutomaticEventService, AutomaticEventService>();

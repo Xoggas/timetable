@@ -1,6 +1,5 @@
 using MongoDB.Driver;
 using Timetable.Api.BellsSchedule.BackgroundServices;
-using Timetable.Api.BellsSchedule.Dtos;
 using Timetable.Api.BellsSchedule.Entities;
 using Timetable.Api.Shared.Services;
 
@@ -13,18 +12,30 @@ public interface IBellTableService
     TimeState GetTimeState(BellTable bellTable);
 }
 
+public interface ITimeProvider
+{
+    int TotalMinutes { get; }
+}
+
+public sealed class DateTimeTimeProvider : ITimeProvider
+{
+    public int TotalMinutes => DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+}
+
 public sealed class BellTableService : IBellTableService
 {
     private readonly IMongoCollection<BellTable> _bellTableCollection;
     private readonly IBellsScheduleEventService _eventService;
-    private readonly BellTableSharedEventBus _bellTableSharedEventBus;
+    private readonly IBellTableSharedEventBus _bellTableSharedEventBus;
+    private readonly ITimeProvider _timeProvider;
 
-    public BellTableService(MongoDbService mongoDbService, IBellsScheduleEventService eventService,
-        BellTableSharedEventBus bellTableSharedEventBus)
+    public BellTableService(IMongoDbService mongoDbService, IBellsScheduleEventService eventService,
+        IBellTableSharedEventBus bellTableSharedEventBus, ITimeProvider timeProvider)
     {
         _bellTableCollection = mongoDbService.GetCollection<BellTable>("bell-table");
         _eventService = eventService;
         _bellTableSharedEventBus = bellTableSharedEventBus;
+        _timeProvider = timeProvider;
     }
 
     public async Task<BellTable> GetBellTableAsync()
@@ -61,7 +72,7 @@ public sealed class BellTableService : IBellTableService
     public TimeState GetTimeState(BellTable bellTable)
     {
         var rows = bellTable.Rows;
-        var currentTimeInMinutes = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+        var currentTimeInMinutes = _timeProvider.TotalMinutes;
 
         if (rows.Length == 0)
         {
@@ -70,12 +81,12 @@ public sealed class BellTableService : IBellTableService
 
         if (currentTimeInMinutes < rows.First().StartTime.TotalMinutes)
         {
-            return new TimeState(LessonState.BeforeLessons);
+            return new TimeState(LessonState.BeforeLessons, 0, rows.First());
         }
 
         if (currentTimeInMinutes >= rows.Last().EndTime.TotalMinutes)
         {
-            return new TimeState(LessonState.AfterLessons, rows.Length - 1, rows.Last());
+            return new TimeState(LessonState.AfterLessons);
         }
 
         foreach (var (i, row) in rows.Index())

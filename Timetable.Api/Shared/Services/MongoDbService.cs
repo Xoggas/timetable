@@ -2,7 +2,12 @@
 
 namespace Timetable.Api.Shared.Services;
 
-public sealed class MongoDbService
+public interface IMongoDbService
+{
+    IMongoCollection<T> GetCollection<T>(string name);
+}
+
+public sealed class MongoDbService : IMongoDbService
 {
     private readonly IMongoDatabase _database;
 
